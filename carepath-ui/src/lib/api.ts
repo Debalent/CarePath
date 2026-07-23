@@ -1,7 +1,7 @@
 // Shared API client for CarePath frontend
 // Handles auth tokens, base URL, error handling, and role-based storage
 
-const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3000/api'
+const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3001/api'
 
 export type ApiOptions = {
   baseUrl?: string
