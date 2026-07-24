@@ -94,8 +94,8 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, role, title, subtitle, userName }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
-  const accent = roleAccent[role]
-  const tabs = bottomNavItems[role]
+  const accent = role ? roleAccent[role] : undefined
+  const tabs = role ? bottomNavItems[role] : []
 
   return (
     <div className="cp-shell">

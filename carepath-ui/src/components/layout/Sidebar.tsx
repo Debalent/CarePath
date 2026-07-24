@@ -100,8 +100,8 @@ interface SidebarProps {
 
 export function Sidebar({ role, userName = "User" }: SidebarProps) {
   const pathname = usePathname();
-  const items = navItems[role];
-  const accent = roleAccent[role];
+  const items = role ? navItems[role] || [] : [];
+  const accent = role ? roleAccent[role] : '#64748b';
 
   return (
     <aside className="cp-sidebar">
@@ -124,33 +124,35 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
                 lineHeight: 1,
               }}
             >
-              CarePath
-            </p>
-            <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 3 }}>
-              {roleLabels[role]}
-            </p>
+               CarePath
+             </p>
+             <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 3 }}>
+               {role ? roleLabels[role] : 'Guest'}
+             </p>
           </div>
         </div>
       </Link>
 
       {/* Role pill */}
-      <div style={{ padding: "12px 16px 4px" }}>
-        <span
-          style={{
-            display: "inline-block",
-            padding: "4px 12px",
-            borderRadius: 99,
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.08em",
-            background: accent + "18",
-            color: accent,
-          }}
-        >
-          {role}
-        </span>
-      </div>
+      {role && (
+        <div style={{ padding: "12px 16px 4px" }}>
+          <span
+            style={{
+              display: "inline-block",
+              padding: "4px 12px",
+              borderRadius: 99,
+              fontSize: 11,
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              background: accent + "18",
+              color: accent,
+            }}
+          >
+            {role}
+          </span>
+        </div>
+      )}
 
       {/* Nav */}
       <nav
@@ -162,39 +164,46 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
           gap: 2,
         }}
       >
-        {items.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href;
-          return (
-            <Link
-              key={href}
-              href={href}
-              className={`cp-nav-item${active ? " active" : ""}`}
-              style={active ? { background: accent + "15", color: accent } : {}}
-            >
-              <Icon size={17} style={active ? { color: accent } : {}} />
-              {label}
-            </Link>
-          );
-        })}
+        {items.length === 0 ? (
+          <p style={{ padding: "12px 16px", fontSize: 13, color: "#94a3b8" }}>
+            Please log in to view your dashboard.
+          </p>
+        ) : (
+          items.map(({ label, href, icon: Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`cp-nav-item${active ? " active" : ""}`}
+                style={active ? { background: accent + "15", color: accent } : {}}
+              >
+                <Icon size={17} style={active ? { color: accent } : {}} />
+                {label}
+              </Link>
+            );
+          })
+        )}
       </nav>
 
       {/* User footer */}
-      <div style={{ padding: "12px", borderTop: "1px solid #e2e8f0" }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "10px 12px",
-            borderRadius: 10,
-            cursor: "pointer",
-            transition: "background 0.15s",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.background = "transparent")
-          }
-        >
+      {userName && role && (
+        <div style={{ padding: "12px", borderTop: "1px solid #e2e8f0" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "10px 12px",
+              borderRadius: 10,
+              cursor: "pointer",
+              transition: "background 0.15s",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "transparent")
+            }
+          >
           <div
             style={{
               width: 34,
