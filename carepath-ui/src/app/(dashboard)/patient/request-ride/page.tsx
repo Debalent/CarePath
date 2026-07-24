@@ -112,7 +112,7 @@ export default function PatientIntakePage() {
         {/* Hero */}
         <section style={{
           borderRadius: 16, padding: '20px',
-          background: 'linear-gradient(135deg, #136e5e, #094f91)',
+          background: 'linear-gradient(135deg, #424aba, #189bb8)',
           color: '#fff',
         }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#99e6d8', marginBottom: 6 }}>
@@ -129,8 +129,8 @@ export default function PatientIntakePage() {
           <div className="cp-space-y-3">
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <Badge variant={mode === 'live' ? 'success' : 'warning'}>{mode === 'live' ? 'Live' : 'Demo'}</Badge>
-              <Button size="sm" variant="secondary" onClick={() => setMode('demo')}>Demo</Button>
-              <Button size="sm" onClick={() => setMode('live')}>Live</Button>
+              <Button size="sm" style={{ background:" #c9b1d2" }} variant="secondary" onClick={() => setMode('demo')}>Demo</Button>
+              <Button size="sm" style={{ background:" #558aa2" }} onClick={() => setMode('live')}>Live</Button>
             </div>
             <input value={apiBaseUrl} onChange={(e) => setApiBaseUrl(e.target.value)}
               placeholder="API base URL" className="cp-input" />
@@ -140,7 +140,7 @@ export default function PatientIntakePage() {
               <Button size="sm" variant="secondary" onClick={() => { const s = window.localStorage.getItem('carepath.patient.token'); if (s) { setToken(s); setResult('Token loaded.') } }}>
                 Load token
               </Button>
-              <Button size="sm" onClick={() => { window.localStorage.setItem('carepath.patient.token', token); setResult('Token saved.') }}>
+              <Button size="sm" style={{ background:" #558aa2" }} onClick={() => { window.localStorage.setItem('carepath.patient.token', token); setResult('Token saved.') }}>
                 Save token
               </Button>
             </div>
@@ -251,7 +251,7 @@ export default function PatientIntakePage() {
             </div>
 
 
-            <Button type="submit" disabled={isSubmitting} className="cp-btn-full">
+            <Button type="submit" style={{ background: 'linear-gradient(135deg, #424aba, #189bb8)' }} disabled={isSubmitting} className="cp-btn-full">
               {isSubmitting ? 'Submitting…' : 'Submit ride request'}
             </Button>
           </form>
@@ -294,7 +294,7 @@ export default function PatientIntakePage() {
             </div>
 
 
-            <div style={{ background: '#d0f4ee', borderRadius: 12, padding: 14, border: '1px solid #99e6d8' }}>
+            <div style={{ background: '#e0d8e9', borderRadius: 12, padding: 14, border: '1px solid #99e6d8' }}>
               <p style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 600, color: '#136e5e', marginBottom: 6 }}>
                 <HandHeart size={15} /> Community matching
               </p>

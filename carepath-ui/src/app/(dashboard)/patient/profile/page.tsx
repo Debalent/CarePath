@@ -314,7 +314,7 @@ export default function PatientProfilePage() {
             borderRadius: "16px",
             padding: "28px 30px",
             background:
-              "linear-gradient(135deg, #136e5e 0%, #0c6bc2 100%)",
+              "linear-gradient(135deg, #5f133f 0%, #768dbc 50%, #cc6cd1 100%)",
             boxShadow: "0 10px 24px rgba(9, 79, 145, 0.18)",
           }}
         >
@@ -869,6 +869,7 @@ export default function PatientProfilePage() {
                 minWidth: "240px",
                 minHeight: "54px",
                 fontSize: "16px",
+                background: "linear-gradient(135deg, #5f133f 0%, #cc6cd1 100%)",
               }}
             >
               {saving ? "Saving…" : "Save Profile"}

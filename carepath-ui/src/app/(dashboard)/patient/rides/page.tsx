@@ -42,8 +42,8 @@ export default function PatientRidesPage() {
   return (
     <DashboardLayout role="patient" title="My Rides" subtitle="Your ride history and upcoming trips" userName="Patient">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #136e5e, #094f91)', color: '#fff' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#99e6d8', marginBottom: 6 }}>Ride history</p>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #8828a0, #094f91)', color: '#136e5e' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#99e0e6', marginBottom: 6 }}>Ride history</p>
           <h2  style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>Track all your medical transportation requests in one place.</h2>
         </section>
 
@@ -51,14 +51,14 @@ export default function PatientRidesPage() {
           <div className="cp-space-y-3">
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <Badge variant={mode === 'live' ? 'success' : 'warning'}>{mode === 'live' ? 'Live' : 'Demo'}</Badge>
-              <Button size="sm" variant="secondary" onClick={() => { setMode('demo'); setRides(demoRides); setMsg('Demo mode.') }}>Demo</Button>
-              <Button size="sm" onClick={() => { setMode('live'); load() }} disabled={loading}>Live</Button>
+              <Button size="sm" style={{ background:" #cfa0e3" }} variant="secondary" onClick={() => { setMode('demo'); setRides(demoRides); setMsg('Demo mode.') }}>Demo</Button>
+              <Button size="sm" style={{ background:" #094f91" }} onClick={() => { setMode('live'); load() }} disabled={loading}>Live</Button>
             </div>
             <input value={apiBase} onChange={e => setApiBase(e.target.value)} placeholder="API base URL" className="cp-input" />
             <input value={token} onChange={e => setToken(e.target.value)} placeholder="Patient JWT token" className="cp-input" />
             <div style={{ display: 'flex', gap: 8 }}>
               <Button size="sm" variant="secondary" onClick={() => { const t = localStorage.getItem('carepath.patient.token'); if (t) { setToken(t); setMsg('Token loaded.') } }}>Load token</Button>
-              <Button size="sm" onClick={() => { localStorage.setItem('carepath.patient.token', token); setMsg('Token saved.') }}>Save token</Button>
+              <Button size="sm" style={{ background:" #8e5da2" }}onClick={() => { localStorage.setItem('carepath.patient.token', token); setMsg('Token saved.') }}>Save token</Button>
               <Button size="sm" variant="secondary" onClick={load} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</Button>
             </div>
           </div>
@@ -68,7 +68,7 @@ export default function PatientRidesPage() {
         {error && <div className="cp-alert cp-alert-error"><AlertCircle size={16} />{error}</div>}
 
         <div className="cp-grid-2">
-          <StatCard label="Upcoming rides" value={upcoming} icon={Clock3} color="teal" />
+          <StatCard label="Upcoming rides" value={upcoming} icon={Clock3} color="purple" />
           <StatCard label="Completed rides" value={completed} icon={Car} color="blue" />
         </div>
 

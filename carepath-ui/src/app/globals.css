@@ -315,13 +315,41 @@ select:-webkit-autofill {
   font-size: 12px;
   font-weight: 600;
 }
-.cp-badge-success { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-.cp-badge-warning { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
-.cp-badge-error   { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-.cp-badge-info    { background: var(--brand-teal-light); color: var(--brand-teal-dark); border: 1px solid #99e6d8; }
-.cp-badge-purple  { background: var(--brand-purple-light); color: var(--brand-purple); border: 1px solid #c4b5fd; }
-.cp-badge-neutral { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+.cp-badge-success {
+  background: #dff5ee;
+  color: #136e5e;
+  border: 1px solid #9bd8c8;
+}
 
+.cp-badge-warning {
+  background: #f5e8fb;
+  color: #7a3f94;
+  border: 1px solid #d3a6e4;
+}
+
+.cp-badge-error {
+  background: #f9e1ea;
+  color: #a33d68;
+  border: 1px solid #e9b3ca;
+}
+
+.cp-badge-info {
+  background: #e4eefb;
+  color: #245a8c;
+  border: 1px solid #b8d2ef;
+}
+
+.cp-badge-neutral {
+  background: #eef2f8;
+  color: #5b6780;
+  border: 1px solid #d3dce8;
+}
+
+.cp-badge-purple {
+  background: #eadcf1;
+  color: #6f3d82;
+  border: 1px solid #cfa0e3;
+}
 /* ── Form inputs ── */
 .cp-input, .cp-select, .cp-textarea {
   width: 100%;

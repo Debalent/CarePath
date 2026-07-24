@@ -5,18 +5,18 @@ interface StatCardProps {
   value: string | number
   icon: LucideIcon
   trend?: { value: string; positive: boolean }
-  color?: 'teal' | 'blue' | 'amber' | 'rose' | 'purple'
+  color?:'purple'| 'teal' | 'blue' | 'amber' | 'rose' 
 }
 
 const colorMap: Record<string, { bg: string; color: string }> = {
-  teal:   { bg: '#d0f4ee', color: '#136e5e' },
+  purple: { bg: '#ede9f7', color: '#5540a1' },
+  teal:   { bg: '#f1dff2', color: '#136e5e' },
   blue:   { bg: '#dbeafe', color: '#1d4ed8' },
   amber:  { bg: '#fef3c7', color: '#d97706' },
   rose:   { bg: '#ffe4e6', color: '#e11d48' },
-  purple: { bg: '#ede9f7', color: '#5540a1' },
 }
 
-export function StatCard({ label, value, icon: Icon, trend, color = 'teal' }: StatCardProps) {
+export function StatCard({ label, value, icon: Icon, trend, color = 'purple' }: StatCardProps) {
   const { bg, color: iconColor } = colorMap[color]
   return (
     <div className="cp-stat">

@@ -42,7 +42,7 @@ export default function PatientAppointmentsPage() {
   return (
     <DashboardLayout role="patient" title="Appointments" subtitle="Upcoming and past medical appointments" userName="Patient">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #136e5e, #094f91)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #136e5e 0%, #345b80 50%, #094f91 100%)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#99e6d8', marginBottom: 6 }}>Appointment tracker</p>
           <h2 style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>Every appointment tied to a confirmed ride reduces missed care.</h2>
         </section>
@@ -51,14 +51,14 @@ export default function PatientAppointmentsPage() {
           <div className="cp-space-y-3">
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
               <Badge variant={mode === 'live' ? 'success' : 'warning'}>{mode === 'live' ? 'Live' : 'Demo'}</Badge>
-              <Button size="sm" variant="secondary" onClick={() => { setMode('demo'); setRides(demoRides); setMsg('Demo mode.') }}>Demo</Button>
-              <Button size="sm" onClick={() => { setMode('live'); load() }} disabled={loading}>Live</Button>
+              <Button size="sm"  variant="secondary" onClick={() => { setMode('demo'); setRides(demoRides); setMsg('Demo mode.') }}>Demo</Button>
+              <Button size="sm" style={{ background:" #b72898" }} onClick={() => { setMode('live'); load() }} disabled={loading}>Live</Button>
             </div>
             <input value={apiBase} onChange={e => setApiBase(e.target.value)} placeholder="API base URL" className="cp-input" />
             <input value={token} onChange={e => setToken(e.target.value)} placeholder="Patient JWT token" className="cp-input" />
             <div style={{ display: 'flex', gap: 8 }}>
               <Button size="sm" variant="secondary" onClick={() => { const t = localStorage.getItem('carepath.patient.token'); if (t) { setToken(t); setMsg('Token loaded.') } }}>Load token</Button>
-              <Button size="sm" onClick={() => { localStorage.setItem('carepath.patient.token', token); setMsg('Token saved.') }}>Save token</Button>
+              <Button size="sm" style={{ background:" #b72898" }} onClick={() => { localStorage.setItem('carepath.patient.token', token); setMsg('Token saved.') }}>Save token</Button>
               <Button size="sm" variant="secondary" onClick={load} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</Button>
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function PatientAppointmentsPage() {
             <CardHeader><CardTitle>Upcoming appointments</CardTitle></CardHeader>
             <div className="cp-space-y-3">
               {upcoming.map(ride => (
-                <div key={ride.id} style={{ border: '1.5px solid #99e6d8', borderRadius: 12, padding: 16, background: '#f0fdf9' }}>
+                <div key={ride.id} style={{ border: '1.5px solid #d1a1e2', borderRadius: 12, padding: 16, background: '#f3f0f5' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
                     <p style={{ fontWeight: 700, fontSize: 15, color: '#0f172a' }}>{ride.appointment.clinicName}</p>
                     <Badge variant={statusVariant(ride.status)}>{ride.status}</Badge>

@@ -7,7 +7,7 @@ interface BadgeProps {
 }
 
 const variantClass: Record<BadgeVariant, string> = {
-  success: 'cp-badge cp-badge-success',
+  success: '.cp-badge-success', 
   warning: 'cp-badge cp-badge-warning',
   error:   'cp-badge cp-badge-error',
   info:    'cp-badge cp-badge-info',
