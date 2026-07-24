@@ -20,7 +20,7 @@ import {
 import { Sidebar } from '@/components/layout/Sidebar'
 import { Topbar } from '@/components/layout/Topbar'
 
-type Role = 'patient' | 'driver' | 'coordinator' | 'admin'
+type Role = 'patient' | 'driver' | 'coordinator' | 'admin' | 'advocate' | 'partner'
 
 const bottomNavItems: Record<Role, { label: string; href: string; icon: React.ElementType }[]> = {
  patient: [
@@ -74,6 +74,20 @@ const bottomNavItems: Record<Role, { label: string; href: string; icon: React.El
     { label: 'ROI',     href: '/admin/roi',      icon: BarChart3 },
     { label: 'Partners',href: '/admin/partners', icon: Users },
   ],
+  advocate: [
+    { label: 'Home',     href: '/advocate',              icon: LayoutDashboard },
+    { label: 'Rides',    href: '/advocate/rides',        icon: Car },
+    { label: 'Patients', href: '/advocate/patients',     icon: Users },
+    { label: 'Messages', href: '/advocate/messages',     icon: MessageSquare },
+    { label: 'Profile',  href: '/advocate/profile',      icon: User },
+  ],
+  partner: [
+    { label: 'Home',     href: '/partner',               icon: LayoutDashboard },
+    { label: 'Credits',  href: '/partner/credits',       icon: CreditCard },
+    { label: 'Rides',    href: '/partner/rides',         icon: Car },
+    { label: 'Messages', href: '/partner/messages',      icon: MessageSquare },
+    { label: 'Profile',  href: '/partner/profile',       icon: User },
+  ],
 }
 
 const roleAccent: Record<Role, string> = {
@@ -81,6 +95,8 @@ const roleAccent: Record<Role, string> = {
   driver:      '#0c6bc2',
   coordinator: '#5540a1',
   admin:       '#052b56',
+  advocate:    '#b62ea1',
+  partner:     '#d97706',
 }
 
 interface DashboardLayoutProps {
@@ -94,8 +110,8 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, role, title, subtitle, userName }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
-  const accent = roleAccent[role]
-  const tabs = bottomNavItems[role]
+  const accent = role ? roleAccent[role] : undefined
+  const tabs = role ? bottomNavItems[role] : []
 
   return (
     <div className="cp-shell">

@@ -92,6 +92,9 @@ let _driverApi: ApiClient | null = null
 let _coordinatorApi: ApiClient | null = null
 let _adminApi: ApiClient | null = null
 
+let _advocateApi: ApiClient | null = null
+let _partnerApi: ApiClient | null = null
+
 export function getApi(role: string): ApiClient {
   switch (role) {
     case 'PATIENT':
@@ -106,6 +109,12 @@ export function getApi(role: string): ApiClient {
     case 'ADMIN':
       if (!_adminApi) _adminApi = new ApiClient({ role: 'admin' })
       return _adminApi
+    case 'ADVOCATE':
+      if (!_advocateApi) _advocateApi = new ApiClient({ role: 'advocate' })
+      return _advocateApi
+    case 'PARTNER':
+      if (!_partnerApi) _partnerApi = new ApiClient({ role: 'partner' })
+      return _partnerApi
     default:
       return new ApiClient()
   }
