@@ -33,8 +33,8 @@ const roleRedirect: Record<string, string> = {
   DRIVER:      '/driver/dashboard',
   COORDINATOR: '/coordinator/pooling',
   ADMIN:       '/admin/credits',
-  PARTNER:     '/admin/credits',
-  ADVOCATE:    '/coordinator/pooling',
+  PARTNER:     '/partner/dashboard',
+  ADVOCATE:    '/advocate/dashboard',
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Restore session from localStorage on mount
   useEffect(() => {
-    const roles = ['patient', 'driver', 'coordinator', 'admin']
+    const roles = ['patient', 'driver', 'coordinator', 'admin', 'advocate', 'partner']
     for (const r of roles) {
       const t = getToken(r)
       if (t) {

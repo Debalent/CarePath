@@ -17,7 +17,7 @@ import {
   Route,
 } from "lucide-react";
 
-type Role = "patient" | "driver" | "coordinator" | "admin";
+type Role = "patient" | "driver" | "coordinator" | "admin" | "advocate" | "partner";
 
 const navItems: Record<
   Role,
@@ -77,6 +77,20 @@ const navItems: Record<
     { label: "Cost & ROI", href: "/admin/roi", icon: BarChart3 },
     { label: "Partners", href: "/admin/partners", icon: User },
   ],
+  advocate: [
+    { label: "Dashboard", href: "/advocate", icon: LayoutDashboard },
+    { label: "Rides", href: "/advocate/rides", icon: Car },
+    { label: "Patients", href: "/advocate/patients", icon: User },
+    { label: "Messages", href: "/advocate/messages", icon: MessageSquare },
+    { label: "My Profile", href: "/advocate/profile", icon: Heart },
+  ],
+  partner: [
+    { label: "Dashboard", href: "/partner", icon: LayoutDashboard },
+    { label: "Credits", href: "/partner/credits", icon: CreditCard },
+    { label: "Rides", href: "/partner/rides", icon: Car },
+    { label: "Messages", href: "/partner/messages", icon: MessageSquare },
+    { label: "My Profile", href: "/partner/profile", icon: User },
+  ],
 };
 
 const roleLabels: Record<Role, string> = {
@@ -84,6 +98,8 @@ const roleLabels: Record<Role, string> = {
   driver: "Driver Portal",
   coordinator: "Coordinator Portal",
   admin: "Partner Portal",
+  advocate: "Advocate Portal",
+  partner: "Institutional Partner Portal",
 };
 
 const roleAccent: Record<Role, string> = {
@@ -91,6 +107,8 @@ const roleAccent: Record<Role, string> = {
   driver: "#0c6bc2",
   coordinator: "#5540a1",
   admin: "#052b56",
+  advocate: "#b62ea1",
+  partner: "#d97706",
 };
 
 interface SidebarProps {

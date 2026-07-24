@@ -15,8 +15,8 @@ const roleRedirect: Record<string, string> = {
   DRIVER: "/driver/dashboard",
   COORDINATOR: "/coordinator/pooling",
   ADMIN: "/admin/credits",
-  PARTNER: "/admin/credits",
-  ADVOCATE: "/coordinator/pooling",
+  PARTNER: "/partner/dashboard",
+  ADVOCATE: "/advocate/dashboard",
 };
 
 export default function LoginPage() {
