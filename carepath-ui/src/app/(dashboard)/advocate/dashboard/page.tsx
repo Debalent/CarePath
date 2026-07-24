@@ -1,4 +1,4 @@
-s fronty'use client'
+'use client'
 
 import Link from 'next/link'
 import { Car, Users, MessageSquare, Heart, ClipboardList } from 'lucide-react'

@@ -265,6 +265,7 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
           <LogOut size={15} style={{ color: "#94a3b8", flexShrink: 0 }} />
         </div>
       </div>
+      )}
     </aside>
   );
 }

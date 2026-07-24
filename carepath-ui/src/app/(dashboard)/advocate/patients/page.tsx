@@ -1,4 +1,4 @@
-are'use client'
+'use client'
 
 import { useState } from 'react'
 import { Users, MapPin, Phone } from 'lucide-react'
