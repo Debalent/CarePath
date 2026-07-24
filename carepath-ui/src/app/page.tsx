@@ -161,8 +161,7 @@ export default function Home() {
             Login
           </Link>
 
-          <Link href="/patient/profile" className="..."
-           
+          <Link href="/patient/dashboard"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -171,14 +170,14 @@ export default function Home() {
               borderRadius: 10,
               fontSize: 14,
               fontWeight: 700,
-              background: "#f3e2f",
+              background: "#f3e2f7",
               color: "#0c6bc2",
               border: "1px solid #ae5a8b",
               textDecoration: "none",
             }}
           >
             <UserRound size={16} />
-            My Profile
+            Patient Portal
           </Link>
           <Link
             href="/coordinator"

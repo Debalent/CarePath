@@ -111,6 +111,15 @@ const roleAccent: Record<Role, string> = {
   partner: "#d97706",
 };
 
+const roleHome: Record<Role, string> = {
+  patient: "/patient/dashboard",
+  driver: "/driver/dashboard",
+  coordinator: "/coordinator/pooling",
+  admin: "/admin/credits",
+  advocate: "/advocate/dashboard",
+  partner: "/partner/dashboard",
+};
+
 interface SidebarProps {
   role: Role;
   userName?: string;
@@ -123,8 +132,8 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
 
   return (
     <aside className="cp-sidebar">
-      {/* Logo */}
-      <Link href="/" style={{ textDecoration: 'none', padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "block" }}>
+      {/* Logo - navigate to role-specific dashboard */}
+      <Link href={role ? roleHome[role] : "/"} style={{ textDecoration: 'none', padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "block" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Image
             src="/carepath-logo.png"
