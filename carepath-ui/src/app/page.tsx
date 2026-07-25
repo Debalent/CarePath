@@ -951,40 +951,40 @@ export default function Home() {
                     gap: 9,
                   }}
                 >
-                  <Link
-                    href="/patient/request-ride"
-                    style={{
-                      color: "rgba(210, 220, 220, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Patient Intake
-                  </Link>
-
-                  <Link
-                    href="/customer/login"
-                    style={{
-                      color: "rgba(255, 255, 255, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Request a Ride
-                  </Link>
-
-                  <Link
-                    href="/patient/intake"
-                    style={{
-                      color: "rgba(255, 255, 255, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Customer Login
-                  </Link>
-                </div>
-              </div>
+            <Link
+              href="/patient/request-ride"
+              style={{
+                color: "rgba(210, 220, 220, 0.72)",
+                fontSize: 14,
+                textDecoration: "none",
+              }}
+            >
+              Patient Intake
+            </Link>
+          
+            <Link
+              href="/login"
+              style={{
+                color: "rgba(255, 255, 255, 0.72)",
+                fontSize: 14,
+                textDecoration: "none",
+              }}
+            >
+              Request a Ride
+            </Link>
+          
+            <Link
+              href="/patient/intake"
+              style={{
+                color: "rgba(255, 255, 255, 0.72)",
+                fontSize: 14,
+                textDecoration: "none",
+              }}
+            >
+              Customer Login
+            </Link>
+          </div>
+        </div>
 
               <div>
                 <p
@@ -1004,29 +1004,29 @@ export default function Home() {
                     gap: 9,
                   }}
                 >
-                  <Link
-                    href="/driver/login"
-                    style={{
-                      color: "rgba(255, 255, 255, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Driver Login
-                  </Link>
-
-                  <Link
-                    href="/coordinator"
-                    style={{
-                      color: "rgba(255, 255, 255, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Coordinator Hub
-                  </Link>
-                </div>
-              </div>
+                   <Link
+                     href="/login"
+                     style={{
+                       color: "rgba(255, 255, 255, 0.72)",
+                       fontSize: 14,
+                       textDecoration: "none",
+                     }}
+                   >
+                     Driver Login
+                   </Link>
+                 
+                   <Link
+                     href="/coordinator"
+                     style={{
+                       color: "rgba(255, 255, 255, 0.72)",
+                       fontSize: 14,
+                       textDecoration: "none",
+                     }}
+                   >
+                     Coordinator Hub
+                   </Link>
+                 </div>
+               </div>
             </div>
           </div>
 
