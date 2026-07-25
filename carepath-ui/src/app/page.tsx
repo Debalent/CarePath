@@ -375,6 +375,25 @@ export default function Home() {
                 Request a Ride
                 <ArrowRight size={16} />
               </Link>
+               <Link
+                href="/patient/profile"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  padding: "13px 22px",
+                  borderRadius: 12,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  background: "#b62ea1",
+                  color: "#ffffff",
+                  textDecoration: "none",
+                  minHeight: 48,
+                }}
+              >
+                Update My Profile
+                <ArrowRight size={16} />
+              </Link>
             </div>{" "}
           </div>
         </section>
@@ -939,6 +958,7 @@ export default function Home() {
                     fontSize: 14,
                     fontWeight: 700,
                     marginBottom: 12,
+                    color: "#ffffff",
                   }}
                 >
                   Patients
@@ -950,20 +970,31 @@ export default function Home() {
                     flexDirection: "column",
                     gap: 9,
                   }}
-                >
+                  >
                   <Link
-                    href="/patient/request-ride"
+                    href="/login"
                     style={{
-                      color: "rgba(210, 220, 220, 0.72)",
+                      color: "rgba(255, 255, 255, 0.72)",
                       fontSize: 14,
                       textDecoration: "none",
+                    }}
+                  >
+                     Login
+                  </Link>
+                
+                  <Link
+                    href="/patient/intake"
+                    style={{
+                      fontSize: 14,
+                      textDecoration: "none",
+                      color: "rgba(255, 255, 255, 0.72)",
                     }}
                   >
                     Patient Intake
                   </Link>
 
                   <Link
-                    href="/customer/login"
+                    href="/patient/request-ride"
                     style={{
                       color: "rgba(255, 255, 255, 0.72)",
                       fontSize: 14,
@@ -973,16 +1004,7 @@ export default function Home() {
                     Request a Ride
                   </Link>
 
-                  <Link
-                    href="/patient/intake"
-                    style={{
-                      color: "rgba(255, 255, 255, 0.72)",
-                      fontSize: 14,
-                      textDecoration: "none",
-                    }}
-                  >
-                    Customer Login
-                  </Link>
+                
                 </div>
               </div>
 
@@ -992,6 +1014,7 @@ export default function Home() {
                     fontSize: 14,
                     fontWeight: 700,
                     marginBottom: 12,
+                    color: "white",
                   }}
                 >
                   CarePath Team
@@ -1005,14 +1028,14 @@ export default function Home() {
                   }}
                 >
                   <Link
-                    href="/driver/login"
+                    href="/login"
                     style={{
                       color: "rgba(255, 255, 255, 0.72)",
                       fontSize: 14,
                       textDecoration: "none",
                     }}
                   >
-                    Driver Login
+                     Login
                   </Link>
 
                   <Link
@@ -1038,7 +1061,7 @@ export default function Home() {
               fontSize: 13,
             }}
           >
-            © 2026 CarePath. Medical transportation coordination platform.
+            © 2026 Balentine Tech Solutions.
           </p>
         </div>
       </footer>
