@@ -80,7 +80,7 @@ export default function Home() {
       ====================================================== */}
       <nav
         style={{
-          position: "sticky",
+          position: "relative",
           top: 0,
           zIndex: 50,
           background: "rgba(255, 255, 255, 0.94)",
@@ -952,6 +952,7 @@ export default function Home() {
                 flexWrap: "wrap",
               }}
             >
+              
               <div>
                 <p
                   style={{
@@ -1038,6 +1039,7 @@ export default function Home() {
                      Login
                   </Link>
 
+
                   <Link
                     href="/coordinator"
                     style={{
@@ -1049,7 +1051,50 @@ export default function Home() {
                     Coordinator Hub
                   </Link>
                 </div>
+                
               </div>
+              <div>
+  <p
+    style={{
+      fontSize: 14,
+      fontWeight: 700,
+      marginBottom: 12,
+      color: "#ffffff",
+    }}
+  >
+    Support
+  </p>
+
+  <div
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: 9,
+    }}
+  >
+    <Link
+      href="/contact"
+      style={{
+        color: "rgba(255, 255, 255, 0.72)",
+        fontSize: 14,
+        textDecoration: "none",
+      }}
+    >
+      Contact Us
+    </Link>
+
+    <Link
+      href="/report-problem"
+      style={{
+        color: "rgba(255, 255, 255, 0.72)",
+        fontSize: 14,
+        textDecoration: "none",
+      }}
+    >
+      Report a Technical Problem
+    </Link>
+  </div>
+</div>
             </div>
           </div>
 
