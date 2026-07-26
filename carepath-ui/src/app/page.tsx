@@ -97,7 +97,7 @@ export default function Home() {
       >
         {/* Logo and company name */}
         <Link
-          href="/dashboard"
+          href="/"
           style={{
             display: "flex",
             alignItems: "center",
