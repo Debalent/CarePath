@@ -11,7 +11,7 @@ import { demoPendingRides, demoPoolingOptions, PendingRide, PoolCandidate, Pooli
 
 type DataMode = 'demo' | 'live'
 
-const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3000/api'
+const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3001/api'
 
 const urgencyVariant: Record<PoolingOptionsResponse['urgencyLevel'], 'error' | 'warning' | 'info'> = {
   critical: 'error',
@@ -151,7 +151,7 @@ export default function CoordinatorPoolingPage() {
           </CardHeader>
           <div className="cp-space-y-3">
             <input value={apiBaseUrl} onChange={(e) => setApiBaseUrl(e.target.value)}
-              placeholder="http://localhost:3000/api" className="cp-input" />
+              placeholder="http://localhost:3001/api" className="cp-input" />
             <input value={token} onChange={(e) => setToken(e.target.value)}
               placeholder="Coordinator JWT token" className="cp-input" />
             <Button size="sm" onClick={() => { window.localStorage.setItem('carepath.coordinator.token', token); setActionMessage('Token saved.') }}>
