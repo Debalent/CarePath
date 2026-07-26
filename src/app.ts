@@ -30,6 +30,8 @@ const allowedOrigins = config.isDev
   ? ['http://localhost:3000', 'http://localhost:3001']
   : (process.env.ALLOWED_ORIGINS ?? '').split(',').map(o => o.trim()).filter(Boolean);
 
+  
+
 app.use(cors({
   origin: (origin, cb) => {
     // Allow requests with no origin (mobile apps, curl, server-to-server)

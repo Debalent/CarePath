@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3000/api'
+const DEFAULT_API_BASE = "http://localhost:3001/api"
 
 export type LoginCredentials = {
   email: string
@@ -20,17 +20,31 @@ export async function loginUser(
   credentials: LoginCredentials,
 ): Promise<LoginResponse> {
   const response = await fetch(`${DEFAULT_API_BASE}/auth/login`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(credentials),
   })
 
-  const data = await response.json() as LoginResponse
+  const contentType = response.headers.get("content-type")
+
+  const data: LoginResponse | null =
+    contentType?.includes("application/json")
+      ? ((await response.json()) as LoginResponse)
+      : null
 
   if (!response.ok) {
-    throw new Error(data.message || 'Unable to log in')
+    throw new Error(
+      data?.message ??
+        `Unable to log in. The server returned status ${response.status}.`,
+    )
+  }
+
+  if (!data) {
+    throw new Error(
+      "The login server returned an unexpected response. Make sure the API is running on port 3001.",
+    )
   }
 
   return data
@@ -60,17 +74,31 @@ export async function registerUser(
   registrationData: RegistrationData,
 ): Promise<RegistrationResponse> {
   const response = await fetch(`${DEFAULT_API_BASE}/auth/register`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify(registrationData),
   })
 
-  const data = await response.json()
+  const contentType = response.headers.get("content-type")
+
+  const data: RegistrationResponse | null =
+    contentType?.includes("application/json")
+      ? ((await response.json()) as RegistrationResponse)
+      : null
 
   if (!response.ok) {
-    throw new Error(data.message || 'Unable to create the account.')
+    throw new Error(
+      data?.message ??
+        `Unable to create the account. The server returned status ${response.status}.`,
+    )
+  }
+
+  if (!data) {
+    throw new Error(
+      "The registration server returned an unexpected response. Make sure the API is running on port 3001.",
+    )
   }
 
   return data

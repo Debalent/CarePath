@@ -102,7 +102,7 @@ export default function RegisterPage() {
       <section
         style={{
           width: '100%',
-          maxWidth: 750,
+          maxWidth: 900,
           background: '#ffffff',
           borderRadius: 20,
           border: '1px solid #e2e8f0',

@@ -1084,7 +1084,7 @@ export default function Home() {
     </Link>
 
     <Link
-      href="/report-problem"
+      href="/support"
       style={{
         color: "rgba(255, 255, 255, 0.72)",
         fontSize: 14,
