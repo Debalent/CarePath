@@ -57,13 +57,13 @@ const navItems: Record<
     },
   ],
   driver: [
-    { label: "Dashboard", href: "/driver", icon: LayoutDashboard },
+    { label: "Dashboard", href: "/driver/dashboard", icon: LayoutDashboard },
     { label: "My Rides", href: "/driver/rides", icon: Car },
     { label: "Depot Routes", href: "/driver/routes", icon: MapPin },
     { label: "Availability", href: "/driver/availability", icon: Calendar },
   ],
   coordinator: [
-    { label: "Dashboard", href: "/coordinator", icon: LayoutDashboard },
+    { label: "Dashboard", href: "/coordinator/pooling", icon: LayoutDashboard },
     { label: "Pooling Hub", href: "/coordinator/pooling", icon: Route },
     { label: "Ride Requests", href: "/coordinator/rides", icon: Car },
     { label: "Patients", href: "/coordinator/patients", icon: User },
@@ -72,20 +72,20 @@ const navItems: Record<
     { label: "Messages", href: "/coordinator/messages", icon: MessageSquare },
   ],
   admin: [
-    { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    { label: "Dashboard", href: "/admin/credits", icon: LayoutDashboard },
     { label: "Credits", href: "/admin/credits", icon: CreditCard },
     { label: "Cost & ROI", href: "/admin/roi", icon: BarChart3 },
     { label: "Partners", href: "/admin/partners", icon: User },
   ],
   advocate: [
-    { label: "Dashboard", href: "/advocate", icon: LayoutDashboard },
+    { label: "Dashboard", href: "/advocate/dashboard", icon: LayoutDashboard },
     { label: "Rides", href: "/advocate/rides", icon: Car },
     { label: "Patients", href: "/advocate/patients", icon: User },
     { label: "Messages", href: "/advocate/messages", icon: MessageSquare },
     { label: "My Profile", href: "/advocate/profile", icon: Heart },
   ],
   partner: [
-    { label: "Dashboard", href: "/partner", icon: LayoutDashboard },
+    { label: "Dashboard", href: "/partner/dashboard", icon: LayoutDashboard },
     { label: "Credits", href: "/partner/credits", icon: CreditCard },
     { label: "Rides", href: "/partner/rides", icon: Car },
     { label: "Messages", href: "/partner/messages", icon: MessageSquare },
@@ -197,7 +197,8 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
           </p>
         ) : (
           items.map(({ label, href, icon: Icon }) => {
-            const active = pathname === href;
+            // Active when current path starts with this nav item's href
+            const active = pathname.startsWith(href);
             return (
               <Link
                 key={href}
