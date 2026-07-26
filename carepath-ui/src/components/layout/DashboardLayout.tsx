@@ -56,37 +56,37 @@ const bottomNavItems: Record<Role, { label: string; href: string; icon: React.El
   },
 ],
   driver: [
-    { label: 'Home',    href: '/driver',              icon: LayoutDashboard },
-    { label: 'Rides',   href: '/driver/rides',        icon: Car },
-    { label: 'Routes',  href: '/driver/routes',       icon: MapPin },
-    { label: 'Hours',   href: '/driver/availability', icon: Calendar },
+    { label: 'Dashboard', href: '/driver/dashboard',  icon: LayoutDashboard },
+    { label: 'My Rides',  href: '/driver/rides',      icon: Car },
+    { label: 'Routes',    href: '/driver/routes',     icon: MapPin },
+    { label: 'Hours',     href: '/driver/availability', icon: Calendar },
   ],
   coordinator: [
-    { label: 'Home',    href: '/coordinator',         icon: LayoutDashboard },
-    { label: 'Pooling', href: '/coordinator/pooling', icon: Route },
-    { label: 'Rides',   href: '/coordinator/rides',   icon: Car },
-    { label: 'Patients',href: '/coordinator/patients',icon: Users },
-    { label: 'Messages',href: '/coordinator/messages',icon: MessageSquare },
+    { label: 'Dashboard', href: '/coordinator/pooling', icon: LayoutDashboard },
+    { label: 'Pooling',   href: '/coordinator/pooling', icon: Route },
+    { label: 'Rides',     href: '/coordinator/rides',   icon: Car },
+    { label: 'Patients',  href: '/coordinator/patients',icon: Users },
+    { label: 'Messages',  href: '/coordinator/messages',icon: MessageSquare },
   ],
   admin: [
-    { label: 'Home',    href: '/admin',          icon: LayoutDashboard },
-    { label: 'Credits', href: '/admin/credits',  icon: CreditCard },
-    { label: 'ROI',     href: '/admin/roi',      icon: BarChart3 },
-    { label: 'Partners',href: '/admin/partners', icon: Users },
+    { label: 'Dashboard', href: '/admin/credits', icon: LayoutDashboard },
+    { label: 'Credits',   href: '/admin/credits', icon: CreditCard },
+    { label: 'ROI',       href: '/admin/roi',     icon: BarChart3 },
+    { label: 'Partners',  href: '/admin/partners',icon: Users },
   ],
   advocate: [
-    { label: 'Home',     href: '/advocate',              icon: LayoutDashboard },
-    { label: 'Rides',    href: '/advocate/rides',        icon: Car },
-    { label: 'Patients', href: '/advocate/patients',     icon: Users },
-    { label: 'Messages', href: '/advocate/messages',     icon: MessageSquare },
-    { label: 'Profile',  href: '/advocate/profile',      icon: User },
+    { label: 'Dashboard', href: '/advocate/dashboard',  icon: LayoutDashboard },
+    { label: 'Rides',     href: '/advocate/rides',      icon: Car },
+    { label: 'Patients',  href: '/advocate/patients',   icon: Users },
+    { label: 'Messages',  href: '/advocate/messages',   icon: MessageSquare },
+    { label: 'Profile',   href: '/advocate/profile',    icon: User },
   ],
   partner: [
-    { label: 'Home',     href: '/partner',               icon: LayoutDashboard },
-    { label: 'Credits',  href: '/partner/credits',       icon: CreditCard },
-    { label: 'Rides',    href: '/partner/rides',         icon: Car },
-    { label: 'Messages', href: '/partner/messages',      icon: MessageSquare },
-    { label: 'Profile',  href: '/partner/profile',       icon: User },
+    { label: 'Dashboard', href: '/partner/dashboard', icon: LayoutDashboard },
+    { label: 'Credits',   href: '/partner/credits',   icon: CreditCard },
+    { label: 'Rides',     href: '/partner/rides',     icon: Car },
+    { label: 'Messages',  href: '/partner/messages',  icon: MessageSquare },
+    { label: 'Profile',   href: '/partner/profile',   icon: User },
   ],
 }
 
@@ -141,7 +141,8 @@ export function DashboardLayout({ children, role, title, subtitle, userName }: D
       {/* Mobile bottom tab nav */}
       <nav className="cp-bottom-nav">
         {tabs.map(({ label, href, icon: Icon }) => {
-          const active = pathname === href || (href !== `/${role}` && pathname.startsWith(href))
+          // Active when current path starts with this nav item's href
+          const active = pathname.startsWith(href);
           return (
             <Link
               key={href}
