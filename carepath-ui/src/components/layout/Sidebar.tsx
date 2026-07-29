@@ -132,7 +132,7 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
 
   return (
     <aside className="cp-sidebar">
-      {/* Logo - navigate to role-specific dashboard */}
+      {/* Logo */}
       <Link href={role ? roleHome[role] : "/"} style={{ textDecoration: 'none', padding: "20px 24px", borderBottom: "1px solid #e2e8f0", display: "block" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <Image
@@ -143,21 +143,9 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
             style={{ borderRadius: 10, objectFit: "contain" }}
           />
           <div>
-            <p
-              style={{
-                fontWeight: 800,
-                fontSize: 15,
-                color: "#0f172a",
-                lineHeight: 1,
-              }}
-            >
-               CarePath
-             </p>
-             <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 3 }}>
-               {role ? roleLabels[role] : 'Guest'}
-             </p>
+            <p style={{ fontWeight: 800, fontSize: 15, color: "#0f172a", lineHeight: 1 }}>CarePath</p>
+            <p style={{ fontSize: 11, color: "#94a3b8", marginTop: 3 }}>{role ? roleLabels[role] : 'Guest'}</p>
           </div>
-        </div>
       </Link>
 
       {/* Role pill */}
@@ -197,7 +185,6 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
           </p>
         ) : (
           items.map(({ label, href, icon: Icon }) => {
-            // Active when current path starts with this nav item's href
             const active = pathname.startsWith(href);
             return (
               <Link
@@ -228,54 +215,38 @@ export function Sidebar({ role, userName = "User" }: SidebarProps) {
               transition: "background 0.15s",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "#f8fafc")}
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = "transparent")
-            }
+            onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
           >
-          <div
-            style={{
-              width: 34,
-              height: 34,
-              borderRadius: "50%",
-              flexShrink: 0,
-              background: accent + "20",
-              color: accent,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontWeight: 700,
-              fontSize: 14,
-            }}
-          >
-            {userName.charAt(0).toUpperCase()}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <p
+            <div
               style={{
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#0f172a",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                flexShrink: 0,
+                background: accent + "20",
+                color: accent,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 700,
+                fontSize: 14,
               }}
             >
-              {userName}
-            </p>
-            <p
-              style={{
-                fontSize: 11,
-                color: "#94a3b8",
-                textTransform: "capitalize",
-              }}
-            >
-              {role}
-            </p>
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {userName}
+              </p>
+              <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "capitalize" }}>
+                {role}
+              </p>
+            </div>
+            <LogOut size={15} style={{ color: "#94a3b8", flexShrink: 0 }} />
           </div>
-          <LogOut size={15} style={{ color: "#94a3b8", flexShrink: 0 }} />
-        </div>
-      </div>
       )}
     </aside>
   );
 }
+</parameter>
+</create_file>

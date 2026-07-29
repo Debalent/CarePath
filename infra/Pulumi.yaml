@@ -1,3 +1,114 @@
-name: carepath
+name: carepath-frontend
+summary: CarePath frontend hosting on S3 with CloudFront CDN
 runtime: nodejs
-description: CarePath production infrastructure on AWS
+
+# We need aws, nodejs, and random packages
+variables:
+  appName: "carepath"
+  domain: "app.carepath.dev"
+  bucketName: "carepath-frontend-static-${pulumi.initialism('aws.account.id')}"
+
+resources:
+  # S3 bucket for static website hosting
+  bucket:
+    type: aws:s3:BucketV2
+    properties:
+      bucket: ${self.variables.bucketName}
+      website:
+        indexDocument: "index.html"
+        errorDocument: "index.html"
+      # Public access block for security
+      publicAccessBlock:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      # Versioning for content control
+      versioningConfiguration:
+        Status: "Enabled"
+      # Server-side encryption
+      serverSideEncryptionConfiguration:
+        rules:
+          - applyServerSideEncryptionByDefault:
+              sseAlgorithm: "AES256"
+
+  # CloudFront distribution for CDN
+  cloudfrontDistribution:
+    type: aws:cloudfront:Distribution
+    properties:
+      distributionConfig:
+        comment: "CarePath frontend CDN"
+        defaultCacheBehavior:
+          targetOriginId: ${self.variables.bucketName}
+          viewerProtocolPolicy: "redirect-to-https"
+          allowedMethods: ["GET", "HEAD", "OPTIONS", "PUT", "POST", "DELETE", "PATCH"]
+          cachedMethods: ["GET", "HEAD", "OPTIONS"]
+          forwardCookies: "all"
+          forwardHeaders:
+            headers:
+              - "Authorization"
+              - "X-Forwarded-For"
+              - "X-Real-IP"
+          forwardUris: "none"
+          minTTL: 0
+          defaultTTL: 300
+          maxTTL: 31536000
+          compress: true
+        enabled: true
+        httpVersion: "HTTP2"
+        origins:
+          - domainName: ${self.variables.bucketName}.s3.website.us-east-1.amazonaws.com
+            id: ${self.variables.bucketName}
+            customOriginConfig:
+              httpPort: 80
+              httpsPort: 443
+              originProtocolPolicy: "https-only"
+        priceClass: "PriceClass_100"
+        restrictions:
+          geoRestrictions:
+            restrictionType: "none"
+        viewerCertificate:
+          cloudfrontDefaultCertificate: true
+          minimumProtocolVersion: "TLSv1.2_2021"
+
+  # SSL certificate for CloudFront
+  sslCertificate:
+    type: aws:acm:Certificate
+    properties:
+      domainName: ${self.variables.domain}
+      subjectAlternativeNames:
+        - www.${self.variables.domain}
+      validationMethod: "DNS"
+
+  # Route53 records
+  rootRecord:
+    type: aws:route53:Record
+    properties:
+      zoneId: "Z3MWS2NY3GXDDB"  # placeholder - needs to be updated with actual zone ID
+      name: ${self.variables.domain}
+      type: A
+      aliases:
+        target: ${self.outputs.cloudfrontDistribution.domainName}
+        hostedZoneId: ${self.outputs.cloudfrontDistribution.distributionConfig.outputs}
+
+  wwwRecord:
+    type: aws:route53:Record
+    properties:
+      zoneId: "Z3MWS2NY3GXDDB"  # placeholder - needs to be updated with actual zone ID
+      name: "www.${self.variables.domain}"
+      type: A
+      aliases:
+        target: ${self.outputs.cloudfrontDistribution.domainName}
+        hostedZoneId: ${self.outputs.cloudfrontDistribution.distributionConfig.outputs}
+
+# Outputs for CI/CD
+transports:
+  bucketName: ${self.variables.bucketName}
+  distributionDomain: ${self.outputs.cloudfrontDistribution.domainName}
+  cloudfrontId: ${self.outputs.cloudfrontDistribution.id}
+
+# RBAC for CI/CD roles
+outputs:
+  bucketArn: ${self.resources.bucket.arn}
+  distributionDomain: ${self.outputs.cloudfrontDistribution.domainName}
+  distributionId: ${self.outputs.cloudfrontDistribution.id}

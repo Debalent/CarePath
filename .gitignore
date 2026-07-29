@@ -7,5 +7,9 @@ infra/node_modules/
 infra/bin/
 .neon
 .agents/
+.blackbox/
+.kilo/
+.next/
 carepath-ui/out/
 carepath-ui/*.zip
+carepath-ui/.next/

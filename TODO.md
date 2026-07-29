@@ -1,40 +1,15 @@
-# CarePath Role-Specific Portals - Implementation TODO
+# CarePath Deployment Migration & Driver Dashboard Enhancement
 
-## Step 1 ✅ - Push current changes to GitHub
-- [x] Commit and push DashboardLayout/Sidebar changes to staging
+## Part 1: Migrate from Amplify to S3
+- [ ] 1a. Update Pulumi infra (`infra/index.ts`) - Add S3 bucket + CloudFront for frontend hosting
+- [ ] 1b. Create S3 deploy GitHub workflow (`.github/workflows/deploy-s3-ui.yml`)
+- [ ] 1c. Remove/archive Amplify files (`amplify.yml`, `deploy-frontend.js`, `upload-url.txt`, `deploy.zip`, `upload-deploy.js`)
+- [ ] 1d. Remove old GitHub Pages workflow (`deploy-gh-pages-ui.yml`)
 
-## Step 2 - Fix Hamburger Menu Operational
-- [x] Already exists in Topbar.tsx and DashboardLayout
-- [ ] Verify menu works - it's already implemented with `sidebarOpen` state
+## Part 2: Enhanced Driver Dashboard
+- [ ] 2a. Rewrite `/driver/dashboard/page.tsx` with enhanced UI, live API integration, earnings, ride history
+- [ ] 2b. Test build to ensure static export works
 
-## Step 3 - Backend: Add ADVOCATE/PARTNER to DashboardLayout Type
-- [ ] Add `advocate` and `partner` to Role type in DashboardLayout.tsx
-- [ ] Add `advocate` and `partner` to Role type in Sidebar.tsx
-
-## Step 4 - Advocate Portal Pages
-- [ ] Create `(dashboard)/advocate/layout.tsx`
-- [ ] Create `(dashboard)/advocate/dashboard/page.tsx`
-- [ ] Create `(dashboard)/advocate/rides/page.tsx`
-- [ ] Create `(dashboard)/advocate/patients/page.tsx`
-- [ ] Create `(dashboard)/advocate/messages/page.tsx`
-- [ ] Create `(dashboard)/advocate/profile/page.tsx`
-
-## Step 5 - Partner Portal Pages
-- [ ] Create `(dashboard)/partner/layout.tsx`
-- [ ] Create `(dashboard)/partner/dashboard/page.tsx`
-- [ ] Create `(dashboard)/partner/credits/page.tsx`
-- [ ] Create `(dashboard)/partner/rides/page.tsx`
-- [ ] Create `(dashboard)/partner/messages/page.tsx`
-- [ ] Create `(dashboard)/partner/profile/page.tsx`
-
-## Step 6 - Communication Portal (Shared Component)
-- [ ] Create shared `RideMessageThread` component
-- [ ] Add `/messages` pages for all roles using the shared component
-
-## Step 7 - Login/Auth Improvements
-- [ ] Update login page to use AuthProvider context
-- [ ] Add role-specific redirects for ADVOCATE and PARTNER
-
-## Step 8 - Push all changes to GitHub
-- [ ] Commit and push all changes
+## Part 3: Push to GitHub
+- [ ] 3a. Commit and push all changes to GitHub
 

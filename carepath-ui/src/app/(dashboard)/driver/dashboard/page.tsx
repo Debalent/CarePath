@@ -1,306 +1,438 @@
 'use client'
 
-import { FormEvent, useEffect, useState } from 'react'
-import { AlertCircle, Car, CheckCircle2, MapPin, ShieldCheck, ToggleLeft, ToggleRight } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import Link from 'next/link'
+import {
+  Car,
+  CheckCircle2,
+  Clock,
+  DollarSign,
+  MapPin,
+  ShieldCheck,
+  ToggleLeft,
+  ToggleRight,
+  Route,
+  Calendar,
+  Users,
+  BarChart3,
+  TrendingUp,
+} from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
+import { StatCard } from '@/components/ui/StatCard'
 import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card'
-import { StatCard } from '@/components/ui/StatCard'
+import { useAuth } from '@/lib/auth'
+import { getApi } from '@/lib/api'
 
-const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3001/api'
+// ── Types ──────────────────────────────────────────────────────────────────
 
-type SubmitMode = 'demo' | 'live'
-
-type DriverProfileForm = {
+type DriverProfile = {
+  id: string
+  userId: string
   county: string
   state: string
   vehicleCapacity: number
-  isWheelchairAccessible: boolean
+  isAvailableNow: boolean
   isInFallbackPool: boolean
+  isWheelchairAccessible: boolean
   maxMilesOneWay: number
-  preferredDays: string
-  communityNotes: string
+  reliabilityScore: number
+  ridesCompleted: number
   providerType: string
-  acceptsCreditCard: boolean
-  acceptsMedicaid: boolean
-  acceptsGrantPay: boolean
+  preferredDays: string | null
+  communityNotes: string | null
+  user: {
+    firstName: string
+    lastName: string
+    email: string
+    phone: string
+  }
 }
 
-const initialForm: DriverProfileForm = {
-  county: 'Washington',
-  state: 'AR',
-  vehicleCapacity: 4,
-  isWheelchairAccessible: false,
-  isInFallbackPool: true,
-  maxMilesOneWay: 50,
-  preferredDays: 'Mon,Tue,Wed,Thu,Fri',
-  communityNotes: '',
-  providerType: 'VOLUNTEER_DRIVER',
-  acceptsCreditCard: false,
-  acceptsMedicaid: false,
-  acceptsGrantPay: true,
+type DashboardRide = {
+  id: string
+  status: string
+  pickupTime: string
+  pickupAddress: string
+  urgencyLevel: string
+  appointment: {
+    appointmentType: string
+    clinicName: string
+    clinicCity: string
+    clinicState: string
+    estimatedMiles: number
+    appointmentDate: string
+  }
+  patient?: {
+    user: { firstName: string; lastName: string; phone: string }
+    county: string
+    state: string
+  }
 }
+
+// ── Demo data ──────────────────────────────────────────────────────────────
+
+const DEMO_PROFILE: DriverProfile = {
+  id: 'demo-driver-1',
+  userId: 'demo-user-1',
+  county: 'Pulaski',
+  state: 'AR',
+  vehicleCapacity: 3,
+  isAvailableNow: true,
+  isInFallbackPool: true,
+  isWheelchairAccessible: false,
+  maxMilesOneWay: 60,
+  reliabilityScore: 4.8,
+  ridesCompleted: 46,
+  providerType: 'VOLUNTEER_DRIVER',
+  preferredDays: 'Mon,Tue,Wed,Thu,Fri',
+  communityNotes: 'Church volunteer and wheelchair route support.',
+  user: {
+    firstName: 'Samuel',
+    lastName: 'R',
+    email: 'samuel@example.com',
+    phone: '501-555-0133',
+  },
+}
+
+const DEMO_UPCOMING: DashboardRide[] = [
+  {
+    id: 'demo-ride-1',
+    status: 'CONFIRMED',
+    pickupTime: new Date(Date.now() + 3 * 60 * 60 * 1000).toISOString(),
+    pickupAddress: '412 Oak St, Newport, AR 72112',
+    urgencyLevel: 'HIGH',
+    appointment: {
+      appointmentType: 'DIALYSIS',
+      clinicName: 'Baptist Health Dialysis',
+      clinicCity: 'Little Rock',
+      clinicState: 'AR',
+      estimatedMiles: 47,
+      appointmentDate: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+    },
+    patient: {
+      user: { firstName: 'Churchie', lastName: 'B', phone: '501-555-0182' },
+      county: 'Pulaski',
+      state: 'AR',
+    },
+  },
+  {
+    id: 'demo-ride-2',
+    status: 'MATCHED',
+    pickupTime: new Date(Date.now() + 26 * 60 * 60 * 1000).toISOString(),
+    pickupAddress: '88 Maple Ave, Springdale, AR 72764',
+    urgencyLevel: 'NORMAL',
+    appointment: {
+      appointmentType: 'CARDIOLOGY',
+      clinicName: 'Arkansas Heart Hospital',
+      clinicCity: 'Little Rock',
+      clinicState: 'AR',
+      estimatedMiles: 35,
+      appointmentDate: new Date(Date.now() + 27 * 60 * 60 * 1000).toISOString(),
+    },
+    patient: {
+      user: { firstName: 'Alyssa', lastName: 'M', phone: '479-555-0144' },
+      county: 'Washington',
+      state: 'AR',
+    },
+  },
+]
+
+const DEMO_RECENT = [
+  { id: 'hist-1', patient: 'Kevin D', clinic: 'VA Medical Center', miles: 22, date: 'Yesterday', status: 'COMPLETED' },
+  { id: 'hist-2', patient: 'Michelle W', clinic: 'Baptist Health', miles: 18, date: '2 days ago', status: 'COMPLETED' },
+  { id: 'hist-3', patient: 'Elijah R', clinic: 'AR Heart Hospital', miles: 31, date: '3 days ago', status: 'COMPLETED' },
+]
+
+function toDisplayDate(iso: string): string {
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  return d.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+}
+
+function statusVariant(s: string): 'success' | 'warning' | 'error' | 'info' | 'neutral' {
+  if (s === 'COMPLETED') return 'success'
+  if (s === 'CONFIRMED' || s === 'MATCHED') return 'info'
+  if (s === 'PENDING') return 'warning'
+  if (s === 'CANCELLED') return 'neutral'
+  if (s === 'FALLBACK_NEEDED' || s === 'IN_PROGRESS') return 'error'
+  return 'neutral'
+}
+
+// ── Page ───────────────────────────────────────────────────────────────────
 
 export default function DriverDashboardPage() {
-  const [mode, setMode] = useState<SubmitMode>('demo')
-  const [apiBaseUrl, setApiBaseUrl] = useState(DEFAULT_API_BASE)
-  const [token, setToken] = useState('')
-  const [form, setForm] = useState<DriverProfileForm>(initialForm)
-  const [isAvailableNow, setIsAvailableNow] = useState(false)
-  const [ridesCompleted, setRidesCompleted] = useState(0)
-  const [reliabilityScore, setReliabilityScore] = useState(5.0)
-  const [result, setResult] = useState<string | null>(null)
+  const { user, role, token, isLoading: authLoading } = useAuth()
+  const [mode, setMode] = useState<'demo' | 'live'>('demo')
+
+  // Profile state
+  const [profile, setProfile] = useState<DriverProfile>(DEMO_PROFILE)
+  const [profileLoading, setProfileLoading] = useState(false)
+  const [togglingAvailability, setTogglingAvailability] = useState(false)
+
+  // Rides state
+  const [upcoming, setUpcoming] = useState<DashboardRide[]>(DEMO_UPCOMING)
+  const [ridesLoading, setRidesLoading] = useState(false)
+
+  // Error/message
   const [error, setError] = useState<string | null>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [msg, setMsg] = useState<string | null>(null)
 
-  const set = (patch: Partial<DriverProfileForm>) => setForm((prev) => ({ ...prev, ...patch }))
+  const api = getApi(role ?? 'DRIVER')
 
-  const authHeaders = {
-    'Content-Type': 'application/json',
-    ...(token.trim() ? { Authorization: `Bearer ${token.trim()}` } : {}),
-  }
+  // ── Load live data ────────────────────────────────────────────────────
+  const loadProfile = useCallback(async () => {
+    if (mode === 'demo') return
+    setProfileLoading(true)
+    setError(null)
+    try {
+      const data = await api.get<DriverProfile>('/drivers/profile')
+      setProfile(data)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load profile')
+      setProfile(DEMO_PROFILE)
+    } finally {
+      setProfileLoading(false)
+    }
+  }, [mode, api])
+
+  const loadRides = useCallback(async () => {
+    if (mode === 'demo') {
+      setUpcoming(DEMO_UPCOMING)
+      return
+    }
+    setRidesLoading(true)
+    setError(null)
+    try {
+      const data = await api.get<DashboardRide[]>('/rides/my-driver-rides')
+      const now = new Date()
+      const active = data.filter(r =>
+        ['MATCHED', 'CONFIRMED', 'IN_PROGRESS'].includes(r.status) &&
+        new Date(r.pickupTime) > now
+      )
+      setUpcoming(active.slice(0, 5))
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load rides')
+      setUpcoming(DEMO_UPCOMING)
+    } finally {
+      setRidesLoading(false)
+    }
+  }, [mode, api])
 
   useEffect(() => {
-    const saved = window.localStorage.getItem('carepath.driver.token')
-    if (saved) setToken(saved)
-  }, [])
+    if (mode === 'live' && token) {
+      loadProfile()
+      loadRides()
+    } else if (mode === 'demo') {
+      setProfile(DEMO_PROFILE)
+      setUpcoming(DEMO_UPCOMING)
+    }
+  }, [mode, token, loadProfile, loadRides])
 
-  const loadProfile = async (): Promise<void> => {
-    if (mode === 'demo') { setResult('Demo mode: showing default profile.'); return }
-    if (!token.trim()) { setError('Driver JWT token required.'); return }
+  // ── Availability toggle ───────────────────────────────────────────────
+  const toggleAvailability = async () => {
+    const next = !profile.isAvailableNow
+    if (mode === 'demo') {
+      setProfile(prev => ({ ...prev, isAvailableNow: next }))
+      setMsg(`Demo: availability set to ${next ? 'available' : 'unavailable'}.`)
+      return
+    }
+    setTogglingAvailability(true)
+    setError(null)
     try {
-      const res = await fetch(`${apiBaseUrl}/drivers/profile`, { headers: authHeaders })
-      if (!res.ok) throw new Error(`Failed to load profile (${res.status}).`)
-      const data = await res.json()
-      setForm({
-        county: data.county ?? '',
-        state: data.state ?? '',
-        vehicleCapacity: data.vehicleCapacity ?? 4,
-        isWheelchairAccessible: data.isWheelchairAccessible ?? false,
-        isInFallbackPool: data.isInFallbackPool ?? false,
-        maxMilesOneWay: data.maxMilesOneWay ?? 50,
-        preferredDays: data.preferredDays ?? '',
-        communityNotes: data.communityNotes ?? '',
-        providerType: data.providerType ?? 'VOLUNTEER_DRIVER',
-        acceptsCreditCard: data.acceptsCreditCard ?? false,
-        acceptsMedicaid: data.acceptsMedicaid ?? false,
-        acceptsGrantPay: data.acceptsGrantPay ?? true,
-      })
-      setIsAvailableNow(data.isAvailableNow ?? false)
-      setRidesCompleted(data.ridesCompleted ?? 0)
-      setReliabilityScore(data.reliabilityScore ?? 5.0)
-      setResult('Profile loaded.')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load profile.')
+      await api.patch('/drivers/availability', { isAvailableNow: next })
+      setProfile(prev => ({ ...prev, isAvailableNow: next }))
+      setMsg(`You are now ${next ? 'available' : 'unavailable'} for rides.`)
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to update availability')
+    } finally {
+      setTogglingAvailability(false)
     }
   }
 
-  const saveProfile = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault()
-    setError(null); setResult(null)
-    if (mode === 'demo') { setResult('Demo: profile saved locally.'); return }
-    if (!token.trim()) { setError('Driver JWT token required.'); return }
-    setIsSubmitting(true)
-    try {
-      const res = await fetch(`${apiBaseUrl}/drivers/profile`, {
-        method: 'PUT',
-        headers: authHeaders,
-        body: JSON.stringify({ ...form, isAvailableNow }),
-      })
-      if (!res.ok) throw new Error(`Save failed (${res.status}).`)
-      setResult('Profile saved successfully.')
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to save profile.')
-    } finally { setIsSubmitting(false) }
-  }
-
-  const toggleAvailability = async (): Promise<void> => {
-    const next = !isAvailableNow
-    if (mode === 'demo') { setIsAvailableNow(next); setResult(`Demo: availability set to ${next ? 'available' : 'unavailable'}.`); return }
-    if (!token.trim()) { setError('Driver JWT token required.'); return }
-    try {
-      const res = await fetch(`${apiBaseUrl}/drivers/availability`, {
-        method: 'PATCH',
-        headers: authHeaders,
-        body: JSON.stringify({ isAvailableNow: next }),
-      })
-      if (!res.ok) throw new Error(`Availability update failed (${res.status}).`)
-      setIsAvailableNow(next)
-      setResult(`You are now ${next ? 'available' : 'unavailable'} for rides.`)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update availability.')
-    }
-  }
+  // ── Derived stats ─────────────────────────────────────────────────────
+  const activeRidesCount = upcoming.filter(r =>
+    ['MATCHED', 'CONFIRMED', 'IN_PROGRESS'].includes(r.status)
+  ).length
+  const totalMilesThisWeek = upcoming.reduce((s, r) => s + r.appointment.estimatedMiles, 0)
+  const weeklyEarnings = profile.ridesCompleted * 15 // rough demo calc
 
   return (
-    <DashboardLayout role="driver" title="Driver Dashboard" subtitle="Manage your profile and availability" userName="Driver">
-      <div className="cp-space-y-4">
+    <DashboardLayout
+      role="driver"
+      title="Driver Dashboard"
+      subtitle="Manage your driving activity, rides, and availability"
+      userName={profile?.user?.firstName ?? 'Driver'}
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        {/* ── Mode toggle ─────────────────────────────────────────────── */}
+        {(authLoading || !token) && mode === 'live' && (
+          <Card>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+              <Badge variant="warning">Demo mode</Badge>
+              <p style={{ fontSize: 14, color: '#64748b', flex: 1 }}>
+                Log in to connect live data. Showing demo data.
+              </p>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <Button size="sm" variant={mode === 'demo' ? 'primary' : 'secondary'} onClick={() => setMode('demo')}>
+                  Demo
+                </Button>
+                <Button size="sm" variant={mode === 'live' ? 'primary' : 'secondary'} onClick={() => setMode('live')}>
+                  Live
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
 
-        {/* Hero */}
-        <section style={{
-          borderRadius: 16, padding: '20px',
-          background: 'linear-gradient(135deg, #0c6bc2, #052b56)',
-          color: '#fff',
-        }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#93c5fd', marginBottom: 6 }}>
-            Driver portal
+        {/* ── Welcome banner ──────────────────────────────────────────── */}
+        <section
+          style={{
+            borderRadius: 16,
+            padding: 30,
+            background: 'linear-gradient(135deg, #0c6bc2 0%, #052b56 100%)',
+            boxShadow: '0 10px 24px rgba(12, 107, 194, 0.18)',
+          }}
+        >
+          <p style={{
+            margin: 0, marginBottom: 8, color: '#93c5fd',
+            fontSize: 12, fontWeight: 800, textTransform: 'uppercase',
+            letterSpacing: '0.18em',
+          }}>
+            Driver Portal
           </p>
-          <h2 style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-            Set your availability and vehicle profile for dispatch matching.
+          <h2 style={{ margin: 0, color: '#ffffff', fontSize: 26, fontWeight: 800, lineHeight: 1.35 }}>
+            Welcome back, {profile?.user?.firstName ?? 'Driver'}
           </h2>
+          <p style={{ maxWidth: 700, marginTop: 10, marginBottom: 0, color: '#93c5fd', fontSize: 15, lineHeight: 1.6 }}>
+            View your upcoming rides, manage availability, and track your impact on patient care.
+          </p>
         </section>
 
-        {/* Mode + token */}
-        <Card>
-          <div className="cp-space-y-3">
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-              <Badge variant={mode === 'live' ? 'success' : 'warning'}>{mode === 'live' ? 'Live' : 'Demo'}</Badge>
-              <Button size="sm" variant="secondary" onClick={() => setMode('demo')}>Demo</Button>
-              <Button size="sm" onClick={() => setMode('live')}>Live</Button>
-            </div>
-            <input value={apiBaseUrl} onChange={(e) => setApiBaseUrl(e.target.value)}
-              placeholder="API base URL" className="cp-input" />
-            <input value={token} onChange={(e) => setToken(e.target.value)}
-              placeholder="Driver JWT token" className="cp-input" />
-            <div style={{ display: 'flex', gap: 8 }}>
-              <Button size="sm" variant="secondary" onClick={() => {
-                const s = window.localStorage.getItem('carepath.driver.token')
-                if (s) { setToken(s); setResult('Token loaded.') }
-              }}>Load token</Button>
-              <Button size="sm" onClick={() => { window.localStorage.setItem('carepath.driver.token', token); setResult('Token saved.') }}>
-                Save token
-              </Button>
-              <Button size="sm" variant="secondary" onClick={loadProfile}>Load profile</Button>
-            </div>
-          </div>
-        </Card>
-
-        {result && <div className="cp-alert cp-alert-success"><CheckCircle2 size={16} /> {result}</div>}
-        {error  && <div className="cp-alert cp-alert-error"><AlertCircle size={16} /> {error}</div>}
-
-        {/* Stats */}
-        <div className="cp-grid-3">
-          <StatCard label="Rides completed" value={ridesCompleted} icon={Car} color="blue" />
-          <StatCard label="Reliability score" value={reliabilityScore.toFixed(1)} icon={ShieldCheck} color="teal" />
-          <StatCard label="Max miles (one way)" value={form.maxMilesOneWay} icon={MapPin} color="purple" />
+        {/* ── Stats row ───────────────────────────────────────────────── */}
+        <div className="cp-grid-4" style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gap: 16,
+        }}>
+          <StatCard
+            label="Rides Completed"
+            value={profile.ridesCompleted}
+            icon={CheckCircle2}
+            color="blue"
+          />
+          <StatCard
+            label="Reliability"
+            value={profile.reliabilityScore.toFixed(1)}
+            icon={ShieldCheck}
+            color="teal"
+          />
+          <StatCard
+            label="Active Rides"
+            value={activeRidesCount}
+            icon={Car}
+            color="purple"
+          />
+          <StatCard
+            label="Est. Earnings"
+            value={`$${weeklyEarnings}`}
+            icon={DollarSign}
+            color="amber"
+          />
         </div>
 
-        {/* Availability toggle */}
+        {/* ── Availability card ───────────────────────────────────────── */}
         <Card>
           <CardHeader>
             <CardTitle>Availability</CardTitle>
           </CardHeader>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
             <div>
-              <p style={{ fontSize: 14, fontWeight: 600, color: '#0f172a' }}>
-                {isAvailableNow ? 'You are available for rides' : 'You are not available'}
-              </p>
-              <p style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>
-                Toggle to let coordinators know you can take a ride now.
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                <span style={{
+                  width: 10, height: 10, borderRadius: '50%',
+                  background: profile.isAvailableNow ? '#1b9c86' : '#94a3b8',
+                  display: 'inline-block',
+                }} />
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                  {profile.isAvailableNow ? 'Available for rides' : 'Not available'}
+                </p>
+              </div>
+              <p style={{ fontSize: 13, color: '#64748b', margin: 0 }}>
+                {profile.preferredDays
+                  ? `Preferred days: ${profile.preferredDays}`
+                  : 'No preferred days set'}
+                {profile.maxMilesOneWay ? ` · Max ${profile.maxMilesOneWay} miles one way` : ''}
               </p>
             </div>
-            <button onClick={toggleAvailability} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-              {isAvailableNow
-                ? <ToggleRight size={40} color="#1b9c86" />
-                : <ToggleLeft size={40} color="#94a3b8" />}
-            </button>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <Badge variant={profile.isAvailableNow ? 'success' : 'neutral'}>
+                {profile.isAvailableNow ? 'Online' : 'Offline'}
+              </Badge>
+              <button
+                onClick={toggleAvailability}
+                disabled={togglingAvailability || (mode === 'live' && !token)}
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                  opacity: (togglingAvailability || (mode === 'live' && !token)) ? 0.5 : 1,
+                }}
+                title={profile.isAvailableNow ? 'Go offline' : 'Go online'}
+              >
+                {profile.isAvailableNow
+                  ? <ToggleRight size={44} color="#1b9c86" />
+                  : <ToggleLeft size={44} color="#94a3b8" />
+                }
+              </button>
+              <Link
+                href="/driver/availability"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '8px 16px', borderRadius: 10, fontSize: 13, fontWeight: 600,
+                  background: '#f8fafc', color: '#0c6bc2', border: '1px solid #e2e8f0',
+                  textDecoration: 'none', minHeight: 36,
+                }}
+              >
+                <Calendar size={15} />
+                Schedule
+              </Link>
+            </div>
           </div>
         </Card>
 
-        {/* Profile form */}
+        {/* ── Messages ────────────────────────────────────────────────── */}
+        {msg && (
+          <div style={{
+            borderRadius: 10, border: '1px solid #bbf7d0', background: '#f0fdf4',
+            color: '#166534', padding: '11px 14px', fontSize: 14,
+            display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <CheckCircle2 size={16} />
+            {msg}
+            <button onClick={() => setMsg(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#166534', fontSize: 16 }}>×</button>
+          </div>
+        )}
+        {error && (
+          <div style={{
+            borderRadius: 10, border: '1px solid #fecaca', background: '#fef2f2',
+            color: '#b91c1c', padding: '11px 14px', fontSize: 14,
+            display: 'flex', alignItems: 'center', gap: 8,
+          }}>
+            <span style={{ fontWeight: 700 }}>Error:</span> {error}
+            <button onClick={() => setError(null)} style={{ marginLeft: 'auto', background: 'none', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: 16 }}>×</button>
+          </div>
+        )}
+
+        {/* ── Upcoming rides ──────────────────────────────────────────── */}
         <Card>
           <CardHeader>
-            <CardTitle>Vehicle &amp; driver profile</CardTitle>
-          </CardHeader>
-          <form className="cp-space-y-4" onSubmit={saveProfile}>
-
-            <div className="cp-grid-2">
-              <div>
-                <label className="cp-label">County</label>
-                <input value={form.county} onChange={(e) => set({ county: e.target.value })} className="cp-input" />
-              </div>
-              <div>
-                <label className="cp-label">State</label>
-                <input value={form.state} onChange={(e) => set({ state: e.target.value })} className="cp-input" />
-              </div>
-            </div>
-
-            <div className="cp-grid-2">
-              <div>
-                <label className="cp-label">Vehicle capacity (passengers)</label>
-                <input type="number" min={1} value={form.vehicleCapacity}
-                  onChange={(e) => set({ vehicleCapacity: Number(e.target.value) })} className="cp-input" />
-              </div>
-              <div>
-                <label className="cp-label">Max miles one way</label>
-                <input type="number" min={1} value={form.maxMilesOneWay}
-                  onChange={(e) => set({ maxMilesOneWay: Number(e.target.value) })} className="cp-input" />
-              </div>
-            </div>
-
-            <div>
-              <label className="cp-label">Provider type</label>
-              <select value={form.providerType} onChange={(e) => set({ providerType: e.target.value })} className="cp-select">
-                <option value="VOLUNTEER_DRIVER">Volunteer Driver</option>
-                <option value="NEMT_VAN">NEMT Van</option>
-                <option value="RIDESHARE">Rideshare</option>
-                <option value="TAXI">Taxi</option>
-                <option value="COMMUNITY_SHUTTLE">Community Shuttle</option>
-                <option value="WHEELCHAIR_VAN">Wheelchair Van</option>
-                <option value="AMBULETTE">Ambulette</option>
-                <option value="PUBLIC_TRANSIT">Public Transit</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="cp-label">Preferred days (e.g. Mon,Wed,Fri)</label>
-              <input value={form.preferredDays} onChange={(e) => set({ preferredDays: e.target.value })} className="cp-input" />
-            </div>
-
-            <div>
-              <label className="cp-label">Community notes</label>
-              <textarea rows={2} value={form.communityNotes}
-                onChange={(e) => set({ communityNotes: e.target.value })}
-                placeholder="e.g. Church volunteer, wheelchair route support"
-                className="cp-textarea" />
-            </div>
-
-            <div className="cp-grid-2">
-              <label className="cp-checkbox-row">
-                <input type="checkbox" checked={form.isWheelchairAccessible}
-                  onChange={(e) => set({ isWheelchairAccessible: e.target.checked })} />
-                Wheelchair-accessible vehicle
-              </label>
-              <label className="cp-checkbox-row">
-                <input type="checkbox" checked={form.isInFallbackPool}
-                  onChange={(e) => set({ isInFallbackPool: e.target.checked })} />
-                Available for fallback pool
-              </label>
-              <label className="cp-checkbox-row">
-                <input type="checkbox" checked={form.acceptsMedicaid}
-                  onChange={(e) => set({ acceptsMedicaid: e.target.checked })} />
-                Accepts Medicaid NEMT
-              </label>
-              <label className="cp-checkbox-row">
-                <input type="checkbox" checked={form.acceptsCreditCard}
-                  onChange={(e) => set({ acceptsCreditCard: e.target.checked })} />
-                Accepts credit card
-              </label>
-              <label className="cp-checkbox-row">
-                <input type="checkbox" checked={form.acceptsGrantPay}
-                  onChange={(e) => set({ acceptsGrantPay: e.target.checked })} />
-                Accepts grant/partner pay
-              </label>
-            </div>
-
-            <Button type="submit" disabled={isSubmitting} className="cp-btn-full">
-              {isSubmitting ? 'Saving…' : 'Save profile'}
-            </Button>
-          </form>
-        </Card>
-
-      </div>
-    </DashboardLayout>
-  )
-}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <CardTitle>Upcoming Rides</CardTitle>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <Badge variant={mode === 'live' ? 'success' : 'warning'}>
+                  {mode === 'live' ? 'Live' : 'Demo'}
+                </Badge>
+                <Link
+                  href="/driver/rides"
+                  style={{ fontSize: 13, fontWeight: 600, color: '#0c6bc2', textDecoration: 'none' }}
+                >

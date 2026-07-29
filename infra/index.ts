@@ -117,6 +117,91 @@ new aws.lambda.Permission(`${prefix}-apigw-permission`, {
   sourceArn: pulumi.interpolate`${httpApi.executionArn}/*/*`,
 });
 
+// ─── Frontend hosting: S3 + CloudFront ─────────────────────────────────────
+
+// S3 bucket for the static frontend (Next.js export output)
+const frontendBucket = new aws.s3.BucketV2(`${prefix}-frontend`, {
+  forceDestroy: true,
+});
+
+// Block all public access — CloudFront OAI is the only way in
+new aws.s3.BucketPublicAccessBlock(`${prefix}-frontend-pab`, {
+  bucket: frontendBucket.id,
+  blockPublicAcls: true,
+  blockPublicPolicy: true,
+  ignorePublicAcls: true,
+  restrictPublicBuckets: true,
+});
+
+// Origin Access Identity for CloudFront
+const oai = new aws.cloudfront.OriginAccessIdentity(`${prefix}-oai`, {
+  comment: `OAI for ${prefix} frontend bucket`,
+});
+
+// Bucket policy allowing CloudFront OAI to read objects
+const bucketPolicy = aws.iam.getPolicyDocumentOutput({
+  statements: [{
+    effect: 'Allow',
+    principals: [{
+      type: 'AWS',
+      identifiers: [oai.iamArn],
+    }],
+    actions: ['s3:GetObject'],
+    resources: [pulumi.interpolate`${frontendBucket.arn}/*`],
+  }],
+});
+
+new aws.s3.BucketPolicy(`${prefix}-frontend-policy`, {
+  bucket: frontendBucket.id,
+  policy: bucketPolicy.apply(p => p.json),
+});
+
+// CloudFront distribution
+const cdn = new aws.cloudfront.Distribution(`${prefix}-cdn`, {
+  enabled: true,
+  defaultRootObject: 'index.html',
+  origins: [{
+    originId: frontendBucket.id,
+    domainName: frontendBucket.bucketRegionalDomainName,
+    s3OriginConfig: {
+      originAccessIdentity: pulumi.interpolate`origin-access-identity/cloudfront/${oai.id}`,
+    },
+  }],
+  defaultCacheBehavior: {
+    targetOriginId: frontendBucket.id,
+    viewerProtocolPolicy: 'redirect-to-https',
+    allowedMethods: ['GET', 'HEAD', 'OPTIONS'],
+    cachedMethods: ['GET', 'HEAD', 'OPTIONS'],
+    forwardedValues: {
+      queryString: false,
+      cookies: { forward: 'none' },
+    },
+    minTtl: 0,
+    defaultTtl: 3600,
+    maxTtl: 86400,
+  },
+  priceClass: 'PriceClass_100',
+  customErrorResponses: [{
+    errorCode: 403,
+    responsePagePath: '/index.html',
+    responseCode: 200,
+  }, {
+    errorCode: 404,
+    responsePagePath: '/index.html',
+    responseCode: 200,
+  }],
+  restrictions: {
+    geoRestriction: {
+      restrictionType: 'none',
+    },
+  },
+  viewerCertificate: {
+    cloudfrontDefaultCertificate: true,
+  },
+});
+
 export const apiUrl = httpApi.apiEndpoint;
 export const lambdaName = apiLambda.name;
 export const deployedRegion = region;
+export const frontendBucketName = frontendBucket.id;
+export const frontendUrl = pulumi.interpolate`https://${cdn.domainName}`;
