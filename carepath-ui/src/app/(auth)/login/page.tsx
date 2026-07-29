@@ -78,7 +78,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e5dbea] via-[#ede9f7] to-[#d2b9d8] px-5 py-10">
-      <section className="w-full max-w-[900px] rounded-[22px] border border-slate-200 bg-white px-6 py-10 shadow-[0_18px_50px_rgba(69,4,102,0.14)] sm:px-10 sm:py-12 md:px-16 md:py-12">
+      <section className="w-full max-w-[820px] rounded-[22px] border border-slate-200 bg-white px-6 py-10 shadow-[0_18px_50px_rgba(69,4,102,0.14)] sm:px-10 sm:py-12 md:px-16 md:py-12">
         {/* Logo */}
         <div className="mb-6 flex flex-col items-center justify-center text-center">
           <Image
