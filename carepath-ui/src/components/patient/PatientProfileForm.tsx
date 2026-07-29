@@ -202,8 +202,9 @@ export default function PatientProfileForm({ mode }: PatientProfileFormProps) {
         <div className="mb-10 text-center">
           <section
             style={{
-              maxWidth: "1000px",
+              maxWidth: "1200px",
               margin: "0 auto 28px",
+              border: "1px solid rgba(20, 39, 109, 0.2)",
               padding: "30px 50px",
               borderRadius: "24px",
               textAlign: "center",
@@ -239,7 +240,7 @@ export default function PatientProfileForm({ mode }: PatientProfileFormProps) {
 
             <p
               style={{
-                maxWidth: "760px",
+                maxWidth: "900px",
                 margin: "0 auto",
                 fontSize: "19px",
                 lineHeight: 1.7,

@@ -13,7 +13,7 @@ import {
 const pillars = [
   {
     icon: Bus,
-    color: "#e0d37f",
+    color: "#ebc04b",
     bg: "#dbeafe",
     title: "Pool Every Network",
     description:
@@ -21,7 +21,7 @@ const pillars = [
   },
   {
     icon: HandHeart,
-    color: "#c03182",
+    color: "#76cc80",
     bg: "#d0f4ee",
     title: "Activate Volunteers",
     description:
@@ -70,7 +70,7 @@ export default function Home() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#f8fafc",
+        background: "#efeffa",
         color: "#0f172a",
         fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
       }}
@@ -83,7 +83,7 @@ export default function Home() {
           position: "relative",
           top: 0,
           zIndex: 50,
-          background: "rgba(255, 255, 255, 0.94)",
+          background: "rgba(248, 247, 254, 0.94)",
           backdropFilter: "blur(12px)",
           borderBottom: "1px solid #e2e8f0",
           padding: "0 32px",
@@ -150,7 +150,7 @@ export default function Home() {
               borderRadius: 10,
               fontSize: 14,
               fontWeight: 700,
-              background: "#f3e2f7",
+              background: "#e6ddf8",
               color: "#0c6bc2",
               border: "1px solid #ae5a8b",
               textDecoration: "none",
@@ -170,7 +170,7 @@ export default function Home() {
               borderRadius: 10,
               fontSize: 14,
               fontWeight: 700,
-              background: "#f3e2f7",
+              background: "#e0d6f6",
               color: "#0c6bc2",
               border: "1px solid #ae5a8b",
               textDecoration: "none",
@@ -189,7 +189,7 @@ export default function Home() {
               borderRadius: 10,
               fontSize: 14,
               fontWeight: 700,
-              background: "#f3e2f",
+              background: "#fff4e7",
               color: "#0c6bc2",
               border: "1px solid #ae5a8b",
               textDecoration: "none",
@@ -206,7 +206,7 @@ export default function Home() {
       ====================================================== */}
       <main
         style={{
-          maxWidth: 1200,
+          maxWidth: 1350,
           margin: "0 auto",
           padding: "0 24px 64px",
         }}
@@ -373,7 +373,7 @@ export default function Home() {
                 }}
               >
                 Request a Ride
-                <ArrowRight size={16} />
+               
               </Link>
                <Link
                 href="/patient/profile"
@@ -392,7 +392,7 @@ export default function Home() {
                 }}
               >
                 Update My Profile
-                <ArrowRight size={16} />
+               
               </Link>
             </div>{" "}
           </div>
@@ -522,7 +522,7 @@ export default function Home() {
               }}
             >
               Request a Ride
-              <ArrowRight size={15} />
+             
             </Link>
           </div>
         </section>
@@ -540,7 +540,7 @@ export default function Home() {
           style={{
             marginTop: 32,
             borderRadius: 20,
-            background: "#ffffff",
+            background: "#e5e1f2",
             border: "1px solid #e2e8f0",
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.06)",
             padding: 32,
