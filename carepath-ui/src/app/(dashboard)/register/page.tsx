@@ -1,359 +1,142 @@
-'use client'
+"use client";
 
-import { FormEvent, useState } from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { registerUser } from '@/services/auth'
+import Image from "next/image";
+import Link from "next/link";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  HeartHandshake,
+  Home,
+  Heart,
+} from "lucide-react";
 
-export default function RegisterPage() {
-  const router = useRouter()
-
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-
-  const [errorMessage, setErrorMessage] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-
-  async function handleRegister(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-
-    setErrorMessage('')
-
-    if (password !== confirmPassword) {
-      setErrorMessage('The passwords do not match.')
-      return
-    }
-
-    if (password.length < 8) {
-      setErrorMessage('The password must contain at least 8 characters.')
-      return
-    }
-
-    setIsLoading(true)
-
-    try {
-      const result = await registerUser({
-        firstName,
-        lastName,
-        phone,
-        email,
-        password,
-        role: 'PATIENT',
-      })
-
-      console.log('Registration result:', result)
-
-      if (result.token) {
-        localStorage.setItem('carepathToken', result.token)
-      }
-
-      /*
-        After registration, send the patient to the longer
-        profile form for address, insurance, ride needs, etc.
-      */
-      router.push('/patient/intake')
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage('Something went wrong while creating your account.')
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const labelStyle = {
-    display: 'block',
-    color: '#334155',
-    fontSize: 14,
-    fontWeight: 700,
-    marginBottom: 7,
-  }
-
-  const inputStyle = {
-    width: '100%',
-    minHeight: 48,
-    borderRadius: 10,
-    border: '1px solid #cbd5e1',
-    padding: '10px 13px',
-    color: '#0f172a',
-    background: '#ffffff',
-    fontSize: 15,
-    outline: 'none',
-  }
-
+export default function RegisterChoicePage() {
   return (
-    <main
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background:
-          'linear-gradient(135deg, #e5dbea 0%, #ede9f7 50%, #d2b9d8 100%)',
-        padding: 24,
-      }}
-    >
-      <section
-        style={{
-          width: '100%',
-          maxWidth: 900,
-          background: '#ffffff',
-          borderRadius: 20,
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 18px 50px rgba(69, 4, 102, 0.14)',
-          padding: 32,
-        }}
-      >
-        <div
-          style={{
-            textAlign: 'center',
-            marginBottom: 28,
-          }}
-        >
-          <p
-            style={{
-              color: '#1b9c86',
-              fontSize: 14,
-              fontWeight: 800,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              marginBottom: 8,
-            }}
-          >
-            CarePath
-          </p>
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#71769c] via-[#e6caef] to-[#694f81]px-5 py-10">
+      {/* Decorative background shapes */}
+      <div className="pointer-events-none absolute -left-28 top-20 h-80 w-80 rounded-full bg-[#d8b5e7]/40 blur-2xl" />
 
-          <h1
-            style={{
-              color: '#0f172a',
-              fontSize: 30,
-              fontWeight: 800,
-              marginBottom: 8,
-            }}
-          >
-            Welcome to CarePath!
+      <div className="pointer-events-none absolute -right-24 bottom-12 h-96 w-96 rounded-full bg-[#cdb3e8]/40 blur-3xl" />
+
+      <section className="relative z-10 w-full max-w-[1170px] rounded-[28px] border border-white/70 bg-white px-6 py-10 shadow-[0_24px_70px_rgba(72,36,96,0.18)] sm:px-10 md:px-14 lg:px-20 lg:py-12">
+        {/* Logo and heading */}
+        <div className="mb-14 flex flex-col items-center text-center">
+          <Image
+            src="/carepath-logo.png"
+            alt="CarePath"
+            width={135}
+            height={135}
+            priority
+            className="mb-5 rounded-[12px] object-contain"
+          />
+
+          <h1 className="mb-4 text-3xl font-extrabold leading-tight text-slate-950 sm:text-4xl md:text-5xl">
+            Create your CarePath account
           </h1>
 
-          <p
-            style={{
-              color: '#a589b1',
-              fontSize: 15,
-              lineHeight: 1.6,
-            }}
-          >
-            We just need a few details to create your account.
+          <p className="text-base text-slate-600 sm:text-lg">
+            Select the type of account you need.
           </p>
         </div>
 
-        <form
-          onSubmit={handleRegister}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 18,
-          }}
-        >
-          {/* First and last name */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: 14,
-            }}
-          >
-            <div>
-              <label htmlFor="firstName" style={labelStyle}>
-                First name
-              </label>
-
-              <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                value={firstName}
-                onChange={(event) => setFirstName(event.target.value)}
-                autoComplete="given-name"
-                required
-                style={inputStyle}
-              />
-            </div>
-
-            <div>
-              <label htmlFor="lastName" style={labelStyle}>
-                Last name
-              </label>
-
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                value={lastName}
-                onChange={(event) => setLastName(event.target.value)}
-                autoComplete="family-name"
-                required
-                style={inputStyle}
-              />
-            </div>
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label htmlFor="phone" style={labelStyle}>
-              Phone number
-            </label>
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={phone}
-              onChange={(event) => setPhone(event.target.value)}
-              placeholder="(555) 555-5555"
-              autoComplete="tel"
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Email */}
-          <div>
-            <label htmlFor="email" style={labelStyle}>
-              Email address
-            </label>
-
-            <input
-              id="email"
-              name="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="name@example.com"
-              autoComplete="email"
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label htmlFor="password" style={labelStyle}>
-              Password
-            </label>
-
-            <input
-              id="password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="At least 8 characters"
-              autoComplete="new-password"
-              minLength={8}
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {/* Confirm password */}
-          <div>
-            <label htmlFor="confirmPassword" style={labelStyle}>
-              Confirm password
-            </label>
-
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="Enter the password again"
-              autoComplete="new-password"
-              minLength={8}
-              required
-              style={inputStyle}
-            />
-          </div>
-
-          {errorMessage && (
-            <div
-              role="alert"
-              style={{
-                borderRadius: 10,
-                border: '1px solid #fecaca',
-                background: '#fef2f2',
-                color: '#b91c1c',
-                padding: '11px 13px',
-                fontSize: 14,
-              }}
-            >
-              {errorMessage}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            style={{
-              minHeight: 50,
-              border: 'none',
-              borderRadius: 11,
-              background: isLoading ? '#94a3b8' : '#ae5a8b',
-              color: '#ffffff',
-              fontSize: 15,
-              fontWeight: 800,
-              cursor: isLoading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 4px 12px rgba(174, 90, 139, 0.28)',
-            }}
-          >
-            {isLoading ? 'Creating account...' : 'Create Account'}
-          </button>
-        </form>
-
-        <p
-          style={{
-            textAlign: 'center',
-            color: '#64748b',
-            fontSize: 14,
-            marginTop: 22,
-          }}
-        >
-          Already have an account?{' '}
+        {/* Account cards */}
+       <div className="flex w-full justify-center px-8 sm:px-10 lg:px-12">
+  <div className="grid w-full max-w-[1040px] gap-8 md:grid-cols-2">
+          {/* Patient card */}
           <Link
-            href="/login"
-            style={{
-              color: '#0c6bc2',
-              fontWeight: 700,
-              textDecoration: 'none',
-            }}
+            href="/register/patient"
+            className="group flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-[#dfc5e5] bg-gradient-to-br from-[#fcf7fd] to-[#f5eaf8] px-7 py-9 text-center shadow-[0_8px_20px_rgba(122,68,135,0.10)] transition duration-200 hover:-translate-y-1 hover:border-[#ae5a8b] hover:shadow-[0_16px_30px_rgba(122,68,135,0.18)]"
           >
-            Sign in here
-          </Link>
-        </p>
+            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#ead8ee] text-[#9b4688]">
+              <HeartHandshake size={46} strokeWidth={2} />
+            </div>
 
-        <div
-          style={{
-            textAlign: 'center',
-            marginTop: 16,
-          }}
-        >
+            <div className="mb-5 flex w-full items-center justify-center gap-5">
+              <span className="h-px w-12 bg-[#d7aedc]" />
+
+              <h2 className="text-3xl font-extrabold text-[#913b87]">
+                I am a patient
+              </h2>
+
+              <span className="h-px w-12 bg-[#d7aedc]" />
+            </div>
+
+            <p className="mb-8 max-w-[360px] text-[17px] leading-8 text-slate-700">
+              Create a patient account to request rides, manage appointments,
+              and complete your transportation profile.
+            </p>
+
+            <span className="inline-flex min-h-[58px] w-full max-w-[330px] items-center justify-center gap-3 rounded-[12px] bg-[#a33a9d] px-6 py-4 text-lg font-extrabold text-white shadow-[0_7px_16px_rgba(163,58,157,0.25)] transition group-hover:bg-[#8f3189]">
+              Register as a patient
+              <ArrowRight size={23} />
+            </span>
+          </Link>
+
+          {/* Worker card */}
+          <Link
+            href="/register/worker"
+            className="group flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-[#b9dfdc] bg-gradient-to-br from-[#f5fcfb] to-[#eaf7f6] px-7 py-9 text-center shadow-[0_8px_20px_rgba(31,135,125,0.10)] transition duration-200 hover:-translate-y-1 hover:border-[#159a91] hover:shadow-[0_16px_30px_rgba(31,135,125,0.18)]"
+          >
+            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#d4efed] text-[#078a83]">
+              <BriefcaseBusiness size={46} strokeWidth={2} />
+            </div>
+
+            <div className="mb-5 flex w-full items-center justify-center gap-5">
+              <span className="h-px w-12 bg-[#abd9d5]" />
+
+              <h2 className="text-3xl font-extrabold text-[#078a83]">
+                I work with CarePath
+              </h2>
+
+              <span className="h-px w-12 bg-[#abd9d5]" />
+            </div>
+
+            <p className="mb-8 max-w-[370px] text-[17px] leading-8 text-slate-700">
+              Register as a driver, coordinator, partner, or advocate. Worker
+              accounts may require approval.
+            </p>
+
+            <span className="inline-flex min-h-[58px] w-full max-w-[330px] items-center justify-center gap-3 rounded-[12px] bg-[#078f88] px-6 py-4 text-lg font-extrabold text-white shadow-[0_7px_16px_rgba(7,143,136,0.24)] transition group-hover:bg-[#057b75]">
+              Register as a worker
+              <ArrowRight size={23} />
+            </span>
+          </Link>
+        </div>
+</div>
+      
+        {/* Divider */}
+        <div className="mx-auto my-10 flex w-full max-w-[960px] items-center gap-5">
+          <div className="h-px flex-1 bg-[#dfcce8]" />
+
+          <Heart
+            size={27}
+            className="text-[#9e43b0]"
+          />
+
+          <div className="h-px flex-1 bg-[#dfcce8]" />
+        </div>
+
+        {/* Bottom links */}
+        <div className="flex flex-col items-center gap-5 text-center">
+          <p className="text-base text-slate-700 sm:text-lg">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-extrabold text-[#164ad8] hover:underline"
+            >
+              Sign in here
+            </Link>
+          </p>
+
           <Link
             href="/"
-            style={{
-              color: '#64748b',
-              fontSize: 14,
-              textDecoration: 'none',
-            }}
+            className="inline-flex items-center gap-2 text-base font-medium text-[#164ad8] hover:underline sm:text-lg"
           >
+            <Home size={22} />
             Return to the CarePath home page
           </Link>
         </div>
       </section>
     </main>
-  )
+  );
 }
