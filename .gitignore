@@ -9,3 +9,8 @@ infra/bin/
 .agents/
 carepath-ui/out/
 carepath-ui/*.zip
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
