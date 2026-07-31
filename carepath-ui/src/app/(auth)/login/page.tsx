@@ -3,12 +3,25 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
-import { useAuth } from "@/lib/auth";
+
+const DEFAULT_API_BASE =
+  process.env.NEXT_PUBLIC_CAREPATH_API_URL ??
+  "http://localhost:3001/api";
+
+const roleRedirect: Record<string, string> = {
+  DRIVER: "/driver/dashboard",
+  COORDINATOR: "/coordinator/pooling",
+  ADMIN: "/admin/credits",
+  PARTNER: "/partner/dashboard",
+  ADVOCATE: "/advocate/dashboard",
+};
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const router = useRouter();
 
+  const [apiBase] = useState(DEFAULT_API_BASE);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +36,49 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      await login(email, password);
+      const response = await fetch(`${apiBase}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+
+        throw new Error(
+          body?.message ?? `Login failed (${response.status}).`,
+        );
+      }
+
+      const { token, user } = await response.json();
+      const role: string = user?.role ?? "PATIENT";
+
+      window.localStorage.setItem(
+        `carepath.${role.toLowerCase()}.token`,
+        token,
+      );
+
+      if (role === "PATIENT") {
+        const intakeCompleted =
+          user?.intakeCompleted ??
+          user?.profileCompleted ??
+          false;
+
+        router.push(
+          intakeCompleted
+            ? "/patient"
+            : "/patient/intake",
+        );
+
+        return;
+      }
+
+      router.push(roleRedirect[role] ?? "/");
     } catch (error) {
       setError(
         error instanceof Error
@@ -61,15 +116,15 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Form and links use the same centered container */}
+        {/* Form and links */}
         <div
-  style={{
-    width: "100%",
-    maxWidth: "660px",
-    marginLeft: "auto",
-    marginRight: "auto",
-  }}
->
+          style={{
+            width: "100%",
+            maxWidth: "660px",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
           {error && (
             <div
               role="alert"
@@ -137,7 +192,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="mt-2 mb-4  min-h-[58px] w-full rounded-[12px] bg-[#ae5a8b] px-6 py-4 text-[17px] font-extrabold text-white shadow-[0_6px_16px_rgba(174,90,139,0.28)] transition hover:bg-[#9d4f7d] disabled:cursor-not-allowed disabled:bg-slate-400"
+              className="mt-2 min-h-[58px] w-full rounded-[12px] bg-[#ae5a8b] px-6 py-4 text-[17px] font-extrabold text-white shadow-[0_6px_16px_rgba(174,90,139,0.28)] transition hover:bg-[#9d4f7d] disabled:cursor-not-allowed disabled:bg-slate-400"
             >
               {isSubmitting ? "Signing in…" : "Sign In"}
             </button>
@@ -145,9 +200,9 @@ export default function LoginPage() {
 
           {/* Links */}
           <div
-  className="flex w-full flex-col items-center gap-5 text-center"
-  style={{ marginTop: 28 }}
->
+            className="flex w-full flex-col items-center gap-5 text-center"
+            style={{ marginTop: 28 }}
+          >
             <p className="text-base text-slate-500">
               Need an account?{" "}
               <Link
