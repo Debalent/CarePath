@@ -180,7 +180,7 @@ export default function Home() {
             Patient Portal
           </Link>
           <Link
-            href="/coordinator"
+            href="/coordinator/pooling"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -1041,7 +1041,7 @@ export default function Home() {
 
 
                   <Link
-                    href="/coordinator"
+                    href="/coordinator/pooling"
                     style={{
                       color: "rgba(255, 255, 255, 0.72)",
                       fontSize: 14,

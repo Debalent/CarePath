@@ -25,3 +25,7 @@
 - [x] `/register` page properly redirects based on role:
   - PATIENT → `/patient/intake` (for profile completion)
   - DRIVER, COORDINATOR, PARTNER, ADVOCATE, ADMIN → `/register/pending` (for admin approval)
+
+## Step 6 ✅ - Fix coordinator navigation and links
+- [x] Changed Coordinator Hub button link from `/coordinator` to `/coordinator/pooling`
+- [x] Footer Coordinator Hub link updated to `/coordinator/pooling`

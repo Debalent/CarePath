@@ -181,6 +181,7 @@ export default function UnifiedRegisterPage() {
                   className={inputClasses}
                 />
               </div>
+            </div>
 
             {/* Organization (shown for non-patient roles) */}
             {showOrganization && (
@@ -268,3 +269,66 @@ export default function UnifiedRegisterPage() {
               <input
                 id="confirmPassword"
                 name="confirmPassword"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={(event) => setConfirmPassword(event.target.value)}
+                placeholder="Enter the password again"
+                className={inputClasses}
+              />
+            </div>
+
+            {errorMessage && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 rounded-[10px] border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+              >
+                <AlertCircle size={18} className="mt-0.5 shrink-0" />
+
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="mt-2 min-h-[58px] w-full rounded-[12px] bg-[#ae5a8b] px-6 py-4 text-[17px] font-extrabold text-white shadow-[0_6px_16px_rgba(174,90,139,0.28)] transition hover:bg-[#9d4f7d] disabled:cursor-not-allowed disabled:bg-slate-400"
+            >
+              {isLoading
+                ? "Creating account..."
+                : "Create Account"}
+            </button>
+          </form>
+        </div>
+
+        <div
+          className="flex flex-col items-center text-center"
+          style={{ marginTop: 25 }}
+        >
+          <p
+            className="text-base text-slate-500"
+            style={{ marginBottom: 14 }}
+          >
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-bold text-[#0c6bc2] hover:underline"
+            >
+              Sign in here
+            </Link>
+          </p>
+
+          <Link
+            href="/"
+            className="text-base text-slate-500 hover:text-[#0c6bc2] hover:underline"
+          >
+            Return to the CarePath home page
+          </Link>
+        </div>
+      </section>
+    </main>
+  );
+}
+
