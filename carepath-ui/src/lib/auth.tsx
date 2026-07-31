@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { ApiClient, ApiError, getToken, saveToken, clearToken, DEFAULT_API_BASE } from './api'
 
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
   const [apiBaseUrl, setApiBaseUrl] = useState(DEFAULT_API_BASE)
 
-  const api = new ApiClient({ baseUrl: apiBaseUrl })
+  const api = useMemo(() => new ApiClient({ baseUrl: apiBaseUrl }), [apiBaseUrl])
 
   // Restore session from localStorage on mount
   useEffect(() => {
