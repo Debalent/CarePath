@@ -39,7 +39,7 @@ jobs:
       - name: Build static export
         working-directory: carepath-ui
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL || '' }}
+          NEXT_PUBLIC_CAREPATH_API_URL: ${{ secrets.NEXT_PUBLIC_CAREPATH_API_URL || 'http://localhost:3000/api' }}
         run: npm run build
 
       - name: Configure Pages

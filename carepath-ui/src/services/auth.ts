@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE = "http://localhost:3001/api"
+const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? "http://localhost:3000/api"
 
 export type LoginCredentials = {
   email: string
@@ -43,7 +43,7 @@ export async function loginUser(
 
   if (!data) {
     throw new Error(
-      "The login server returned an unexpected response. Make sure the API is running on port 3001.",
+"The login server returned an unexpected response. Make sure the API is running.",
     )
   }
 
@@ -97,7 +97,7 @@ export async function registerUser(
 
   if (!data) {
     throw new Error(
-      "The registration server returned an unexpected response. Make sure the API is running on port 3001.",
+"The registration server returned an unexpected response. Make sure the API is running.",
     )
   }
 

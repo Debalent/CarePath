@@ -47,8 +47,8 @@ export default function RegisterPage() {
 
       console.log("Registration result:", result);
 
-      if (result.token) {
-        localStorage.setItem("carepathToken", result.token);
+if (result.token) {
+        localStorage.setItem("carepath.patient.token", result.token);
       }
 
       /*
