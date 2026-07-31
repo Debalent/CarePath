@@ -41,33 +41,27 @@ export default function ContactPage() {
     }));
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     setIsSubmitting(true);
     setSubmitted(false);
 
+    const API_BASE = process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? "http://localhost:3001/api";
+
     try {
-      /*
-        We will replace this temporary delay with the API request later:
+      const response = await fetch(`${API_BASE}/contact`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-        const response = await fetch(
-          "http://localhost:3001/api/contact",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Unable to send message");
-        }
-      */
-
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data?.message ?? "Unable to send message");
+      }
 
       setSubmitted(true);
       setFormData(initialFormData);
