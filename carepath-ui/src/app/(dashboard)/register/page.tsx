@@ -1,142 +1,270 @@
 "use client";
 
+import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BriefcaseBusiness,
-  HeartHandshake,
-  Home,
-  Heart,
-} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { AlertCircle } from "lucide-react";
+import { registerUser } from "@/services/auth";
 
-export default function RegisterChoicePage() {
+type RoleOption = "PATIENT" | "DRIVER" | "COORDINATOR" | "PARTNER" | "ADVOCATE" | "ADMIN";
+
+const roleDescriptions: Record<RoleOption, string> = {
+  PATIENT: "Request rides, manage appointments, and complete your transportation profile.",
+  DRIVER: "Transport patients, manage your schedule, and earn stipends or payment per ride.",
+  COORDINATOR: "Coordinate rides, create depot routes, and manage patient transportation needs.",
+  PARTNER: "Sponsor ride credits, refer patients, and collaborate with the CarePath network.",
+  ADVOCATE: "Advocate for patients, assist with ride coordination, and track transportation outcomes.",
+  ADMIN: "Manage the platform, review registrations, and oversee system-wide operations.",
+};
+
+const redirectMap: Record<RoleOption, string> = {
+  PATIENT: "/patient/intake",
+  DRIVER: "/register/pending",
+  COORDINATOR: "/register/pending",
+  PARTNER: "/register/pending",
+  ADVOCATE: "/register/pending",
+  ADMIN: "/register/pending",
+};
+
+export default function UnifiedRegisterPage() {
+  const router = useRouter();
+
+  const [role, setRole] = useState<RoleOption>("PATIENT");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [organization, setOrganization] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const showOrganization = role !== "PATIENT";
+
+  async function handleRegister(event: FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    setErrorMessage("");
+
+    if (password !== confirmPassword) {
+      setErrorMessage("The passwords do not match.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMessage("The password must contain at least 8 characters.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const result = await registerUser({
+        firstName,
+        lastName,
+        phone,
+        email,
+        password,
+        role,
+        ...(showOrganization && organization ? { organization } : {}),
+      });
+
+      if (result.token) {
+        localStorage.setItem(`carepath.${role.toLowerCase()}.token`, result.token);
+      }
+
+      router.push(redirectMap[role]);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong while creating your account.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  const inputClasses =
+    "min-h-[56px] w-full rounded-[11px] border border-slate-300 bg-white px-4 py-3 text-[16px] text-slate-900 outline-none transition focus:border-[#ae5a8b] focus:ring-2 focus:ring-[#ae5a8b]/20";
+
+  const labelClasses =
+    "mb-2 block text-left text-[15px] font-bold text-slate-700";
+
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#71769c] via-[#e6caef] to-[#694f81]px-5 py-10">
-      {/* Decorative background shapes */}
-      <div className="pointer-events-none absolute -left-28 top-20 h-80 w-80 rounded-full bg-[#d8b5e7]/40 blur-2xl" />
-
-      <div className="pointer-events-none absolute -right-24 bottom-12 h-96 w-96 rounded-full bg-[#cdb3e8]/40 blur-3xl" />
-
-      <section className="relative z-10 w-full max-w-[1170px] rounded-[28px] border border-white/70 bg-white px-6 py-10 shadow-[0_24px_70px_rgba(72,36,96,0.18)] sm:px-10 md:px-14 lg:px-20 lg:py-12">
-        {/* Logo and heading */}
-        <div className="mb-14 flex flex-col items-center text-center">
+    <main className="flex min-h-screen items-start justify-center bg-gradient-to-br from-[#71769c] via-[#e6caef] to-[#694f81] px-5 pt-8 pb-16">
+      <section className="w-full max-w-[980px] rounded-[24px] border border-slate-200 bg-white px-6 pt-8 pb-3 shadow-[0_18px_50px_rgba(69,4,102,0.14)] sm:px-10 md:px-14 lg:px-16">
+        <div className="mb-8 flex flex-col items-center text-center">
           <Image
             src="/carepath-logo.png"
             alt="CarePath"
-            width={135}
-            height={135}
+            width={115}
+            height={115}
             priority
-            className="mb-5 rounded-[12px] object-contain"
+            className="mb-5 rounded-[10px] object-contain"
           />
 
-          <h1 className="mb-4 text-3xl font-extrabold leading-tight text-slate-950 sm:text-4xl md:text-5xl">
+          <h1 className="mb-3 text-4xl font-extrabold leading-tight text-slate-900">
             Create your CarePath account
           </h1>
 
-          <p className="text-base text-slate-600 sm:text-lg">
-            Select the type of account you need.
+          <p className="max-w-[650px] text-base leading-relaxed text-[#766d7c] md:text-lg">
+            Select your role below and fill in your details to get started.
           </p>
         </div>
 
-        {/* Account cards */}
-       <div className="flex w-full justify-center px-8 sm:px-10 lg:px-12">
-  <div className="grid w-full max-w-[1040px] gap-8 md:grid-cols-2">
-          {/* Patient card */}
-          <Link
-            href="/register/patient"
-            className="group flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-[#dfc5e5] bg-gradient-to-br from-[#fcf7fd] to-[#f5eaf8] px-7 py-9 text-center shadow-[0_8px_20px_rgba(122,68,135,0.10)] transition duration-200 hover:-translate-y-1 hover:border-[#ae5a8b] hover:shadow-[0_16px_30px_rgba(122,68,135,0.18)]"
+        <div className="flex w-full justify-center">
+          <form
+            onSubmit={handleRegister}
+            className="flex w-full max-w-[700px] flex-col gap-5"
           >
-            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#ead8ee] text-[#9b4688]">
-              <HeartHandshake size={46} strokeWidth={2} />
+            {/* Role dropdown */}
+            <div>
+              <label htmlFor="role" className={labelClasses}>
+                I am a...
+              </label>
+
+              <select
+                id="role"
+                name="role"
+                value={role}
+                onChange={(event) => setRole(event.target.value as RoleOption)}
+                className={inputClasses}
+              >
+                <option value="PATIENT">Patient</option>
+                <option value="DRIVER">Driver</option>
+                <option value="COORDINATOR">Transportation coordinator</option>
+                <option value="PARTNER">Community partner</option>
+                <option value="ADVOCATE">Patient advocate</option>
+                <option value="ADMIN">Administrator</option>
+              </select>
+
+              <p className="mt-2 text-sm leading-relaxed text-[#766d7c]">
+                {roleDescriptions[role]}
+              </p>
             </div>
 
-            <div className="mb-5 flex w-full items-center justify-center gap-5">
-              <span className="h-px w-12 bg-[#d7aedc]" />
+            {/* Name row */}
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <label htmlFor="firstName" className={labelClasses}>
+                  First name
+                </label>
 
-              <h2 className="text-3xl font-extrabold text-[#913b87]">
-                I am a patient
-              </h2>
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  required
+                  autoComplete="given-name"
+                  value={firstName}
+                  onChange={(event) => setFirstName(event.target.value)}
+                  className={inputClasses}
+                />
+              </div>
 
-              <span className="h-px w-12 bg-[#d7aedc]" />
+              <div>
+                <label htmlFor="lastName" className={labelClasses}>
+                  Last name
+                </label>
+
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  required
+                  autoComplete="family-name"
+                  value={lastName}
+                  onChange={(event) => setLastName(event.target.value)}
+                  className={inputClasses}
+                />
+              </div>
+
+            {/* Organization (shown for non-patient roles) */}
+            {showOrganization && (
+              <div>
+                <label htmlFor="organization" className={labelClasses}>
+                  Organization or agency
+                </label>
+
+                <input
+                  id="organization"
+                  name="organization"
+                  type="text"
+                  value={organization}
+                  onChange={(event) => setOrganization(event.target.value)}
+                  placeholder="CarePath, clinic, transportation provider, etc."
+                  className={inputClasses}
+                />
+              </div>
+            )}
+
+            {/* Phone */}
+            <div>
+              <label htmlFor="phone" className={labelClasses}>
+                Phone number
+              </label>
+
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                required
+                autoComplete="tel"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
+                placeholder="(555) 555-5555"
+                className={inputClasses}
+              />
             </div>
 
-            <p className="mb-8 max-w-[360px] text-[17px] leading-8 text-slate-700">
-              Create a patient account to request rides, manage appointments,
-              and complete your transportation profile.
-            </p>
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className={labelClasses}>
+                Email address
+              </label>
 
-            <span className="inline-flex min-h-[58px] w-full max-w-[330px] items-center justify-center gap-3 rounded-[12px] bg-[#a33a9d] px-6 py-4 text-lg font-extrabold text-white shadow-[0_7px_16px_rgba(163,58,157,0.25)] transition group-hover:bg-[#8f3189]">
-              Register as a patient
-              <ArrowRight size={23} />
-            </span>
-          </Link>
-
-          {/* Worker card */}
-          <Link
-            href="/register/worker"
-            className="group flex min-h-[400px] flex-col items-center justify-center rounded-[24px] border-2 border-[#b9dfdc] bg-gradient-to-br from-[#f5fcfb] to-[#eaf7f6] px-7 py-9 text-center shadow-[0_8px_20px_rgba(31,135,125,0.10)] transition duration-200 hover:-translate-y-1 hover:border-[#159a91] hover:shadow-[0_16px_30px_rgba(31,135,125,0.18)]"
-          >
-            <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#d4efed] text-[#078a83]">
-              <BriefcaseBusiness size={46} strokeWidth={2} />
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="name@example.com"
+                className={inputClasses}
+              />
             </div>
 
-            <div className="mb-5 flex w-full items-center justify-center gap-5">
-              <span className="h-px w-12 bg-[#abd9d5]" />
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className={labelClasses}>
+                Password
+              </label>
 
-              <h2 className="text-3xl font-extrabold text-[#078a83]">
-                I work with CarePath
-              </h2>
-
-              <span className="h-px w-12 bg-[#abd9d5]" />
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="At least 8 characters"
+                className={inputClasses}
+              />
             </div>
 
-            <p className="mb-8 max-w-[370px] text-[17px] leading-8 text-slate-700">
-              Register as a driver, coordinator, partner, or advocate. Worker
-              accounts may require approval.
-            </p>
+            {/* Confirm password */}
+            <div>
+              <label htmlFor="confirmPassword" className={labelClasses}>
+                Confirm password
+              </label>
 
-            <span className="inline-flex min-h-[58px] w-full max-w-[330px] items-center justify-center gap-3 rounded-[12px] bg-[#078f88] px-6 py-4 text-lg font-extrabold text-white shadow-[0_7px_16px_rgba(7,143,136,0.24)] transition group-hover:bg-[#057b75]">
-              Register as a worker
-              <ArrowRight size={23} />
-            </span>
-          </Link>
-        </div>
-</div>
-      
-        {/* Divider */}
-        <div className="mx-auto my-10 flex w-full max-w-[960px] items-center gap-5">
-          <div className="h-px flex-1 bg-[#dfcce8]" />
-
-          <Heart
-            size={27}
-            className="text-[#9e43b0]"
-          />
-
-          <div className="h-px flex-1 bg-[#dfcce8]" />
-        </div>
-
-        {/* Bottom links */}
-        <div className="flex flex-col items-center gap-5 text-center">
-          <p className="text-base text-slate-700 sm:text-lg">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-extrabold text-[#164ad8] hover:underline"
-            >
-              Sign in here
-            </Link>
-          </p>
-
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-base font-medium text-[#164ad8] hover:underline sm:text-lg"
-          >
-            <Home size={22} />
-            Return to the CarePath home page
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
-}
+              <input
+                id="confirmPassword"
+                name="confirmPassword"

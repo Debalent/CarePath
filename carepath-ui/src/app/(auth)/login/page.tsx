@@ -3,25 +3,12 @@
 import { FormEvent, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
-
-const DEFAULT_API_BASE =
-  process.env.NEXT_PUBLIC_CAREPATH_API_URL ??
-  "http://localhost:3001/api";
-
-const roleRedirect: Record<string, string> = {
-  DRIVER: "/driver/dashboard",
-  COORDINATOR: "/coordinator/pooling",
-  ADMIN: "/admin/credits",
-  PARTNER: "/partner/dashboard",
-  ADVOCATE: "/advocate/dashboard",
-};
+import { useAuth } from "@/lib/auth";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { login } = useAuth();
 
-  const [apiBase] = useState(DEFAULT_API_BASE);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -36,49 +23,7 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`${apiBase}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        const body = await response.json().catch(() => ({}));
-
-        throw new Error(
-          body?.message ?? `Login failed (${response.status}).`,
-        );
-      }
-
-      const { token, user } = await response.json();
-      const role: string = user?.role ?? "PATIENT";
-
-      window.localStorage.setItem(
-        `carepath.${role.toLowerCase()}.token`,
-        token,
-      );
-
-      if (role === "PATIENT") {
-        const intakeCompleted =
-          user?.intakeCompleted ??
-          user?.profileCompleted ??
-          false;
-
-        router.push(
-          intakeCompleted
-            ? "/patient"
-            : "/patient/intake",
-        );
-
-        return;
-      }
-
-      router.push(roleRedirect[role] ?? "/");
+      await login(email, password);
     } catch (error) {
       setError(
         error instanceof Error

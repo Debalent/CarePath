@@ -7,7 +7,7 @@ import { Role } from '@prisma/client';
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { email, phone, password, role, firstName, lastName } = req.body;
+    const { email, phone, password, role, firstName, lastName, organization } = req.body;
 
     const existing = await prisma.user.findFirst({ where: { OR: [{ email }, { phone }] } });
     if (existing) return next(new AppError('Email or phone already registered', 409));
@@ -17,6 +17,41 @@ export const register = async (req: Request, res: Response, next: NextFunction):
       data: { email, phone, passwordHash, role: role as Role, firstName, lastName },
       select: { id: true, email: true, phone: true, role: true, firstName: true, lastName: true },
     });
+
+    // Auto-create the role-specific profile record
+    const roleKey = (role as string).toLowerCase();
+    const commonProfileData = { userId: user.id, county: '', state: '' };
+
+    switch (roleKey) {
+      case 'patient':
+        await prisma.patient.create({
+          data: { ...commonProfileData, zipCode: '', primaryLanguage: 'English' },
+        });
+        break;
+      case 'driver':
+        await prisma.driver.create({
+          data: { ...commonProfileData, county: '', state: '' },
+        });
+        break;
+      case 'coordinator':
+        await prisma.coordinator.create({
+          data: { ...commonProfileData, organization: organization || null },
+        });
+        break;
+      case 'partner':
+        await prisma.institutionalPartner.create({
+          data: { ...commonProfileData, organization: organization || '', isVerified: false },
+        });
+        break;
+      case 'advocate':
+        await prisma.advocate.create({
+          data: { ...commonProfileData, organization: organization || null, isVerified: false },
+        });
+        break;
+      case 'admin':
+        // Admin users don't need a separate profile record
+        break;
+    }
 
     const token = signToken({ userId: user.id, role: user.role });
     res.status(201).json({ user, token });

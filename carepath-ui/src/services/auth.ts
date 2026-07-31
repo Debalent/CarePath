@@ -57,6 +57,7 @@ export type RegistrationData = {
   email: string
   password: string
   role?: string
+  organization?: string
 }
 
 export type RegistrationResponse = {

@@ -51,6 +51,7 @@ export default function WorkerRegisterPage() {
         email,
         password,
         role,
+        ...(organization ? { organization } : {}),
       });
 
       router.push("/register/pending");
