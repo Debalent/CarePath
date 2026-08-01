@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../middleware/errorHandler';
-
-const CONTACT_EMAIL = 'balentinetechsolutions@gmail.com';
+import { sendEmail } from '../services/email.service';
+import { config } from '../config/env';
 
 /**
  * POST /api/contact
- * Accepts contact form submissions and logs them.
- * In production, this would send an email via SendGrid / SES / SMTP.
+ * Accepts contact form submissions and emails them to the CarePath team.
  */
 export const submitContactForm = async (
   req: Request,
@@ -26,12 +25,8 @@ export const submitContactForm = async (
       return next(new AppError('Invalid email address', 400));
     }
 
-    // Build the contact submission payload
-    const contactData = {
-      to: CONTACT_EMAIL,
-      from: email,
-      subject: `CarePath Contact Form: ${reason} - ${firstName} ${lastName}`,
-      body: `
+    const subject = `CarePath Contact Form: ${reason} - ${firstName} ${lastName}`;
+    const body = `
 Name: ${firstName} ${lastName}
 Email: ${email}
 Phone: ${phone || 'N/A'}
@@ -39,22 +34,9 @@ Reason: ${reason}
 
 Message:
 ${message}
-      `.trim(),
-      submittedAt: new Date().toISOString(),
-    };
+    `.trim();
 
-    // Log the submission (in production, send via email service)
-    console.log('Contact form submission:', contactData);
-
-    // TODO: Integrate with email service (SendGrid, SES, etc.)
-    // Example with SendGrid:
-    // await sgMail.send({
-    //   to: CONTACT_EMAIL,
-    //   from: 'noreply@carepath.com',
-    //   replyTo: email,
-    //   subject: contactData.subject,
-    //   text: contactData.body,
-    // });
+    await sendEmail({ to: config.contactEmail, subject, body, replyTo: email });
 
     res.status(200).json({
       success: true,
@@ -64,3 +46,4 @@ ${message}
     next(err);
   }
 };
+

@@ -27,3 +27,9 @@ services:
         sync: false
       - key: TWILIO_PHONE_NUMBER
         sync: false
+      - key: SES_FROM_EMAIL
+        sync: false
+      - key: SES_REGION
+        value: us-east-1
+      - key: CONTACT_EMAIL
+        value: balentinetechsolutions@gmail.com

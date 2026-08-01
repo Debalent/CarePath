@@ -16,5 +16,8 @@ export const config = {
   twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || '',
   twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || '',
   twilioPhoneNumber: process.env.TWILIO_PHONE_NUMBER || '',
+  sesFromEmail: process.env.SES_FROM_EMAIL || '',
+  sesRegion: process.env.SES_REGION || 'us-east-1',
+  contactEmail: process.env.CONTACT_EMAIL || 'balentinetechsolutions@gmail.com',
   isDev: process.env.NODE_ENV !== 'production',
 };
