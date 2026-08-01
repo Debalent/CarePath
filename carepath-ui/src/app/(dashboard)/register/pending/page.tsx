@@ -3,33 +3,108 @@ import { Clock3 } from "lucide-react";
 
 export default function RegistrationPendingPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#e5dbea] via-[#ede9f7] to-[#d2b9d8] px-5 py-10">
-      <section className="w-full max-w-[650px] rounded-[22px] border border-slate-200 bg-white px-8 py-12 text-center shadow-[0_18px_50px_rgba(69,4,102,0.14)]">
-        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-[#eee4f1] text-[#ae5a8b]">
-          <Clock3 size={38} />
+    <main
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "40px 20px",
+        background:
+          "linear-gradient(135deg, #f3edf7 0%, #eee7f4 50%, #dcc7e5 100%)",
+      }}
+    >
+      <section
+        style={{
+          width: "100%",
+          maxWidth: "560px",
+          padding: "42px 46px",
+          borderRadius: "24px",
+          border: "1px solid rgba(255,255,255,0.75)",
+          background: "#ffffff",
+          textAlign: "center",
+          boxShadow: "0 20px 60px rgba(74,45,89,0.18)",
+        }}
+      >
+        <div
+          style={{
+            width: "64px",
+            height: "64px",
+            margin: "0 auto 20px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "999px",
+            background: "#f1e3f0",
+            color: "#ae5a8b",
+          }}
+        >
+          <Clock3 size={32} />
         </div>
 
-        <h1 className="mb-4 text-4xl font-extrabold text-slate-900">
+        <h1
+          style={{
+            margin: 0,
+            fontSize: "30px",
+            lineHeight: 1.2,
+            fontWeight: 800,
+            color: "#0f172a",
+          }}
+        >
           Registration received
         </h1>
 
-        <p className="mx-auto mb-8 max-w-[520px] text-lg leading-relaxed text-slate-600">
-          Your worker account has been submitted. A CarePath
-          administrator will review your information before your
-          account is activated.
+        <p
+          style={{
+            maxWidth: "430px",
+            margin: "18px auto 0",
+            fontSize: "16px",
+            lineHeight: 1.7,
+            color: "#475569",
+          }}
+        >
+          Your worker account has been submitted. A CarePath administrator will
+          review your information before your account is activated.
         </p>
 
-        <div className="flex flex-col items-center gap-4">
+        <div
+          style={{
+            marginTop: "30px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
           <Link
             href="/login"
-            className="inline-flex min-h-[52px] items-center justify-center rounded-[11px] bg-[#ae5a8b] px-8 font-extrabold text-white transition hover:bg-[#9d4f7d]"
+            style={{
+              minHeight: "50px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "12px 28px",
+              borderRadius: "11px",
+              background: "#ae5a8b",
+              color: "#ffffff",
+              fontSize: "16px",
+              fontWeight: 800,
+              textDecoration: "none",
+              boxShadow: "0 6px 16px rgba(174,90,139,0.28)",
+            }}
           >
             Return to sign in
           </Link>
 
           <Link
             href="/"
-            className="text-[#0c6bc2] hover:underline"
+            style={{
+              display: "inline-block",
+              color: "#0c6bc2",
+              fontSize: "16px",
+              fontWeight: 500,
+              textDecoration: "none",
+            }}
           >
             Return to the CarePath home page
           </Link>

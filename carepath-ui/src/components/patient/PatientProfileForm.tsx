@@ -183,11 +183,11 @@ export default function PatientProfileForm({ mode }: PatientProfileFormProps) {
 
   return (
     <main
-      className="min-h-screen px-4 pt-2 pb-10 sm:px-6"
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(139, 145, 143, 0.9) 0%, #c5afce 45%, #9d64a3 75%)",
-      }}
+  style={{
+    width: "100%",
+    padding: "12px 0 40px",
+  }}
+        
     >
       <div
         className="w-full"
@@ -201,9 +201,9 @@ export default function PatientProfileForm({ mode }: PatientProfileFormProps) {
         {/* Page heading */}
         <div className="mb-10 text-center">
           <section
-            style={{
+              style={{
               maxWidth: "1200px",
-              margin: "0 auto 28px",
+              margin: "0 auto 20px",
               border: "1px solid rgba(20, 39, 109, 0.2)",
               padding: "30px 50px",
               borderRadius: "24px",

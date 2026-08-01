@@ -47,7 +47,7 @@ export default function RegisterPage() {
 
       console.log("Registration result:", result);
 
-if (result.token) {
+      if (result.token) {
         localStorage.setItem("carepath.patient.token", result.token);
       }
 
@@ -97,7 +97,7 @@ if (result.token) {
         justifyContent: "center",
         background:
           "linear-gradient(135deg, #71769c 0%, #e6caef 50%, #694f81 100%)",
-          
+
         padding: 24,
       }}
     >
@@ -317,54 +317,53 @@ if (result.token) {
           </button>
         </form>
 
-        <p
-          style={{
-            textAlign: "center",
-            color: "#64748b",
-            fontSize: 14,
-            marginTop: 22,
-          }}
-        >
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            style={{
-              color: "#0c6bc2",
-              fontWeight: 700,
-              textDecoration: "none",
-            }}
-          >
-            Sign in here
-          </Link>
-        </p>
-
         <div
           style={{
+            marginTop: 22,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 14,
             textAlign: "center",
-            marginTop: 16,
           }}
         >
+          <p
+            style={{
+              margin: 0,
+              fontSize: "15px",
+              color: "#64748b",
+            }}
+          >
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              style={{
+                color: "#0c6bc2",
+                fontWeight: 700,
+                textDecoration: "none",
+              }}
+            >
+              Sign in here
+            </Link>
+          </p>
+
           <Link
             href="/register"
             style={{
-              color: "#64748b",
-              fontSize: 14,
+              display: "block",
+              color: "#0c6bc2",
+              fontSize: "15px",
               textDecoration: "none",
             }}
           >
             Choose a different account type
           </Link>
-          ;
-          <Link
-            href="/"
-            style={{
-              color: "#64748b",
-              fontSize: 14,
-              textDecoration: "none",
-            }}
-          >
-            Return to the CarePath home page
-          </Link>
+<Link
+  href="/"
+  className="mt-2 text-[15px] text-[#5d74c7] hover:text-[#0c6bc2] hover:underline"
+>
+  Return to the CarePath home page
+</Link>
         </div>
       </section>
     </main>

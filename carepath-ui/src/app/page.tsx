@@ -136,8 +136,6 @@ export default function Home() {
             gap: 10,
             flexWrap: "wrap",
             padding: "10px 0",
-           
-
           }}
         >
           <Link
@@ -154,14 +152,14 @@ export default function Home() {
               color: "#0c6bc2",
               border: "1px solid #ae5a8b",
               textDecoration: "none",
-               
             }}
           >
             <UserRound size={16} />
             Login
           </Link>
 
-          <Link href="/patient/dashboard"
+          <Link
+            href="/patient/dashboard"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -180,7 +178,7 @@ export default function Home() {
             Patient Portal
           </Link>
           <Link
-            href="/coordinator/pooling"
+            href="/coordinator/dashboard"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -196,7 +194,26 @@ export default function Home() {
               boxShadow: "0 2px 8px rgba(85, 64, 161, 0.25)",
             }}
           >
-            Coordinator Hub
+            Coordinator Dashboard
+          </Link>
+          <Link
+            href="/driver/dashboard"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "9px 16px",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 700,
+              background: "#fff4e7",
+              color: "#0c6bc2",
+              border: "1px solid #ae5a8b",
+              textDecoration: "none",
+              boxShadow: "0 2px 8px rgba(85, 64, 161, 0.25)",
+            }}
+          >
+            Driver Dashboard
           </Link>
         </div>
       </nav>
@@ -373,9 +390,8 @@ export default function Home() {
                 }}
               >
                 Request a Ride
-               
               </Link>
-               <Link
+              <Link
                 href="/patient/profile"
                 style={{
                   display: "inline-flex",
@@ -392,7 +408,6 @@ export default function Home() {
                 }}
               >
                 Update My Profile
-               
               </Link>
             </div>{" "}
           </div>
@@ -522,7 +537,6 @@ export default function Home() {
               }}
             >
               Request a Ride
-             
             </Link>
           </div>
         </section>
@@ -952,7 +966,6 @@ export default function Home() {
                 flexWrap: "wrap",
               }}
             >
-              
               <div>
                 <p
                   style={{
@@ -971,7 +984,7 @@ export default function Home() {
                     flexDirection: "column",
                     gap: 9,
                   }}
-                  >
+                >
                   <Link
                     href="/login"
                     style={{
@@ -980,9 +993,9 @@ export default function Home() {
                       textDecoration: "none",
                     }}
                   >
-                     Login
+                    Login
                   </Link>
-                
+
                   <Link
                     href="/patient/intake"
                     style={{
@@ -1004,8 +1017,6 @@ export default function Home() {
                   >
                     Request a Ride
                   </Link>
-
-                
                 </div>
               </div>
 
@@ -1036,9 +1047,8 @@ export default function Home() {
                       textDecoration: "none",
                     }}
                   >
-                     Login
+                    Login
                   </Link>
-
 
                   <Link
                     href="/coordinator/pooling"
@@ -1051,50 +1061,49 @@ export default function Home() {
                     Coordinator Hub
                   </Link>
                 </div>
-                
               </div>
               <div>
-  <p
-    style={{
-      fontSize: 14,
-      fontWeight: 700,
-      marginBottom: 12,
-      color: "#ffffff",
-    }}
-  >
-    Support
-  </p>
+                <p
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    marginBottom: 12,
+                    color: "#ffffff",
+                  }}
+                >
+                  Support
+                </p>
 
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 9,
-    }}
-  >
-    <Link
-      href="/contact"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-    >
-      Contact Us
-    </Link>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 9,
+                  }}
+                >
+                  <Link
+                    href="/contact"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Contact Us
+                  </Link>
 
-    <Link
-      href="/support"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-    >
-      Report a Technical Problem
-    </Link>
-  </div>
-</div>
+                  <Link
+                    href="/support"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Report a Technical Problem
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
 
