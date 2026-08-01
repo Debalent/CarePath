@@ -20,7 +20,6 @@
     "build:lambda": "node scripts/build-lambda.js"
   },
   "dependencies": {
-    "@aws-sdk/client-sesv2": "^3.1101.0",
     "@prisma/client": "^5.14.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -32,6 +31,7 @@
     "express-validator": "^7.1.0",
     "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^9.0.3",
     "react-dom": "19.2.3",
     "serverless-http": "^3.2.0",
     "winston": "^3.13.0"
@@ -45,6 +45,7 @@
     "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.2",
+    "@types/nodemailer": "^8.0.1",
     "@types/supertest": "^6.0.2",
     "concurrently": "^8.2.2",
     "esbuild": "^0.23.0",
