@@ -60,7 +60,7 @@ export default function CoordinatorRoutesPage() {
   }
 
   return (
-    <DashboardLayout role="coordinator" title="Depot Routes" subtitle="Manage scheduled community transport runs" userName="Coordinator">
+    <DashboardLayout role="coordinator" title="Routes" subtitle="Manage scheduled community transport runs" userName="Coordinator">
       <div className="cp-space-y-4">
         <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #5540a1, #094f91)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c4b5fd', marginBottom: 6 }}>Depot routes</p>

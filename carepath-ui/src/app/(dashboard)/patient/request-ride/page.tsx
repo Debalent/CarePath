@@ -105,7 +105,7 @@ export default function PatientIntakePage() {
 
 
   return (
-    <DashboardLayout role="patient" title="Ride Intake" subtitle="Request medical transportation" userName="Patient">
+    <DashboardLayout role="patient" title="Request a Ride" subtitle="Request medical transportation" userName="Patient">
       <div className="cp-space-y-4">
 
 

@@ -57,18 +57,18 @@ const navItems: Record<
     },
   ],
   driver: [
-    { label: "Dashboard", href: "/driver/dashboard", icon: LayoutDashboard },
+    { label: "Home", href: "/driver/dashboard", icon: LayoutDashboard },
     { label: "My Rides", href: "/driver/rides", icon: Car },
-    { label: "Depot Routes", href: "/driver/routes", icon: MapPin },
+    { label: "My Routes", href: "/driver/routes", icon: MapPin },
     { label: "Availability", href: "/driver/availability", icon: Calendar },
   ],
   coordinator: [
-    { label: "Dashboard", href: "/coordinator/pooling", icon: LayoutDashboard },
-    { label: "Pooling Hub", href: "/coordinator/pooling", icon: Route },
+    { label: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
+    { label: "Ride Pooling", href: "/coordinator/pooling", icon: Route },
     { label: "Ride Requests", href: "/coordinator/rides", icon: Car },
     { label: "Patients", href: "/coordinator/patients", icon: User },
     { label: "Drivers", href: "/coordinator/drivers", icon: Heart },
-    { label: "Depot Routes", href: "/coordinator/routes", icon: MapPin },
+    { label: "Routes", href: "/coordinator/routes", icon: MapPin },
     { label: "Messages", href: "/coordinator/messages", icon: MessageSquare },
   ],
   admin: [

@@ -120,7 +120,7 @@ export default function CoordinatorPoolingPage() {
   const totalCommunity = poolingOptions?.pools.community.count ?? 0
 
   return (
-    <DashboardLayout role="coordinator" title="Pooled Transport Hub" subtitle="Dispatch before care is missed" userName="Coordinator">
+    <DashboardLayout role="coordinator" title="Ride Pooling" subtitle="Dispatch before care is missed" userName="Coordinator">
       <div className="cp-space-y-4">
 
         {/* Hero banner */}

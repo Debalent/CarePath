@@ -14,7 +14,7 @@ export default function PatientDashboardPage() {
   return (
     <DashboardLayout
       role="patient"
-      title="Patient Dashboard"
+      title="Home"
       subtitle="Manage rides, appointments, messages, and profile information"
       userName="Patient"
     >

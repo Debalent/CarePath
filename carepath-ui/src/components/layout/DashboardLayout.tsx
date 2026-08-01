@@ -56,13 +56,13 @@ const bottomNavItems: Record<Role, { label: string; href: string; icon: React.El
   },
 ],
   driver: [
-    { label: 'Dashboard', href: '/driver/dashboard',  icon: LayoutDashboard },
+    { label: 'Home', href: '/driver/dashboard',  icon: LayoutDashboard },
     { label: 'My Rides',  href: '/driver/rides',      icon: Car },
     { label: 'Routes',    href: '/driver/routes',     icon: MapPin },
     { label: 'Hours',     href: '/driver/availability', icon: Calendar },
   ],
   coordinator: [
-    { label: 'Dashboard', href: '/coordinator/pooling', icon: LayoutDashboard },
+    { label: 'Home', href: '/coordinator/dashboard', icon: LayoutDashboard },
     { label: 'Pooling',   href: '/coordinator/pooling', icon: Route },
     { label: 'Rides',     href: '/coordinator/rides',   icon: Car },
     { label: 'Patients',  href: '/coordinator/patients',icon: Users },

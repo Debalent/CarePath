@@ -134,7 +134,7 @@ export default function DriverDashboardPage() {
   }
 
   return (
-    <DashboardLayout role="driver" title="Driver Dashboard" subtitle="Manage your profile and availability" userName="Driver">
+    <DashboardLayout role="driver" title="Home" subtitle="Manage your assigned rides, routes, and availability" userName="Driver">
       <div className="cp-space-y-4">
 
         {/* Hero */}
