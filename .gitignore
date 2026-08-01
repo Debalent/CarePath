@@ -12,6 +12,7 @@ carepath-ui/*.zip
 .next/
 .blackbox/
 .kilo/
+carepath-expo/.expo/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
