@@ -6,7 +6,7 @@ export type ZipLookupResult = {
 }
 
 const DEFAULT_API_BASE =
-  process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3000/api'
+  process.env.NEXT_PUBLIC_CAREPATH_API_URL ?? 'http://localhost:3001/api'
 
 export async function lookupZipCode(zipCode: string): Promise<ZipLookupResult | null> {
   const zip = zipCode.trim().slice(0, 5)

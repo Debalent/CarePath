@@ -33,7 +33,7 @@ const roleColors: Record<string, string> = {
   PARTNER: '#d97706',
 }
 
-export function RideMessageThread({ rideId, token, apiBase = 'http://localhost:3000/api', role, demoMessages, onSendMessage }: RideMessageThreadProps) {
+export function RideMessageThread({ rideId, token, apiBase = 'http://localhost:3001/api', role, demoMessages, onSendMessage }: RideMessageThreadProps) {
   const [messages, setMessages] = useState<Message[]>(demoMessages ?? [])
   const [newMessage, setNewMessage] = useState('')
   const [loading, setLoading] = useState(false)
