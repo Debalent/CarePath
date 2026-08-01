@@ -51,20 +51,6 @@ new aws.iam.RolePolicyAttachment(`${prefix}-lambda-basic-exec`, {
   policyArn: aws.iam.ManagedPolicy.AWSLambdaBasicExecutionRole,
 });
 
-new aws.iam.RolePolicy(`${prefix}-lambda-ses`, {
-  role: lambdaRole.id,
-  policy: JSON.stringify({
-    Version: '2012-10-17',
-    Statement: [
-      {
-        Effect: 'Allow',
-        Action: ['ses:SendEmail', 'ses:SendRawEmail'],
-        Resource: '*',
-      },
-    ],
-  }),
-});
-
 // --- Upload the Lambda deployment package to S3 first ---
 // (Uploading directly as the Lambda "code" payload signs the whole multi-MB
 // request once; on a slow uplink that single signature can expire (SigV4
