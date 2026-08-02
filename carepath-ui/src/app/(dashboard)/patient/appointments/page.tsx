@@ -439,7 +439,7 @@ borderColor: calendarColor(
             Select an appointment to see its ride, clinic, and driver details.
           </p>
 
-          <div className="carepath-calendar">
+          <div className="carepath-calendar patient-calendar">
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
               initialView={isSmallScreen ? "listMonth" : "dayGridMonth"}
