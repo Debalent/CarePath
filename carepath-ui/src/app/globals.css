@@ -496,3 +496,233 @@ select:-webkit-autofill {
 .cp-font-bold     { font-weight: 700; }
 .cp-uppercase     { text-transform: uppercase; letter-spacing: 0.1em; }
 .cp-truncate      { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+
+/* CarePath FullCalendar styling */
+
+.carepath-calendar {
+  width: 100%;
+  overflow: hidden;
+  color: #334155;
+}
+
+.carepath-calendar .fc {
+  font-family: inherit;
+}
+
+.carepath-calendar .fc-toolbar {
+  gap: 12px;
+}
+
+.carepath-calendar .fc-toolbar-title {
+  color: #3f3150;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.carepath-calendar .fc-button {
+  border-color: #694f81 !important;
+  border-radius: 8px !important;
+  background: #694f81 !important;
+  box-shadow: none !important;
+  font-weight: 700 !important;
+}
+
+.carepath-calendar .fc-button:hover {
+  border-color: #59426f !important;
+  background: #59426f !important;
+}
+
+.carepath-calendar .fc-button:focus {
+  box-shadow: 0 0 0 3px rgba(105, 79, 129, 0.2) !important;
+}
+
+.carepath-calendar .fc-button-active {
+  border-color: #ae5a8b !important;
+  background: #ae5a8b !important;
+}
+.carepath-calendar .fc-col-header-cell {
+  background: linear-gradient(
+    180deg,
+    #f8f2fb 0%,
+    #efe4f6 100%
+  );
+}
+
+.carepath-calendar .fc-col-header-cell-cushion {
+  padding: 10px 4px;
+  color: #59426f;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.carepath-calendar .fc-daygrid-day {
+  transition: background 0.2s ease;
+}
+.carepath-calendar .fc-daygrid-day:hover {
+  background: #fbf8fd;
+}
+.carepath-calendar .fc-daygrid-day-number {
+  padding: 7px;
+  color: #475569;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.carepath-calendar .fc-day-today {
+  background: #f9f2fc !important;
+}
+.carepath-calendar .fc-day-today .fc-daygrid-day-number {
+  background: #694f81;
+  color: white !important;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 999px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 4px;
+  font-weight: 800;
+}
+
+.carepath-calendar .fc-event {
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.carepath-calendar .fc-event:hover {
+  filter: brightness(0.94);
+}
+
+.carepath-calendar .fc-list-event:hover td {
+  background: #f7f1f9;
+}
+
+.carepath-calendar .fc-list-day-cushion {
+  background: #f1e8f4;
+}
+
+.carepath-calendar .fc-list-day-text,
+.carepath-calendar .fc-list-day-side-text {
+  color: #59426f;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.carepath-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e6dce9;
+  border-radius: 10px;
+  background: #faf7fb;
+  color: #694f81;
+}
+.carepath-calendar-event {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 3px 6px;
+}
+
+.carepath-calendar-event-icon {
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.carepath-calendar-event-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.carepath-calendar-event-time {
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+  opacity: 0.95;
+  white-space: nowrap;
+}
+
+.carepath-calendar-event-title {
+  overflow: hidden;
+  min-width: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.carepath-calendar .fc-event {
+  min-height: 25px;
+}
+.carepath-detail-row div {
+  display: grid;
+  gap: 3px;
+}
+
+.carepath-detail-row strong {
+  color: #334155;
+  font-size: 13px;
+}
+
+.carepath-detail-row span {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+@media (max-width: 719px) {
+  .carepath-calendar .fc-toolbar {
+    margin-bottom: 0.75rem;
+  }
+
+  .carepath-calendar .fc-toolbar-title {
+    font-size: 0.95rem;
+    text-align: center;
+  }
+
+  .carepath-calendar .fc-button {
+    padding: 0.4rem 0.55rem !important;
+    font-size: 0.72rem !important;
+  }
+
+  .carepath-calendar .fc-footer-toolbar {
+    margin-top: 0.75rem;
+  }
+
+  .carepath-calendar .fc-footer-toolbar .fc-toolbar-chunk {
+    display: flex;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .carepath-calendar .fc-footer-toolbar .fc-button {
+    white-space: nowrap;
+  }
+
+  .carepath-calendar .fc-daygrid-day-number {
+    padding: 5px;
+    font-size: 0.7rem;
+  }
+
+  .carepath-calendar .fc-col-header-cell-cushion {
+    padding: 8px 2px;
+    font-size: 0.66rem;
+  }
+
+  .carepath-calendar .fc-event {
+    font-size: 0.66rem;
+  }
+}
