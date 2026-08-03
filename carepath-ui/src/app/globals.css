@@ -548,7 +548,11 @@ select:-webkit-autofill {
     #efe4f6 100%
   );
 }
-
+@media (max-width: 719px) {
+  .pooling-opportunity-card {
+    grid-template-columns: 1fr !important;
+  }
+}
 .carepath-calendar .fc-col-header-cell-cushion {
   padding: 10px 4px;
   color: #59426f;

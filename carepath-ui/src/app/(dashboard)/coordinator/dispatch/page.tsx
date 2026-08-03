@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import { LucideIcon } from 'lucide-react'
 
 import {
   AlertCircle,
@@ -10,6 +11,7 @@ import {
   Car,
   CheckCircle2,
   Clock3,
+  Hospital,
   MapPin,
   Route,
   ShieldCheck,
@@ -37,6 +39,7 @@ import {
   demoPendingRides,
   PendingRide,
 } from '@/lib/pooling'
+import { text } from 'stream/consumers'
 
 type DataMode = 'demo' | 'live'
 
@@ -102,8 +105,8 @@ function calendarColors(status: string) {
   switch (status) {
     case 'FALLBACK_NEEDED':
       return {
-        background: '#f4ccd9',
-        border: '#bd7189',
+        background: '#8c6ba8',
+        border: '#130321',
       }
 
     case 'MATCHED':
@@ -262,7 +265,7 @@ export default function CoordinatorDispatchPage() {
           start: ride.pickupTime,
           backgroundColor: colors.background,
           borderColor: colors.border,
-          textColor: '#3f3150',
+          textColor: '#f9f9e0',
           extendedProps: {
             patientName: fullName(ride),
             clinicName:
@@ -412,16 +415,15 @@ export default function CoordinatorDispatchPage() {
               lineHeight: 1.4,
             }}
           >
-            Review pickup demand and identify
-            rides that still need attention.
+            Review pickup demand and identify rides
+            that still need attention.
           </h2>
 
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              justifyContent:
-                'space-between',
+              justifyContent: 'space-between',
               flexWrap: 'wrap',
               gap: 10,
               marginTop: 16,
@@ -539,8 +541,7 @@ export default function CoordinatorDispatchPage() {
             }}
           >
             <ShieldCheck size={13} />
-            Stored locally in your browser
-            only.
+            Stored locally in your browser only.
           </p>
         </Card>
 
@@ -574,7 +575,7 @@ export default function CoordinatorDispatchPage() {
           />
 
           <StatCard
-            label="Need fallback"
+            label="Needs Attention"
             value={fallbackCount}
             icon={AlertTriangle}
             color="blue"
@@ -582,95 +583,331 @@ export default function CoordinatorDispatchPage() {
         </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle>
-              Dispatch calendar
-            </CardTitle>
-          </CardHeader>
-
-          <p
-            style={{
-              marginBottom: 16,
-              color: '#64748b',
-              fontSize: 13,
-              lineHeight: 1.6,
-            }}
-          >
-            Each calendar event represents a
-            requested pickup. Select one to see
-            the ride details.
-          </p>
+          
 
           <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: 14,
-              marginBottom: 18,
-              color: '#64748b',
-              fontSize: 12,
-            }}
-          >
-            <span
+  style={{
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 16,
+    marginBottom: 18,
+    padding: '16px 18px',
+    border: '1px solid #e3d9ea',
+    borderRadius: 12,
+    background:
+      'linear-gradient(135deg, #fbf8fd 0%, #f4eef8 100%)',
+  }}
+>
+  <div>
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 8,
+      }}
+    >
+      <CalendarDays
+        size={19}
+        color="#694f81"
+        aria-hidden="true"
+      />
+
+      <h2
+        style={{
+          margin: 0,
+          color: '#352445',
+          fontSize: 18,
+          fontWeight: 800,
+        }}
+      >
+        Dispatch Calendar
+      </h2>
+    </div>
+
+    <p
+      style={{
+        maxWidth: 650,
+        marginTop: 7,
+        marginBottom: 0,
+        color: '#64748b',
+        fontSize: 13,
+        lineHeight: 1.55,
+      }}
+    >
+      Review requested pickups by date, then select a ride
+      to see its patient, destination, and assignment details.
+    </p>
+  </div>
+
+  <div
+    style={{
+  display: 'flex',
+  alignItems: 'center',
+  flexWrap: 'wrap',
+  gap: '12px 20px',
+  fontSize: 14,
+  fontWeight: 600,
+  color: '#55607a',
+}}
+  >
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+      }}
+    >
+      <span
+        style={{
+          width: 14,
+          height: 14,
+          border: '1px solid #9b72ad',
+          borderRadius: 4,
+          background: '#fef3c7', color: '#d97706' ,
+        }}
+      />
+      Pending
+    </span>
+
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+      }}
+    >
+      <span
+        style={{
+          width: 14,
+          height: 14,
+          border: '1px solid #6f9fc9',
+          borderRadius: 4,
+          
+          background:  '#f1dff2', color: '#136e5e'
+        }}
+      />
+      Matched
+    </span>
+
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 5,
+      }}
+    >
+      <span
+        style={{
+          width: 14,
+          height: 14,
+          border: '1px solid #bd7189',
+          borderRadius: 4,
+          background: '#dbeafe', color: '#1d4ed8',
+        }}
+      />
+      Needs Attention
+    </span>
+  </div>
+</div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>
+              🚗  Potential Ride Pools
+              </CardTitle>
+            </CardHeader>
+
+            <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
+                display: 'grid',
+                gridTemplateColumns:
+                  'repeat(auto-fit, minmax(340px, 1fr))',
+                gap: 14,
               }}
             >
-              <span
+              {/* First pooling suggestion */}
+              <div
                 style={{
-                  width: 11,
-                  height: 11,
-                  border: '1px solid #9b72ad',
-                  borderRadius: 3,
-                  background: '#e6caef',
+                  display: 'grid',
+                  gridTemplateColumns:
+                    'minmax(0, 1fr) auto',
+                  alignItems: 'center',
+                  gap: 16,
+                  padding: 20,
+                  border: '1px solid #e6caef',
+                  borderRadius: 12,
+                  background:
+                    'linear-gradient(135deg, #faf7fc, #f5eef9)',
                 }}
-              />
-              Pending
-            </span>
+              >
+                <div
+                  style={{
+                    display: 'grid',
+                    gap: 8,
+                    minWidth: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 7,
+                    }}
+                  >
+                    <Hospital
+                      size={16}
+                      color="#7b4b9d"
+                      aria-hidden="true"
+                    />
 
-            <span
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-              }}
-            >
-              <span
+                    <p
+                      style={{
+                        margin: 0,
+                        color: '#5d4177',
+                        fontSize: 17,
+                        fontWeight: 800,
+                      }}
+                    >
+                      Baptist Dialysis
+                    </p>
+                  </div>
+
+                  <p
+                    style={{
+                      margin: 0,
+                      color: '#334155',
+                      fontSize: 14,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Mary Smith + John Doe
+                  </p>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '5px 12px',
+                      color: '#64748b',
+                      fontSize: 12,
+                    }}
+                  >
+                    <span>10 min apart</span>
+                    <span>Same clinic</span>
+                    <span>Saves 18 miles</span>
+                  </div>
+                </div>
+
+                <Button
+                  size="sm"
+                  style={{
+                    background: '#b72898',
+                    whiteSpace: 'nowrap',
+                  }}
+                  onClick={() =>
+                    setMessage(
+                      'Ride pool created for Mary Smith and John Doe.',
+                    )
+                  }
+                >
+                  Create Ride Pool
+                </Button>
+              </div>
+
+              {/* Second pooling suggestion */}
+              <div
                 style={{
-                  width: 11,
-                  height: 11,
-                  border: '1px solid #6f9fc9',
-                  borderRadius: 3,
-                  background: '#c8def4',
+                  display: 'grid',
+                  gridTemplateColumns:
+                    'minmax(0, 1fr) auto',
+                  alignItems: 'center',
+                  gap: 16,
+                  padding: 20,
+                  border: '1px solid #d6e1ef',
+                  borderRadius: 12,
+                  background:
+                    'linear-gradient(135deg, #f8fbff, #eef4fb)',
                 }}
-              />
-              Matched
-            </span>
+              >
+                <div
+                  style={{
+                    display: 'grid',
+                    gap: 8,
+                    minWidth: 0,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 7,
+                    }}
+                  >
+                    <Hospital
+                      size={16}
+                      color="#557aa6"
+                      aria-hidden="true"
+                    />
 
-            <span
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 5,
-              }}
-            >
-              <span
-                style={{
-                  width: 11,
-                  height: 11,
-                  border: '1px solid #bd7189',
-                  borderRadius: 3,
-                  background: '#f4ccd9',
-                }}
-              />
-              Fallback needed
-            </span>
-          </div>
+                    <p
+                      style={{
+                        margin: 0,
+                        color: '#405f83',
+                        fontSize: 17,
+                        fontWeight: 700,
+                      }}
+                    >
+                      St. Francis Cardiology
+                    </p>
+                  </div>
 
-          <div className="carepath-calendar">
+                  <p
+                    style={{
+                      margin: 0,
+                      color: '#334155',
+                      fontSize: 14,
+                      fontWeight: 700,
+                    }}
+                  >
+                    Alex Jones + Dana Lee
+                  </p>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '5px 12px',
+                      color: '#64748b',
+                      fontSize: 12,
+                    }}
+                  >
+                    <span>12 min apart</span>
+                    <span>Same clinic</span>
+                    <span>Saves 11 miles</span>
+                  </div>
+                </div>
+
+                <Button
+                  size="sm"
+                  style={{
+                    background: '#557aa6',
+                    whiteSpace: 'nowrap',
+                  }}
+                  onClick={() =>
+                    setMessage(
+                      'Ride pool created for Alex Jones and Dana Lee.',
+                    )
+                  }
+                >
+                  Create Ride Pool
+                </Button>
+              </div>
+            </div>
+          </Card>
+
+          <div className="carepath-calendar coordinator-calendar">
             <FullCalendar
               plugins={[
                 dayGridPlugin,
@@ -811,15 +1048,8 @@ export default function CoordinatorDispatchPage() {
                       fontSize: 13,
                     }}
                   >
-                    {
-                      ride.appointment
-                        .clinicName
-                    }
-                    ,{' '}
-                    {
-                      ride.appointment
-                        .clinicCity
-                    }
+                    {ride.appointment.clinicName},{' '}
+                    {ride.appointment.clinicCity}
                   </p>
 
                   <div
