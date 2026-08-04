@@ -389,7 +389,7 @@ export default function CoordinatorDispatchPage() {
             padding: 20,
             borderRadius: 16,
             background:
-              'linear-gradient(135deg, #71769c 0%, #e6caef 50%, #694f81 100%)',
+              'linear-gradient(135deg, #7a83cb 0%, #e6caef 50%, #694f81 100%)',
             color: '#ffffff',
           }}
         >

@@ -73,7 +73,9 @@ export default function CoordinatorMessagesPage() {
   return (
     <DashboardLayout role="coordinator" title="Messages" subtitle="Shared communication portal for all roles" userName="Coordinator">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #5540a1, #094f91)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background:
+      "linear-gradient(135deg, #e3ca59 0%, #b72898 50%, #13c6cf 100%)",
+    color: "#ffffff", }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c4b5fd', marginBottom: 6 }}>Communication portal</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Coordinate with patients, drivers, and partners — all in one place.</h2>
         </section>

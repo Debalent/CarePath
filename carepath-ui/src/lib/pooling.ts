@@ -76,7 +76,7 @@ export const demoPendingRides: PendingRide[] = [
   {
     id: 'demo-ride-1',
     status: 'FALLBACK_NEEDED',
-    pickupTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    pickupTime: "2026-08-04T05:40:00.000Z",
     isFallbackUsed: true,
     patient: {
       id: 'demo-patient-1',

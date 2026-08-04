@@ -126,7 +126,7 @@ export default function CoordinatorPoolingPage() {
         {/* Hero banner */}
         <section style={{
           borderRadius: 16, padding: '20px',
-          background: 'linear-gradient(135deg, #136e5e, #094f91)',
+          background: 'linear-gradient(135deg, #75bdb0, #094f91)',
           color: '#fff',
         }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#99e6d8', marginBottom: 6 }}>
@@ -175,7 +175,7 @@ export default function CoordinatorPoolingPage() {
         {/* Ride queue */}
         <Card>
           <CardHeader>
-            <CardTitle>Ride queue</CardTitle>
+            <CardTitle>Ride Queue</CardTitle>
           </CardHeader>
           <div className="cp-space-y-3">
             {pendingRides.length === 0 && (
@@ -188,11 +188,18 @@ export default function CoordinatorPoolingPage() {
                   className={`cp-ride-item${isSelected ? ' selected' : ''}`}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
                     <p style={{ fontWeight: 700, fontSize: 15, color: '#0f172a' }}>{fullName(ride)}</p>
-                    <Badge variant={ride.status === 'FALLBACK_NEEDED' ? 'error' : 'info'}>{ride.status}</Badge>
-                  </div>
-                  <p style={{ fontSize: 13, color: '#64748b', marginTop: 4 }}>{ride.appointment.clinicName}, {ride.appointment.clinicCity}</p>
-                  <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
-                    <Badge variant="neutral"><Clock3 size={11} style={{ marginRight: 3 }} />{toDisplayDate(ride.pickupTime)}</Badge>
+                   <Badge
+  variant={
+    ride.status === "FALLBACK_NEEDED" ||
+    ride.status === "ATTENTION_NEEDED"
+      ? "error"
+      : "info"
+  }
+>
+  {ride.status === "FALLBACK_NEEDED"
+    ? "ATTENTION NEEDED"
+    : ride.status.replaceAll("_", " ")}
+</Badge>
                   </div>
                 </button>
               )

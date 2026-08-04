@@ -48,8 +48,8 @@ export default function CoordinatorDriversPage() {
   return (
     <DashboardLayout role="coordinator" title="Drivers" subtitle="Driver roster and availability status" userName="Coordinator">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #5540a1, #094f91)', color: '#fff' }}>
-          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c4b5fd', marginBottom: 6 }}>Driver network</p>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #73c7a8, #094f91)', color: '#fff' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#625078', marginBottom: 6 }}>Driver network</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Monitor driver availability and fallback pool status across your county.</h2>
         </section>
 

@@ -70,7 +70,7 @@ export default function DriverRidesPage() {
   return (
     <DashboardLayout role="driver" title="My Rides" subtitle="Assigned rides and status management" userName="Driver">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #0c6bc2, #052b56)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #eb84aa, #eeae60)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#93c5fd', marginBottom: 6 }}>Driver rides</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Confirm, start, and complete your assigned medical transport rides.</h2>
         </section>

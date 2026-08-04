@@ -51,7 +51,7 @@ export default function CoordinatorPatientsPage() {
   return (
     <DashboardLayout role="coordinator" title="Patients" subtitle="Patient roster for your county" userName="Coordinator">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #5540a1, #094f91)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #7e5fab, #076f76)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#c4b5fd', marginBottom: 6 }}>Patient roster</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Know your patients' accessibility needs and funding sources before dispatch.</h2>
         </section>

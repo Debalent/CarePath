@@ -39,7 +39,7 @@ export default function DriverRoutesPage() {
   return (
     <DashboardLayout role="driver" title="My Routes" subtitle="Scheduled community transport runs" userName="Driver">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #0c6bc2, #052b56)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #277ed0, #6e1b69)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#93c5fd', marginBottom: 6 }}>Depot routes</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Scheduled community runs that batch multiple patients to the same destination.</h2>
         </section>

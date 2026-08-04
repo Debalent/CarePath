@@ -3,7 +3,7 @@
 :root {
   --brand-purple:       #5540a1;
   --brand-purple-dark:  #3d2f7a;
-  --brand-purple-light: #ede9f7;
+  --brand-purple-light: #f3f0fa;
   --brand-blue:         #0c6bc2;
   --brand-blue-dark:    #094f91;
   --brand-blue-light:   #dbeafe;
@@ -328,8 +328,8 @@ select:-webkit-autofill {
 }
 
 .cp-badge-error {
-  background: #f9e1ea;
-  color: #a33d68;
+  background: #d2caec;
+  color: #8b2b7a;
   border: 1px solid #e9b3ca;
 }
 
@@ -346,7 +346,7 @@ select:-webkit-autofill {
 }
 
 .cp-badge-purple {
-  background: #eadcf1;
+  background: #dcf1df;
   color: #6f3d82;
   border: 1px solid #cfa0e3;
 }
@@ -396,13 +396,13 @@ select:-webkit-autofill {
   padding: 14px;
   cursor: pointer;
   transition: all 0.15s;
-  background: #fff;
+  background: #ffffff;
   text-align: left;
   width: 100%;
   min-height: 44px;
   touch-action: manipulation;
 }
-.cp-ride-item:hover  { border-color: var(--brand-purple); background: #faf9ff; }
+.cp-ride-item:hover  { border-color: var(--brand-purple); background: #f9fff9; }
 .cp-ride-item.selected { border-color: var(--brand-purple); background: var(--brand-purple-light); }
 
 /* ── Candidate card ── */
@@ -628,7 +628,7 @@ select:-webkit-autofill {
   border: 1px solid #e6dce9;
   border-radius: 10px;
   background: #faf7fb;
-  color: #e9d7f0;
+  color: #694f81;
 }
 
 .carepath-calendar-event {
