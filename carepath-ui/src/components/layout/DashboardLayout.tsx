@@ -55,25 +55,88 @@ const bottomNavItems: Record<Role, { label: string; href: string; icon: React.El
     icon: Users,
   },
 ],
-  driver: [
-    { label: 'Home', href: '/driver/dashboard',  icon: LayoutDashboard },
-    { label: 'My Rides',  href: '/driver/rides',      icon: Car },
-    { label: 'Routes',    href: '/driver/routes',     icon: MapPin },
-    { label: 'Hours',     href: '/driver/availability', icon: Calendar },
-  ],
-  coordinator: [
-    { label: 'Home', href: '/coordinator/dashboard', icon: LayoutDashboard },
-    { label: 'Pooling',   href: '/coordinator/pooling', icon: Route },
-    { label: 'Rides',     href: '/coordinator/rides',   icon: Car },
-    { label: 'Patients',  href: '/coordinator/patients',icon: Users },
-    { label: 'Messages',  href: '/coordinator/messages',icon: MessageSquare },
-  ],
+ driver: [
+  {
+    label: 'Home',
+    href: '/driver/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'My Rides',
+    href: '/driver/rides',
+    icon: Car,
+  },
+  {
+    label: 'Routes',
+    href: '/driver/routes',
+    icon: MapPin,
+  },
+  {
+    label: 'Hours',
+    href: '/driver/availability',
+    icon: Calendar,
+  },
+  {
+    label: 'Messages',
+    href: '/driver/messages',
+    icon: MessageSquare,
+  },
+],
+
+coordinator: [
+  {
+    label: 'Home',
+    href: '/coordinator/dashboard',
+    icon: LayoutDashboard,
+  },
+  {
+    label: 'Pooling',
+    href: '/coordinator/pooling',
+    icon: Route,
+  },
+  {
+    label: 'Dispatch',
+    href: '/coordinator/dispatch',
+    icon: Calendar,
+  },
+  {
+    label: 'Rides',
+    href: '/coordinator/rides',
+    icon: Car,
+  },
+  {
+    label: 'Patients',
+    href: '/coordinator/patients',
+    icon: Users,
+  },
+  {
+    label: 'Messages',
+    href: '/coordinator/messages',
+    icon: MessageSquare,
+  },
+],
   admin: [
-    { label: 'Dashboard', href: '/admin/credits', icon: LayoutDashboard },
-    { label: 'Credits',   href: '/admin/credits', icon: CreditCard },
-    { label: 'ROI',       href: '/admin/roi',     icon: BarChart3 },
-    { label: 'Partners',  href: '/admin/partners',icon: Users },
-  ],
+  {
+    label: "Dashboard",
+    href: "/admin",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Credits",
+    href: "/admin/credits",
+    icon: CreditCard,
+  },
+  {
+    label: "ROI",
+    href: "/admin/roi",
+    icon: BarChart3,
+  },
+  {
+    label: "Partners",
+    href: "/admin/partners",
+    icon: Users,
+  },
+],
   advocate: [
     { label: 'Dashboard', href: '/advocate/dashboard',  icon: LayoutDashboard },
     { label: 'Rides',     href: '/advocate/rides',      icon: Car },
