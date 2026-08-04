@@ -12,12 +12,12 @@ import {
 
 export default function RegisterChoicePage() {
   return (
-    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#eee4f5] via-[#f5eafb] to-[#ddc6e8] px-5 py-10">
+    <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-[#f6f0fb] via-[#eaf6fb] to-[#c4aad0] px-5 py-10">
       <div className="pointer-events-none absolute -left-28 top-20 h-80 w-80 rounded-full bg-[#d8b5e7]/40 blur-2xl" />
 
       <div className="pointer-events-none absolute -right-24 bottom-12 h-96 w-96 rounded-full bg-[#cdb3e8]/40 blur-3xl" />
 
-      <section className="relative z-10 w-full max-w-[1170px] rounded-[28px] border border-white/70 bg-white px-6 py-10 shadow-[0_24px_70px_rgba(72,36,96,0.18)] sm:px-10 md:px-14 lg:px-20 lg:py-12">
+      <section className="relative z-10 w-full max-w-[1170px] rounded-[28px] border border-white/70 bg-gradient-to-br from-[#c4aad0]  to-[#f6f0fb] px-6 py-10 shadow-[0_24px_70px_rgba(72,36,96,0.18)] sm:px-10 md:px-14 lg:px-20 lg:py-12">
         {/* Logo and heading */}
         <div className="mb-14 flex flex-col items-center text-center">
           <Image

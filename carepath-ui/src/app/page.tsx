@@ -1071,7 +1071,16 @@ export default function Home() {
     >
       Advocate Portal
     </Link>
-
+<Link
+  href="/partner/dashboard"
+  style={{
+    color: "rgba(255, 255, 255, 0.72)",
+    fontSize: 14,
+    textDecoration: "none",
+  }}
+>
+  Partner Portal
+</Link>
     <Link
       href="/admin"
       style={{
@@ -1079,6 +1088,7 @@ export default function Home() {
         fontSize: 14,
         textDecoration: "none",
       }}
+      
     >
       Admin Portal
     </Link>

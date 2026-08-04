@@ -628,8 +628,9 @@ select:-webkit-autofill {
   border: 1px solid #e6dce9;
   border-radius: 10px;
   background: #faf7fb;
-  color: #694f81;
+  color: #e9d7f0;
 }
+
 .carepath-calendar-event {
   display: flex;
   align-items: center;
