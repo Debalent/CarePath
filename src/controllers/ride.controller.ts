@@ -16,6 +16,114 @@ const buildCandidateScore = (reliabilityScore: number, ridesCompleted: number, m
   return Math.round((reliabilityWeight + experienceWeight + rangeWeight) * 10) / 10;
 };
 
+const ACTIVE_TRACKING_STATUSES: RideStatus[] = [RideStatus.MATCHED, RideStatus.CONFIRMED, RideStatus.IN_PROGRESS];
+
+const getTrackingStatusLabel = (status: RideStatus): string => {
+  switch (status) {
+    case RideStatus.CONFIRMED:
+      return 'Confirmed';
+    case RideStatus.IN_PROGRESS:
+      return 'In progress';
+    case RideStatus.MATCHED:
+      return 'Matched';
+    case RideStatus.PENDING:
+      return 'Pending';
+    case RideStatus.COMPLETED:
+      return 'Completed';
+    case RideStatus.CANCELLED:
+      return 'Cancelled';
+    case RideStatus.FALLBACK_NEEDED:
+      return 'Fallback needed';
+    default:
+      return 'Tracking';
+  }
+};
+
+const getEtaMinutes = (ride: any): number => {
+  if (!ride?.appointment?.estimatedMiles) return 15;
+  const miles = Number(ride.appointment.estimatedMiles);
+  if (miles <= 5) return 10;
+  if (miles <= 15) return 18;
+  return 24;
+};
+
+const getLocationLabel = (ride: any, status: RideStatus): string => {
+  if (status === RideStatus.COMPLETED) return 'Trip completed';
+  if (status === RideStatus.CANCELLED) return 'Trip cancelled';
+  if (status === RideStatus.PENDING) return 'Waiting for driver assignment';
+  return ride?.pickupAddress ? `Near ${ride.pickupAddress}` : 'Route is active';
+};
+
+const getTimelineForRide = (ride: any, status: RideStatus): Array<{ label: string; detail: string; active: boolean }> => {
+  const statusLabel = getTrackingStatusLabel(status);
+  const isActiveStatus = status === RideStatus.CONFIRMED || status === RideStatus.IN_PROGRESS;
+  const timeline = [
+    {
+      label: 'Trip requested',
+      detail: ride?.appointment?.clinicName ? `Appointment at ${ride.appointment.clinicName}` : 'Ride request captured successfully.',
+      active: true,
+    },
+    {
+      label: 'Driver assigned',
+      detail: status !== RideStatus.PENDING ? 'The ride has a driver and is moving toward pickup.' : 'Waiting for a driver match.',
+      active: status !== RideStatus.PENDING,
+    },
+    {
+      label: 'Arrival window',
+      detail: `Current status is ${statusLabel.toLowerCase()}.`,
+      active: isActiveStatus,
+    },
+  ];
+
+  return timeline;
+};
+
+const buildTrackingSnapshot = (role: Role, ride: any) => {
+  const status = ride?.status ?? RideStatus.PENDING;
+  const statusLabel = getTrackingStatusLabel(status);
+  const patientName = ride?.patient?.user ? `${ride.patient.user.firstName} ${ride.patient.user.lastName}`.trim() : 'Patient';
+  const driverName = ride?.driver?.user ? `${ride.driver.user.firstName} ${ride.driver.user.lastName}`.trim() : 'Driver';
+  const coordinatorName = ride?.coordinator?.user ? `${ride.coordinator.user.firstName} ${ride.coordinator.user.lastName}`.trim() : 'Coordinator';
+  const shareEnabled = role === Role.PATIENT || role === Role.DRIVER;
+
+  const participants = role === Role.PATIENT
+    ? [
+        { name: 'You', role: 'Patient', access: 'Owner' as const },
+        { name: driverName, role: 'Driver', access: 'Shared' as const },
+        { name: coordinatorName, role: 'Coordinator', access: 'Viewer' as const },
+      ]
+    : role === Role.DRIVER
+      ? [
+          { name: 'You', role: 'Driver', access: 'Owner' as const },
+          { name: patientName, role: 'Patient', access: 'Shared' as const },
+          { name: coordinatorName, role: 'Coordinator', access: 'Viewer' as const },
+        ]
+      : [
+          { name: coordinatorName, role: 'Coordinator', access: 'Owner' as const },
+          { name: patientName, role: 'Patient', access: 'Viewer' as const },
+          { name: driverName, role: 'Driver', access: 'Viewer' as const },
+        ];
+
+  return {
+    rideId: ride?.id ?? null,
+    role: role.toLowerCase(),
+    status,
+    etaMinutes: getEtaMinutes(ride),
+    title: role === Role.PATIENT ? 'Your ride is moving' : role === Role.DRIVER ? 'Driver navigation view' : 'Care-team tracking view',
+    subtitle: role === Role.PATIENT
+      ? 'Your driver is on the way and your care team can follow progress.'
+      : role === Role.DRIVER
+        ? 'Turn-by-turn guidance and live ride handoff are ready for the next trip.'
+        : 'Dispatch can monitor ride progress and support the care team in real time.',
+    statusLabel,
+    locationLabel: getLocationLabel(ride, status),
+    visibilityLabel: shareEnabled ? 'Shared with your assigned care contacts.' : 'Sharing is paused until consent is enabled.',
+    shareEnabled,
+    participants,
+    timeline: getTimelineForRide(ride, status),
+  };
+};
+
 // Patient creates a ride request
 export const createRideRequest = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -411,6 +519,134 @@ export const getMyRides = async (
     });
 
     res.json(rides);
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCurrentTrackingSnapshot = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    if (!req.user?.userId) return next(new AppError('Unauthorized', 401));
+
+    const role = req.user.role as Role;
+    let ride: any = null;
+
+    if (role === Role.PATIENT) {
+      const patient = await prisma.patient.findUnique({ where: { userId: req.user.userId } });
+      if (!patient) return next(new AppError('Patient profile not found', 404));
+      ride = await prisma.rideRequest.findFirst({
+        where: { patientId: patient.id, status: { in: ACTIVE_TRACKING_STATUSES } },
+        include: {
+          appointment: true,
+          patient: { include: { user: { select: { firstName: true, lastName: true } } } },
+          driver: { include: { user: { select: { firstName: true, lastName: true } } } },
+          coordinator: { include: { user: { select: { firstName: true, lastName: true } } } },
+        },
+        orderBy: [{ pickupTime: 'asc' }, { createdAt: 'desc' }],
+      });
+    } else if (role === Role.DRIVER) {
+      const driver = await prisma.driver.findUnique({ where: { userId: req.user.userId } });
+      if (!driver) return next(new AppError('Driver profile not found', 404));
+      ride = await prisma.rideRequest.findFirst({
+        where: { driverId: driver.id, status: { in: ACTIVE_TRACKING_STATUSES } },
+        include: {
+          appointment: true,
+          patient: { include: { user: { select: { firstName: true, lastName: true } } } },
+          driver: { include: { user: { select: { firstName: true, lastName: true } } } },
+          coordinator: { include: { user: { select: { firstName: true, lastName: true } } } },
+        },
+        orderBy: [{ pickupTime: 'asc' }, { createdAt: 'desc' }],
+      });
+    } else if (role === Role.COORDINATOR) {
+      const coordinator = await prisma.coordinator.findUnique({ where: { userId: req.user.userId } });
+      if (!coordinator) return next(new AppError('Coordinator profile not found', 404));
+      ride = await prisma.rideRequest.findFirst({
+        where: { coordinatorId: coordinator.id, status: { in: ACTIVE_TRACKING_STATUSES } },
+        include: {
+          appointment: true,
+          patient: { include: { user: { select: { firstName: true, lastName: true } } } },
+          driver: { include: { user: { select: { firstName: true, lastName: true } } } },
+          coordinator: { include: { user: { select: { firstName: true, lastName: true } } } },
+        },
+        orderBy: [{ pickupTime: 'asc' }, { createdAt: 'desc' }],
+      });
+    } else {
+      ride = await prisma.rideRequest.findFirst({
+        where: { status: { in: ACTIVE_TRACKING_STATUSES } },
+        include: {
+          appointment: true,
+          patient: { include: { user: { select: { firstName: true, lastName: true } } } },
+          driver: { include: { user: { select: { firstName: true, lastName: true } } } },
+          coordinator: { include: { user: { select: { firstName: true, lastName: true } } } },
+        },
+        orderBy: [{ pickupTime: 'asc' }, { createdAt: 'desc' }],
+      });
+    }
+
+    if (!ride) {
+      res.json({
+        rideId: null,
+        role: role.toLowerCase(),
+        status: RideStatus.PENDING,
+        etaMinutes: 0,
+        title: 'No active ride',
+        subtitle: 'No active ride is available yet for this account.',
+        statusLabel: 'Waiting',
+        locationLabel: 'No active trip yet',
+        visibilityLabel: 'Visibility appears once a ride is active.',
+        shareEnabled: role === Role.PATIENT || role === Role.DRIVER,
+        participants: [],
+        timeline: [
+          { label: 'Awaiting ride', detail: 'The account is ready for its next assigned trip.', active: true },
+        ],
+      });
+      return;
+    }
+
+    res.json(buildTrackingSnapshot(role, ride));
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getRideTrackingSnapshot = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const { rideId } = req.params;
+    if (!req.user?.userId) return next(new AppError('Unauthorized', 401));
+
+    const role = req.user.role as Role;
+    const ride = await prisma.rideRequest.findUnique({
+      where: { id: rideId },
+      include: {
+        appointment: true,
+        patient: { include: { user: { select: { firstName: true, lastName: true } } } },
+        driver: { include: { user: { select: { firstName: true, lastName: true } } } },
+        coordinator: { include: { user: { select: { firstName: true, lastName: true } } } },
+      },
+    });
+
+    if (!ride) return next(new AppError('Ride not found', 404));
+
+    if (role === Role.PATIENT) {
+      const patient = await prisma.patient.findUnique({ where: { userId: req.user.userId } });
+      if (!patient || ride.patientId !== patient.id) return next(new AppError('Not authorized to view this ride', 403));
+    } else if (role === Role.DRIVER) {
+      const driver = await prisma.driver.findUnique({ where: { userId: req.user.userId } });
+      if (!driver || ride.driverId !== driver.id) return next(new AppError('Not authorized to view this ride', 403));
+    } else if (role === Role.COORDINATOR) {
+      const coordinator = await prisma.coordinator.findUnique({ where: { userId: req.user.userId } });
+      if (!coordinator || ride.coordinatorId !== coordinator.id) return next(new AppError('Not authorized to view this ride', 403));
+    }
+
+    res.json(buildTrackingSnapshot(role, ride));
   } catch (err) {
     next(err);
   }

@@ -11,6 +11,8 @@ import {
   listAllRides,
   getMyRides,
   updateRideStatus,
+  getCurrentTrackingSnapshot,
+  getRideTrackingSnapshot,
 } from '../controllers/ride.controller';
 import { Role } from '@prisma/client';
 
@@ -21,6 +23,10 @@ router.use(authenticate);
 // Patient routes
 router.post('/', requireRole(Role.PATIENT), createRideRequest);
 router.get('/my', requireRole(Role.PATIENT), getMyRides);
+
+// GPS tracking routes
+router.get('/gps/current', requireRole(Role.PATIENT, Role.DRIVER, Role.COORDINATOR, Role.ADMIN, Role.ADVOCATE, Role.PARTNER), getCurrentTrackingSnapshot);
+router.get('/:rideId/gps', requireRole(Role.PATIENT, Role.DRIVER, Role.COORDINATOR, Role.ADMIN, Role.ADVOCATE, Role.PARTNER), getRideTrackingSnapshot);
 
 // Coordinator routes
 router.get('/pending', requireRole(Role.COORDINATOR), getPendingRides);

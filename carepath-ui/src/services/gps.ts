@@ -1,3 +1,5 @@
+import { getApi } from '@/lib/api'
+
 export type GpsRole = 'driver' | 'patient' | 'coordinator' | 'advocate' | 'partner'
 
 export type GpsCapability = {
@@ -8,12 +10,16 @@ export type GpsCapability = {
 }
 
 export type GpsTrackerSnapshot = {
+  rideId: string | null
+  role: string
+  status: string
   title: string
   subtitle: string
   etaMinutes: number
   statusLabel: string
   locationLabel: string
   visibilityLabel: string
+  shareEnabled: boolean
   participants: Array<{ name: string; role: string; access: 'Owner' | 'Viewer' | 'Shared' }>
   timeline: Array<{ label: string; detail: string; active: boolean }>
 }
@@ -97,12 +103,16 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
   switch (role) {
     case 'driver':
       return {
+        rideId: null,
+        role,
+        status: 'PENDING',
         title: 'North Shore Clinic route',
         subtitle: 'Pickup confirmed and approaching the care facility.',
         etaMinutes: 12,
         statusLabel: 'En route',
         locationLabel: 'Near 47th St and Cicero Ave',
         visibilityLabel: 'Visible to dispatch and the assigned patient contact',
+        shareEnabled: true,
         participants: [
           { name: 'You', role: 'Driver', access: 'Owner' },
           { name: 'Dispatch', role: 'Coordinator', access: 'Viewer' },
@@ -117,12 +127,16 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
 
     case 'patient':
       return {
+        rideId: null,
+        role,
+        status: 'PENDING',
         title: 'Your ride is moving',
         subtitle: 'Your driver is on the way and your care team can follow progress.',
         etaMinutes: 15,
         statusLabel: 'Arriving soon',
         locationLabel: 'Approaching the appointment destination',
         visibilityLabel: 'Shared with your caregiver and the clinic contact',
+        shareEnabled: true,
         participants: [
           { name: 'You', role: 'Patient', access: 'Owner' },
           { name: 'Caregiver', role: 'Support', access: 'Viewer' },
@@ -139,12 +153,16 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
     case 'advocate':
     case 'partner':
       return {
+        rideId: null,
+        role,
+        status: 'PENDING',
         title: 'Care-team trip board',
         subtitle: 'Dispatch can monitor an active route and escalate delay risks.',
         etaMinutes: 10,
         statusLabel: 'Monitoring',
         locationLabel: 'Live map view is ready for the current trip',
         visibilityLabel: 'Shared with the assigned coordinator and support contacts',
+        shareEnabled: false,
         participants: [
           { name: 'Coordinator', role: 'Dispatch', access: 'Owner' },
           { name: 'Advocate', role: 'Support', access: 'Viewer' },
@@ -159,14 +177,23 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
 
     default:
       return {
+        rideId: null,
+        role,
+        status: 'PENDING',
         title: 'Tracking preview',
         subtitle: 'A live view will appear here once a route is active.',
         etaMinutes: 0,
         statusLabel: 'Waiting',
         locationLabel: 'No active trip yet',
         visibilityLabel: 'Visibility is not enabled until a ride starts',
+        shareEnabled: false,
         participants: [],
         timeline: [],
       }
   }
+}
+
+export async function fetchGpsTracking(role: GpsRole): Promise<GpsTrackerSnapshot> {
+  const api = getApi(role.toUpperCase())
+  return api.get<GpsTrackerSnapshot>('/rides/gps/current')
 }

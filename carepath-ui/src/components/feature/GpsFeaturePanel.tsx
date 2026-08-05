@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Activity,
   CheckCircle2,
@@ -17,7 +17,7 @@ import {
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import {
   buildGpsTrackerSnapshot,
-  getGpsCapabilityPlan,
+  fetchGpsTracking,
   type GpsRole,
 } from '@/services/gps'
 
@@ -29,8 +29,37 @@ type GpsFeaturePanelProps = {
 
 export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps) {
   const [shareEnabled, setShareEnabled] = useState(role === 'driver' || role === 'patient')
-  const capabilities = useMemo(() => getGpsCapabilityPlan(role), [role])
-  const tracker = useMemo(() => buildGpsTrackerSnapshot(role), [role])
+  const [tracker, setTracker] = useState(() => buildGpsTrackerSnapshot(role))
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let active = true
+
+    const loadTracking = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const data = await fetchGpsTracking(role)
+        if (!active) return
+        setTracker(data)
+        setShareEnabled(Boolean(data.shareEnabled))
+      } catch (err) {
+        if (!active) return
+        setError(err instanceof Error ? err.message : 'Unable to load tracking data.')
+        setTracker(buildGpsTrackerSnapshot(role))
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    void loadTracking()
+
+    return () => {
+      active = false
+    }
+  }, [role])
 
   const headerAccent =
     role === 'driver'
@@ -67,6 +96,12 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
               <p style={{ margin: 0, maxWidth: 680, lineHeight: 1.6, opacity: 0.92 }}>
                 {subtitle}
               </p>
+              {loading ? (
+                <p style={{ margin: '10px 0 0', fontSize: 13, opacity: 0.9 }}>Loading live ride data…</p>
+              ) : null}
+              {error ? (
+                <p style={{ margin: '10px 0 0', fontSize: 13, opacity: 0.9 }}>{error}</p>
+              ) : null}
             </div>
             <button
               type="button"
