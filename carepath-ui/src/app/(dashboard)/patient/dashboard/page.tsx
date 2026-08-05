@@ -195,6 +195,26 @@ export default function PatientDashboardPage() {
             </div>
 
             <Link
+              href="/patient/tracking"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '42px',
+                padding: '0 18px',
+                borderRadius: '9px',
+                backgroundColor: '#ffffff',
+                color: '#694f81',
+                fontSize: '13px',
+                fontWeight: 800,
+                textDecoration: 'none',
+                boxShadow: '0 4px 12px rgba(105, 79, 129, 0.16)',
+              }}
+            >
+              View Tracking
+            </Link>
+
+            <Link
               href="/patient/appointments"
               style={{
                 display: 'inline-flex',

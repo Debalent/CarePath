@@ -409,9 +409,14 @@ export default function CoordinatorDashboardPage() {
               </p>
             </div>
 
-            <Link href="/coordinator/dispatch" style={buttonStyle}>
-              Review All
-            </Link>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              <Link href="/coordinator/dispatch" style={buttonStyle}>
+                Review All
+              </Link>
+              <Link href="/coordinator/tracking" style={buttonStyle}>
+                View tracking
+              </Link>
+            </div>
           </div>
 
           <div style={{ display: "grid", gap: 12 }}>

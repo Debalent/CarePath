@@ -1342,6 +1342,15 @@ export default function DriverDashboardPage() {
               </Button>
             </Link>
 
+            <Link href="/driver/navigation">
+              <Button
+                size="sm"
+                variant="secondary"
+              >
+                Open navigation
+              </Button>
+            </Link>
+
             <Link href="/driver/profile">
               <Button
                 size="sm"

@@ -14,6 +14,7 @@ import {
   LogOut,
   Heart,
   MapPin,
+  Navigation,
   Route,
 } from "lucide-react";
 
@@ -45,6 +46,11 @@ const navItems: Record<
       icon: Calendar,
     },
     {
+      label: "Tracking",
+      href: "/patient/tracking",
+      icon: Navigation,
+    },
+    {
       label: "Messages",
       href: "/patient/messages",
       icon: MessageSquare,
@@ -57,23 +63,24 @@ const navItems: Record<
     },
   ],
   driver: [
-  { label: "Home", href: "/driver/dashboard", icon: LayoutDashboard },
-  { label: "My Rides", href: "/driver/rides", icon: Car },
-  { label: "My Routes", href: "/driver/routes", icon: MapPin },
-  { label: "Availability", href: "/driver/availability", icon: Calendar },
-  { label: "Messages", href: "/driver/messages", icon: MessageSquare },
-],
-
-coordinator: [
-  { label: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
-  { label: "Ride Pooling", href: "/coordinator/pooling", icon: Route },
-  { label: "Dispatch", href: "/coordinator/dispatch", icon: Calendar },
-  { label: "Ride Requests", href: "/coordinator/rides", icon: Car },
-  { label: "Patients", href: "/coordinator/patients", icon: User },
-  { label: "Drivers", href: "/coordinator/drivers", icon: Heart },
-  { label: "Routes", href: "/coordinator/routes", icon: MapPin },
-  { label: "Messages", href: "/coordinator/messages", icon: MessageSquare },
-],
+    { label: "Home", href: "/driver/dashboard", icon: LayoutDashboard },
+    { label: "My Rides", href: "/driver/rides", icon: Car },
+    { label: "My Routes", href: "/driver/routes", icon: MapPin },
+    { label: "Navigation", href: "/driver/navigation", icon: Navigation },
+    { label: "Availability", href: "/driver/availability", icon: Calendar },
+    { label: "Messages", href: "/driver/messages", icon: MessageSquare },
+  ],
+  coordinator: [
+    { label: "Dashboard", href: "/coordinator/dashboard", icon: LayoutDashboard },
+    { label: "Ride Pooling", href: "/coordinator/pooling", icon: Route },
+    { label: "Dispatch", href: "/coordinator/dispatch", icon: Calendar },
+    { label: "Ride Requests", href: "/coordinator/rides", icon: Car },
+    { label: "Patients", href: "/coordinator/patients", icon: User },
+    { label: "Drivers", href: "/coordinator/drivers", icon: Heart },
+    { label: "Routes", href: "/coordinator/routes", icon: MapPin },
+    { label: "Tracking", href: "/coordinator/tracking", icon: Navigation },
+    { label: "Messages", href: "/coordinator/messages", icon: MessageSquare },
+  ],
   admin: [
   {
     label: "Dashboard",
