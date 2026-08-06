@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
+import { DriverMapView } from '@/components/feature/DriverMapView'
 import {
   buildGpsTrackerSnapshot,
   fetchGpsTracking,
@@ -268,18 +269,19 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
               </div>
             </div>
 
-            <div style={{ marginTop: 16, borderRadius: 16, height: 260, background: 'linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%)', border: '1px solid #dbeafe', position: 'relative', overflow: 'hidden' }}>
-              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
-                <rect x="4" y="4" width="92" height="92" rx="8" fill="#ffffff" stroke="#cbd5e1" />
-                <path d={`M ${mapPickupPosition.x} ${mapPickupPosition.y} C ${mapPickupPosition.x + 10} ${mapPickupPosition.y - 20}, ${mapDestinationPosition.x - 12} ${mapDestinationPosition.y + 14}, ${mapDestinationPosition.x} ${mapDestinationPosition.y}`} fill="none" stroke="#0c6bc2" strokeWidth="2.2" strokeDasharray="3 2" />
-                <circle cx={mapPickupPosition.x} cy={mapPickupPosition.y} r="4" fill="#0c6bc2" />
-                <circle cx={mapDestinationPosition.x} cy={mapDestinationPosition.y} r="4.5" fill="#a10e97" />
-                <circle cx={mapCurrentPosition.x} cy={mapCurrentPosition.y} r="5.2" fill={headerAccent} />
-              </svg>
-              <div style={{ position: 'absolute', left: 14, top: 14, padding: '8px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.9)', color: '#0f172a', fontSize: 12, fontWeight: 700 }}>
-                {role === 'driver' ? 'Live route guidance' : 'Tracking preview'}
-              </div>
-              <div style={{ position: 'absolute', right: 14, bottom: 14, padding: '8px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.9)', color: '#0f172a', fontSize: 12, fontWeight: 700 }}>
+            <div style={{ marginTop: 16, borderRadius: 16, overflow: 'hidden', background: '#f8fafc', border: '1px solid #dbeafe' }}>
+              {role === 'driver' ? (
+                <DriverMapView
+                  currentLocation={liveLocation}
+                  destinationLocation={tracker.destinationLocation ?? null}
+                  accent={headerAccent}
+                />
+              ) : (
+                <div style={{ height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#334155', fontWeight: 600 }}>
+                  Map view is available for the driver navigation flow.
+                </div>
+              )}
+              <div style={{ padding: '10px 12px', background: 'rgba(255,255,255,0.92)', borderTop: '1px solid #e2e8f0', fontSize: 12, fontWeight: 700, color: '#0f172a' }}>
                 {locationStatus === 'watching' ? `Updated ${lastUpdatedAt ?? 'just now'}` : locationStatus === 'blocked' ? 'Location blocked' : 'Waiting for device location'}
               </div>
             </div>
