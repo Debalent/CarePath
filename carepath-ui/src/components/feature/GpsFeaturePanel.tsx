@@ -27,11 +27,43 @@ type GpsFeaturePanelProps = {
   subtitle: string
 }
 
+type LiveLocation = {
+  lat: number
+  lng: number
+  accuracy: number | null
+  timestamp: number
+}
+
+const DRIVER_DESTINATION = { lat: 41.8781, lng: -87.6298 }
+
+function getDistanceMiles(from: LiveLocation, to: { lat: number; lng: number }) {
+  const toRad = (value: number) => (value * Math.PI) / 180
+  const earthRadiusMiles = 3958.8
+  const deltaLat = toRad(to.lat - from.lat)
+  const deltaLng = toRad(to.lng - from.lng)
+  const lat1 = toRad(from.lat)
+  const lat2 = toRad(to.lat)
+
+  const a = Math.sin(deltaLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return earthRadiusMiles * c
+}
+
 export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps) {
   const [shareEnabled, setShareEnabled] = useState(role === 'driver' || role === 'patient')
   const [tracker, setTracker] = useState(() => buildGpsTrackerSnapshot(role))
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [liveLocation, setLiveLocation] = useState<LiveLocation | null>(null)
+  const [locationStatus, setLocationStatus] = useState<'idle' | 'watching' | 'blocked' | 'unavailable'>(() => {
+    if (role !== 'driver' || typeof window === 'undefined') {
+      return 'unavailable'
+    }
+
+    return 'geolocation' in navigator ? 'idle' : 'unavailable'
+  })
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<string | null>(null)
 
   useEffect(() => {
     let active = true
@@ -56,8 +88,70 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
 
     void loadTracking()
 
+    const pollingInterval = window.setInterval(() => {
+      void loadTracking()
+    }, 10000)
+
     return () => {
       active = false
+      window.clearInterval(pollingInterval)
+    }
+  }, [role])
+
+  useEffect(() => {
+    if (role !== 'driver' || typeof window === 'undefined') {
+      return
+    }
+
+    if (!('geolocation' in navigator)) {
+      return
+    }
+
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const nextLocation: LiveLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+          accuracy: position.coords.accuracy ?? null,
+          timestamp: position.timestamp,
+        }
+
+        setLiveLocation(nextLocation)
+        setLocationStatus('watching')
+        setLastUpdatedAt(new Date(position.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }))
+
+        setTracker((current) => {
+          const distanceMiles = getDistanceMiles(nextLocation, DRIVER_DESTINATION)
+          const etaMinutes = Math.max(2, Math.min(24, Math.round(distanceMiles * 6 + 4)))
+          const statusLabel = etaMinutes <= 5 ? 'Arriving soon' : etaMinutes <= 12 ? 'En route' : 'Moving'
+
+          return {
+            ...current,
+            etaMinutes,
+            statusLabel,
+            locationLabel: `Live position • ${nextLocation.lat.toFixed(4)}, ${nextLocation.lng.toFixed(4)}`,
+            title: 'Driver navigation view',
+            subtitle: 'Live route guidance is active and the ride handoff is updating.',
+            currentLocation: nextLocation,
+            destinationLocation: DRIVER_DESTINATION,
+            locationStatus: 'watching',
+            lastUpdatedAt: new Date(position.timestamp).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
+          }
+        })
+      },
+      () => {
+        setLocationStatus('blocked')
+        setTracker((current) => ({ ...current, locationStatus: 'blocked' }))
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 10000,
+      },
+    )
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId)
     }
   }, [role])
 
@@ -67,6 +161,16 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
       : role === 'patient'
         ? '#a10e97'
         : '#5540a1'
+
+  const mapCurrentPosition = liveLocation
+    ? {
+        x: Math.min(86, Math.max(14, 46 + (liveLocation.lng - DRIVER_DESTINATION.lng) * 2400)),
+        y: Math.min(84, Math.max(16, 70 - (liveLocation.lat - DRIVER_DESTINATION.lat) * 2800)),
+      }
+    : { x: 32, y: 58 }
+
+  const mapDestinationPosition = { x: 78, y: 24 }
+  const mapPickupPosition = { x: 24, y: 72 }
 
   return (
     <DashboardLayout
@@ -164,13 +268,20 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
               </div>
             </div>
 
-            <div style={{ marginTop: 16, borderRadius: 16, height: 220, background: 'linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%)', border: '1px solid #dbeafe', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(90deg, rgba(15, 23, 42, 0.04) 0 2px, transparent 2px 40px)' }} />
-              <div style={{ position: 'absolute', left: '14%', bottom: '26%', width: 120, height: 72, borderRadius: 999, border: '2px dashed #94a3b8', transform: 'rotate(-12deg)' }} />
-              <div style={{ position: 'absolute', right: '20%', top: '18%', width: 92, height: 92, borderRadius: '50%', background: 'rgba(14, 116, 144, 0.15)' }} />
-              <div style={{ position: 'absolute', left: '48%', top: '44%', width: 18, height: 18, borderRadius: '50%', background: headerAccent, boxShadow: `0 0 0 12px ${headerAccent}22` }} />
-              <div style={{ position: 'absolute', left: '22%', top: '58%', color: '#0f172a', fontSize: 13, fontWeight: 700 }}>Pickup</div>
-              <div style={{ position: 'absolute', right: '18%', top: '28%', color: '#0f172a', fontSize: 13, fontWeight: 700 }}>Destination</div>
+            <div style={{ marginTop: 16, borderRadius: 16, height: 260, background: 'linear-gradient(135deg, #eff6ff 0%, #f8fafc 100%)', border: '1px solid #dbeafe', position: 'relative', overflow: 'hidden' }}>
+              <svg viewBox="0 0 100 100" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}>
+                <rect x="4" y="4" width="92" height="92" rx="8" fill="#ffffff" stroke="#cbd5e1" />
+                <path d={`M ${mapPickupPosition.x} ${mapPickupPosition.y} C ${mapPickupPosition.x + 10} ${mapPickupPosition.y - 20}, ${mapDestinationPosition.x - 12} ${mapDestinationPosition.y + 14}, ${mapDestinationPosition.x} ${mapDestinationPosition.y}`} fill="none" stroke="#0c6bc2" strokeWidth="2.2" strokeDasharray="3 2" />
+                <circle cx={mapPickupPosition.x} cy={mapPickupPosition.y} r="4" fill="#0c6bc2" />
+                <circle cx={mapDestinationPosition.x} cy={mapDestinationPosition.y} r="4.5" fill="#a10e97" />
+                <circle cx={mapCurrentPosition.x} cy={mapCurrentPosition.y} r="5.2" fill={headerAccent} />
+              </svg>
+              <div style={{ position: 'absolute', left: 14, top: 14, padding: '8px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.9)', color: '#0f172a', fontSize: 12, fontWeight: 700 }}>
+                {role === 'driver' ? 'Live route guidance' : 'Tracking preview'}
+              </div>
+              <div style={{ position: 'absolute', right: 14, bottom: 14, padding: '8px 10px', borderRadius: 999, background: 'rgba(255,255,255,0.9)', color: '#0f172a', fontSize: 12, fontWeight: 700 }}>
+                {locationStatus === 'watching' ? `Updated ${lastUpdatedAt ?? 'just now'}` : locationStatus === 'blocked' ? 'Location blocked' : 'Waiting for device location'}
+              </div>
             </div>
           </div>
 
@@ -233,7 +344,7 @@ export function GpsFeaturePanel({ role, title, subtitle }: GpsFeaturePanelProps)
             <h3 style={{ margin: 0, color: '#0f172a' }}>Next implementation steps</h3>
           </div>
           <ul style={{ margin: '12px 0 0 18px', color: '#334155', lineHeight: 1.7 }}>
-            <li>Connect the UI to a real geolocation provider and live route feed.</li>
+            <li>Use the live geolocation feed to refine arrival estimates and route prompts in real time.</li>
             <li>Add consent and privacy controls for patient location sharing.</li>
             <li>Expose the same tracking view in the dispatcher and care-team dashboards.</li>
           </ul>

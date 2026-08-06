@@ -9,6 +9,13 @@ export type GpsCapability = {
   status: 'ready' | 'planned' | 'beta'
 }
 
+export type GpsLocationPoint = {
+  lat: number
+  lng: number
+  accuracy?: number | null
+  timestamp?: number
+}
+
 export type GpsTrackerSnapshot = {
   rideId: string | null
   role: string
@@ -22,6 +29,10 @@ export type GpsTrackerSnapshot = {
   shareEnabled: boolean
   participants: Array<{ name: string; role: string; access: 'Owner' | 'Viewer' | 'Shared' }>
   timeline: Array<{ label: string; detail: string; active: boolean }>
+  currentLocation?: GpsLocationPoint | null
+  destinationLocation?: GpsLocationPoint | null
+  locationStatus?: 'idle' | 'watching' | 'blocked' | 'unavailable'
+  lastUpdatedAt?: string | null
 }
 
 export function getGpsCapabilityPlan(role: GpsRole): GpsCapability[] {
@@ -118,6 +129,10 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
           { name: 'Dispatch', role: 'Coordinator', access: 'Viewer' },
           { name: 'Patient', role: 'Rider', access: 'Shared' },
         ],
+        currentLocation: null,
+        destinationLocation: { lat: 41.8781, lng: -87.6298 },
+        locationStatus: 'idle',
+        lastUpdatedAt: null,
         timeline: [
           { label: 'Pickup confirmed', detail: 'The rider is ready and the trip is active.', active: true },
           { label: 'On route', detail: 'Traffic is moving smoothly with one detour warning.', active: true },
@@ -142,6 +157,10 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
           { name: 'Caregiver', role: 'Support', access: 'Viewer' },
           { name: 'Clinic', role: 'Medical provider', access: 'Viewer' },
         ],
+        currentLocation: null,
+        destinationLocation: { lat: 41.8781, lng: -87.6298 },
+        locationStatus: 'idle',
+        lastUpdatedAt: null,
         timeline: [
           { label: 'Trip requested', detail: 'Your transportation request was accepted.', active: true },
           { label: 'Driver assigned', detail: 'The transport partner is on the way.', active: true },
@@ -168,6 +187,10 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
           { name: 'Advocate', role: 'Support', access: 'Viewer' },
           { name: 'Provider', role: 'Medical team', access: 'Viewer' },
         ],
+        currentLocation: null,
+        destinationLocation: { lat: 41.8781, lng: -87.6298 },
+        locationStatus: 'idle',
+        lastUpdatedAt: null,
         timeline: [
           { label: 'Ride assigned', detail: 'The driver and rider were matched successfully.', active: true },
           { label: 'Track active', detail: 'Location sharing is available for the current leg.', active: true },
@@ -188,6 +211,10 @@ export function buildGpsTrackerSnapshot(role: GpsRole): GpsTrackerSnapshot {
         visibilityLabel: 'Visibility is not enabled until a ride starts',
         shareEnabled: false,
         participants: [],
+        currentLocation: null,
+        destinationLocation: { lat: 41.8781, lng: -87.6298 },
+        locationStatus: 'idle',
+        lastUpdatedAt: null,
         timeline: [],
       }
   }
