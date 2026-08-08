@@ -129,7 +129,7 @@ export default function AdminCreditsPage() {
         {/* Hero */}
         <section style={{
           borderRadius: 16, padding: '20px',
-          background: 'linear-gradient(135deg, #052b56, #0c6bc2)',
+          background: 'linear-gradient(135deg, #5c7490, #0c6bc2)',
           color: '#fff',
         }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#93c5fd', marginBottom: 6 }}>

@@ -21,7 +21,7 @@ export default function PartnerDashboardPage() {
           style={{
             borderRadius: 16,
             padding: 30,
-            background: 'linear-gradient(135deg, #d97706 0%, #92400e 100%)',
+            background: 'linear-gradient(135deg, #da6110 0%, #cbd096 100%)',
             boxShadow: '0 10px 24px rgba(217, 119, 6, 0.18)',
           }}
         >
