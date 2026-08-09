@@ -1,30 +1,12 @@
-import { ApiError } from "../types/api";
-import { platformApiUrl } from "../utils/platformApiUrl";
+import axios from 'axios';
+import { getApiUrl } from '@/utils/platformApiUrl';
 
-type RequestOptions = {
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
-  body?: unknown;
-  token?: string | null;
+export const api = axios.create({
+  baseURL: getApiUrl(),
+  timeout: 15000,
+});
+
+export const setAuthToken = (token: string | null) => {
+  if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`;
+  else delete api.defaults.headers.common.Authorization;
 };
-
-export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
-  const { method = "GET", body, token } = options;
-
-  const response = await fetch(`${platformApiUrl()}${path}`, {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-
-  const contentType = response.headers.get("content-type");
-  const data = contentType?.includes("application/json") ? await response.json() : null;
-
-  if (!response.ok) {
-    throw new ApiError(data?.message ?? `Request failed with status ${response.status}`, response.status);
-  }
-
-  return data as T;
-}

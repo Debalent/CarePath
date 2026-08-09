@@ -29,7 +29,7 @@ app.use(helmet());
 
 // CORS — restrict to known origins in production
 const allowedOrigins = config.isDev
-  ? ['http://localhost:3000', 'http://localhost:3001']
+  ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:8081', 'http://localhost:19006']
   : (process.env.ALLOWED_ORIGINS ?? 'https://staging.d1f9wiu8p11zl1.amplifyapp.com,https://debalent.github.io').split(',').map(o => o.trim()).filter(Boolean);
 
   

@@ -474,51 +474,130 @@ export const getMyRides = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    if (!req.user?.userId) return next(new AppError('Unauthorized', 401));
-    const patient = await prisma.patient.findUnique({
-      where: { userId: req.user.userId },
-    });
+    if (!req.user?.userId) {
+      return next(new AppError('Unauthorized', 401));
+    }
 
-    if (!patient) return next(new AppError('Patient profile not found', 404));
+    // DRIVER: return rides assigned to the logged-in driver
+    if (req.user.role === Role.DRIVER) {
+      const driver = await prisma.driver.findUnique({
+        where: { userId: req.user.userId },
+      });
 
-    const rides = await prisma.rideRequest.findMany({
-      where: { patientId: patient.id },
-      include: {
-        appointment: true,
-        driver: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                phone: true,
-                email: true,
+      if (!driver) {
+        return next(new AppError('Driver profile not found', 404));
+      }
+
+      const rides = await prisma.rideRequest.findMany({
+        where: {
+          driverId: driver.id,
+        },
+        include: {
+          appointment: true,
+          patient: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true,
+                },
               },
             },
           },
-        },
-        coordinator: {
-          include: {
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                phone: true,
-                email: true,
+          driver: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true,
+                },
               },
             },
           },
+          coordinator: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          events: {
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+          },
         },
-        fallbackOffers: true,
-        events: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
+        orderBy: {
+          pickupTime: 'asc',
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+      });
 
-    res.json(rides);
+      res.json(rides);
+    }
+
+    // PATIENT: return rides belonging to the logged-in patient
+    if (req.user.role === Role.PATIENT) {
+      const patient = await prisma.patient.findUnique({
+        where: { userId: req.user.userId },
+      });
+
+      if (!patient) {
+        return next(new AppError('Patient profile not found', 404));
+      }
+
+      const rides = await prisma.rideRequest.findMany({
+        where: {
+          patientId: patient.id,
+        },
+        include: {
+          appointment: true,
+          driver: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          coordinator: {
+            include: {
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  phone: true,
+                  email: true,
+                },
+              },
+            },
+          },
+          fallbackOffers: true,
+          events: {
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      res.json(rides);
+    }
+
+    return next(new AppError('This account cannot access personal rides', 403));
   } catch (err) {
     next(err);
   }

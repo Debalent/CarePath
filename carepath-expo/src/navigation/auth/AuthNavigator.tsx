@@ -1,18 +1,22 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { IntroScreen } from "../../screens/IntroScreen";
-import { LoginScreen } from "../../screens/LoginScreen";
-import { RegisterScreen } from "../../screens/RegisterScreen";
-import { AuthStackParamList } from "../types";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginScreen from '@/screens/LoginScreen';
+import RegisterScreen from '@/screens/RegisterScreen';
+import { colors } from '@/theme';
 
-const Stack = createNativeStackNavigator<AuthStackParamList>();
+const Stack = createNativeStackNavigator();
 
-export function AuthNavigator() {
+export default function AuthNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Intro" component={IntroScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: { backgroundColor: colors.bg },
+        headerTintColor: colors.text,
+        headerShadowVisible: false,
+      }}
+    >
+      <Stack.Screen name="Login" component={LoginScreen} options={{ title: 'Log in' }} />
+      <Stack.Screen name="Register" component={RegisterScreen} options={{ title: 'Create account' }} />
     </Stack.Navigator>
   );
 }

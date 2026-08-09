@@ -1,63 +1,123 @@
 # CarePath Mobile (Expo)
 
-A React Native companion app for CarePath, built with Expo. It mirrors the core
-patient flows from the web app (`carepath-ui/`): register, log in, and request a
-ride to a medical appointment.
+Expo (React Native) client for the CarePath backend API.
 
-## Prerequisites
+## What this app does
+- Shows an **Intro/Loader** screen that explains what CarePath is.
+- Requires the user to **Log in** or **Create an account**.
+- After login, allows a **Patient** to submit a **Ride Request** to the API.
 
+This project is designed to point at your existing backend running on **http://localhost:3001**.
+
+---
+
+## 0) Prereqs
 - Node.js 18+
-- The CarePath backend running locally (see the repo root `README.md`), or a
-  deployed API URL
+- A phone with Expo Go installed **or** an Android emulator / iOS simulator
+- Your backend running locally (from the zip you provided)
 
-## Setup
+---
+
+## 1) Start the backend (from your existing repo)
+From your backend root (the folder that contains `src/app.ts` and `package.json`):
 
 ```bash
-cd carepath-expo
+npm install
+cp .env.example .env
+# edit .env if needed (DB, JWT_SECRET)
+
+npm run dev
+```
+
+You should see the API on:
+- http://localhost:3001/health
+
+---
+
+## 2) Create this Expo app folder
+Create a new folder **next to** your backend folder (recommended):
+
+```
+CarePath/
+  (backend files...)
+carepath-expo/
+  (this mobile app)
+```
+
+Then copy/paste the files from this project exactly.
+
+---
+
+## 3) Install dependencies
+From the `carepath-expo` folder:
+
+```bash
 npm install
 ```
 
-## Configuring the API URL
+---
 
-By default the app talks to `http://localhost:3001/api` (or `http://10.0.2.2:3001/api`
-on the Android emulator, since `localhost` inside the emulator refers to the
-emulator itself, not your host machine).
+## 4) Configure the API base URL
+This app reads the API URL from `app.config.ts`.
 
-To point at a deployed backend (e.g. staging or production), set
-`EXPO_PUBLIC_CAREPATH_API_URL` before starting the app:
+### Important note about `localhost`
+On a phone, `localhost` means the phone itself, not your laptop.
+
+Pick the right value:
+- **Android emulator:** use `http://10.0.2.2:3001`
+- **iOS simulator:** use `http://localhost:3001`
+- **Real phone on same Wi‑Fi:** use `http://<YOUR_COMPUTER_LAN_IP>:3001` (example `http://192.168.1.50:3001`)
+
+Set it in `app.config.ts`:
+
+```ts
+const API_URL = 'http://10.0.2.2:3001';
+```
+
+---
+
+## 5) Run the app
 
 ```bash
-EXPO_PUBLIC_CAREPATH_API_URL="https://jz63ct11re.execute-api.us-east-1.amazonaws.com/api" npx expo start
+npm run start
 ```
 
-## Running the app
+Then:
+- Press `a` for Android
+- Press `i` for iOS (Mac)
+- Or scan the QR code with Expo Go
 
-```bash
-npm run start    # opens the Expo dev tools / QR code
-npm run android  # launches on a connected Android device or emulator
-npm run ios      # launches on the iOS simulator (macOS only)
-npm run web      # runs the app in a browser via react-native-web
-```
+---
 
-## Project structure
+## 6) Test the flow
+1. Intro screen explains the app.
+2. Tap **Get started**.
+3. Create account (email/phone/password/first+last name, role = PATIENT).
+4. After login, go to **Request a ride**.
+5. Submit a ride request.
 
-```
-src/
-  api/          Fetch wrappers for the CarePath backend (auth, rides)
-  auth/         Auth context + AsyncStorage-backed session persistence
-  components/   Shared UI primitives (Button, Screen, TextField)
-  navigation/   React Navigation stacks (auth vs. authenticated app)
-  screens/      Intro, Login, Register, Home, Request Ride
-  theme/        Colors, spacing, and typography tokens
-  types/        Shared API request/response types
-  utils/        Platform-aware API URL resolution
-```
+---
 
-## Notes
+## Troubleshooting
+### "Network request failed"
+- Your phone cannot reach `localhost` on your computer.
+- Fix `API_URL` as described above.
+- Make sure your backend allows requests without an Origin header (it does).
 
-- Authenticated requests use a Bearer token stored via
-  `@react-native-async-storage/async-storage`, matching the JWT-based auth
-  already used by `carepath-ui`.
-- The `.expo/` directory (local Expo CLI cache) and `node_modules/` are
-  git-ignored and generated automatically when you run `npm install` /
-  `npx expo start`.
+### 401 Unauthorized
+- You are not logged in or the token expired.
+- Use the Logout button and log back in.
+
+---
+
+## API endpoints used
+- POST `/api/auth/register`
+- POST `/api/auth/login`
+- GET `/api/auth/me`
+- POST `/api/rides` (requires role PATIENT)
+
+The backend also requires that the logged-in user has a **Patient profile** row.
+If you register as PATIENT but don’t have a Patient profile seeded/created yet, `/api/rides` will respond:
+"Patient profile required before requesting a ride".
+
+If that happens, we can add a Patient Profile creation screen (or you can seed one in the DB).
