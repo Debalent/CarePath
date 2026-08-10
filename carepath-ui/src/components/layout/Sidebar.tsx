@@ -141,7 +141,7 @@ const roleHome: Record<Role, string> = {
   patient: "/patient/dashboard",
   driver: "/driver/dashboard",
   coordinator: "/coordinator/pooling",
-  admin: "/admin/credits",
+  admin: "/admin/dashboard",
   advocate: "/advocate/dashboard",
   partner: "/partner/dashboard",
 };

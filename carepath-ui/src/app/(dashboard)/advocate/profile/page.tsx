@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/Badge'
 export default function AdvocateProfilePage() {
   return (
     <DashboardLayout role="advocate" title="My Profile" subtitle="Advocate account and specialization" userName="Advocate">
-      <div className="cp-space-y-4" style={{ maxWidth: 700 }}>
+      <div className="cp-space-y-4" >
         <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #b62ea1, #7c2687)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#f0d4f0', marginBottom: 6 }}>Advocate profile</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Manage your advocate account and patient advocacy details.</h2>

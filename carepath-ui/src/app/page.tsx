@@ -177,25 +177,7 @@ export default function Home() {
             <UserRound size={16} />
             Patient Portal
           </Link>
-          <Link
-            href="/coordinator/dashboard"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              padding: "9px 16px",
-              borderRadius: 10,
-              fontSize: 14,
-              fontWeight: 700,
-              background: "#acdef7",
-              color: "#0c6bc2",
-              border: "1px solid #ae5a8b",
-              textDecoration: "none",
-              boxShadow: "0 2px 8px rgba(85, 64, 161, 0.25)",
-            }}
-          >
-            Coordinator Dashboard
-          </Link>
+         
           <Link
             href="/driver/dashboard"
             style={{
@@ -215,6 +197,25 @@ export default function Home() {
           >
             Driver Dashboard
           </Link>
+           <Link
+            href="/coordinator/dashboard"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "9px 16px",
+              borderRadius: 10,
+              fontSize: 14,
+              fontWeight: 700,
+              background: "#acdef7",
+              color: "#0c6bc2",
+              border: "1px solid #ae5a8b",
+              textDecoration: "none",
+              boxShadow: "0 2px 8px rgba(85, 64, 161, 0.25)",
+            }}
+          >
+            Coordinator Dashboard
+          </Link>
         </div>
       </nav>
 
@@ -223,7 +224,7 @@ export default function Home() {
       ====================================================== */}
       <main
         style={{
-          maxWidth: 1350,
+          maxWidth: 1550,
           margin: "0 auto",
           padding: "0 24px 64px",
         }}
@@ -236,7 +237,7 @@ export default function Home() {
             marginTop: 32,
             borderRadius: 20,
             background:
-              "linear-gradient(135deg, #7c2687 0%, #0c6bc2 40%, #5540a1 70%, #7c2687 100%)",
+              "linear-gradient(135deg, #7c2687 0%, #7256c8 40%, #5540a1 70%, #7c2687 100%)",
             padding: "48px 32px",
             position: "relative",
             overflow: "hidden",
@@ -485,7 +486,7 @@ export default function Home() {
             marginTop: 28,
             borderRadius: 18,
             padding: "36px 28px",
-            background: "linear-gradient(135deg, #0c6bc2, #6b2175)",
+            background: "linear-gradient(135deg, #3c4fac, #6b2175)",
             boxShadow: "0 8px 32px rgba(85, 64, 161, 0.25)",
           }}
         >
@@ -891,7 +892,7 @@ export default function Home() {
       ====================================================== */}
       <footer
         style={{
-          background: "#18185c",
+          background: "#340948",
           color: "#ffffff",
           padding: "40px 24px 24px",
         }}

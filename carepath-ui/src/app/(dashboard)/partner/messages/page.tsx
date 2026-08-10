@@ -14,7 +14,7 @@ export default function PartnerMessagesPage() {
   return (
     <DashboardLayout role="partner" title="Messages" subtitle="Communication about funded rides" userName="Partner">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #d97706, #92400e)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #dfc6b5 0%, #ec4ecc 100%)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#fef3c7', marginBottom: 6 }}>Partner messaging</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Communicate with coordinators about credits and rides.</h2>
         </section>

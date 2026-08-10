@@ -21,17 +21,17 @@ export default function PartnerDashboardPage() {
           style={{
             borderRadius: 16,
             padding: 30,
-            background: 'linear-gradient(135deg, #da6110 0%, #cbd096 100%)',
+            background: 'linear-gradient(135deg, #dfc6b5 0%, #ec4ecc 100%)',
             boxShadow: '0 10px 24px rgba(217, 119, 6, 0.18)',
           }}
         >
-          <p style={{ margin: 0, marginBottom: 8, color: '#fef3c7', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em' }}>
+          <p style={{ margin: 0, marginBottom: 8, color: '#f4e1d2', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em' }}>
             Institutional Partner Portal
           </p>
-          <h2 style={{ margin: 0, color: '#ffffff', fontSize: 26, fontWeight: 800, lineHeight: 1.35 }}>
+          <h2 style={{ margin: 0, color: '#4440c9', fontSize: 26, fontWeight: 800, lineHeight: 1.35 }}>
             Supporting patient transportation through credits
           </h2>
-          <p style={{ maxWidth: 700, marginTop: 10, marginBottom: 0, color: '#fef3c7', fontSize: 15, lineHeight: 1.6 }}>
+          <p style={{ maxWidth: 700, marginTop: 10, marginBottom: 0, color: '#f4e1d2', fontSize: 15, lineHeight: 1.6 }}>
             Monitor your ride credits, view funded rides, and communicate with coordinators.
           </p>
         </section>

@@ -13,7 +13,7 @@ const DEFAULT_API_BASE =
 const roleRedirect: Record<string, string> = {
   DRIVER: "/driver/dashboard",
   COORDINATOR: "/coordinator/dashboard",
-  ADMIN: "/admin/credits",
+  ADMIN: "/admin/dashboard",
   PARTNER: "/partner/dashboard",
   ADVOCATE: "/advocate/dashboard",
 };

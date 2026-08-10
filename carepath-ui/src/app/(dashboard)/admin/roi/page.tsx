@@ -59,7 +59,7 @@ export default function AdminROIPage() {
   return (
     <DashboardLayout role="admin" title="Cost & ROI" subtitle="Ride cost logs and estimated healthcare savings" userName="Admin">
       <div className="cp-space-y-4">
-        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(135deg, #5c7490, #0c6bc2)', color: '#fff' }}>
+        <section style={{ borderRadius: 16, padding: 20, background: 'linear-gradient(  #4f5f92 0%, #6f4c89 100%)', color: '#fff' }}>
           <p style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.15em', color: '#93c5fd', marginBottom: 6 }}>ROI dashboard</p>
           <h2 style={{ fontSize: 20, fontWeight: 800 }}>Every completed ride represents avoided downstream healthcare costs.</h2>
         </section>
