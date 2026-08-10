@@ -1,21 +1,35 @@
-import React from "react";
-import { ActivityIndicator, View } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { useAuth } from "../auth/AuthContext";
-import { AuthNavigator } from "./auth/AuthNavigator";
-import { AppNavigator } from "./app/AppNavigator";
-import { colors } from "../theme";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-export function RootNavigator() {
-  const { token, isLoading } = useAuth();
+import { useAuth } from '@/auth/AuthContext';
+import IntroScreen from '@/screens/IntroScreen';
+import AuthNavigator from './auth/AuthNavigator';
+import AppNavigator from './app/AppNavigator';
+import { colors } from '@/theme';
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
-  }
+const Stack = createNativeStackNavigator();
 
-  return <NavigationContainer>{token ? <AppNavigator /> : <AuthNavigator />}</NavigationContainer>;
+export default function RootNavigator() {
+  const { bootstrapping, token } = useAuth();
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: colors.bg },
+      }}
+    >
+      <Stack.Screen name="Intro" component={IntroScreen} />
+
+      {bootstrapping ? (
+        // While bootstrapping, keep Intro on screen.
+        // Intro has a built-in loading indicator.
+        <></>
+      ) : token ? (
+        <Stack.Screen name="App" component={AppNavigator} />
+      ) : (
+        <Stack.Screen name="Auth" component={AuthNavigator} />
+      )}
+    </Stack.Navigator>
+  );
 }

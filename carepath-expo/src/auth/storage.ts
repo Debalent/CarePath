@@ -1,22 +1,54 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthUser } from "../types/api";
+import { Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
-const TOKEN_KEY = "carepath.auth.token";
-const USER_KEY = "carepath.auth.user";
+const TOKEN_KEY = 'carepath_token';
 
-export async function saveSession(token: string, user: AuthUser): Promise<void> {
-  await AsyncStorage.multiSet([
-    [TOKEN_KEY, token],
-    [USER_KEY, JSON.stringify(user)],
-  ]);
-}
+// expo-secure-store does not support web. For Expo Web, fall back to localStorage.
+const webStorage = {
+  getItem: (key: string) => {
+    try {
+      return typeof localStorage === 'undefined' ? null : localStorage.getItem(key);
+    } catch {
+      return null;
+    }
+  },
+  setItem: (key: string, value: string) => {
+    try {
+      if (typeof localStorage !== 'undefined') localStorage.setItem(key, value);
+    } catch {
+      // ignore
+    }
+  },
+  removeItem: (key: string) => {
+    try {
+      if (typeof localStorage !== 'undefined') localStorage.removeItem(key);
+    } catch {
+      // ignore
+    }
+  },
+};
 
-export async function loadSession(): Promise<{ token: string; user: AuthUser } | null> {
-  const [[, token], [, userJson]] = await AsyncStorage.multiGet([TOKEN_KEY, USER_KEY]);
-  if (!token || !userJson) return null;
-  return { token, user: JSON.parse(userJson) as AuthUser };
-}
-
-export async function clearSession(): Promise<void> {
-  await AsyncStorage.multiRemove([TOKEN_KEY, USER_KEY]);
-}
+export const tokenStorage = {
+  get: async (): Promise<string | null> => {
+    try {
+      if (Platform.OS === 'web') return webStorage.getItem(TOKEN_KEY);
+      return await SecureStore.getItemAsync(TOKEN_KEY);
+    } catch {
+      return null;
+    }
+  },
+  set: async (token: string): Promise<void> => {
+    if (Platform.OS === 'web') {
+      webStorage.setItem(TOKEN_KEY, token);
+      return;
+    }
+    await SecureStore.setItemAsync(TOKEN_KEY, token);
+  },
+  clear: async (): Promise<void> => {
+    if (Platform.OS === 'web') {
+      webStorage.removeItem(TOKEN_KEY);
+      return;
+    }
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
+  },
+};

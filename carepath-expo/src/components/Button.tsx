@@ -1,36 +1,36 @@
-import React from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from "react-native";
-import { colors, spacing, typography } from "../theme";
+import React from 'react';
+import { Pressable, Text, StyleSheet, ActivityIndicator, ViewStyle } from 'react-native';
+import { colors, spacing } from '@/theme';
 
-type ButtonVariant = "primary" | "secondary";
-
-type ButtonProps = {
-  label: string;
+export default function Button(props: {
+  title: string;
   onPress: () => void;
-  variant?: ButtonVariant;
-  loading?: boolean;
   disabled?: boolean;
+  loading?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger';
   style?: ViewStyle;
-};
+}) {
+  const { title, onPress, disabled, loading, variant = 'primary', style } = props;
 
-export function Button({ label, onPress, variant = "primary", loading, disabled, style }: ButtonProps) {
-  const isSecondary = variant === "secondary";
+  const bg =
+    variant === 'danger' ? colors.danger :
+    variant === 'secondary' ? colors.card :
+    colors.primary;
+
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
       style={({ pressed }) => [
         styles.base,
-        isSecondary ? styles.secondary : styles.primary,
-        (disabled || loading) && styles.disabled,
-        pressed && styles.pressed,
+        { backgroundColor: bg, opacity: disabled ? 0.5 : pressed ? 0.85 : 1 },
         style,
       ]}
     >
       {loading ? (
-        <ActivityIndicator color={isSecondary ? colors.primary : colors.white} />
+        <ActivityIndicator color={colors.text} />
       ) : (
-        <Text style={[styles.label, isSecondary && styles.secondaryLabel]}>{label}</Text>
+        <Text style={styles.text}>{title}</Text>
       )}
     </Pressable>
   );
@@ -40,29 +40,13 @@ const styles = StyleSheet.create({
   base: {
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  primary: {
-    backgroundColor: colors.primary,
-  },
-  secondary: {
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  label: {
-    ...typography.subheading,
-    color: colors.white,
-  },
-  secondaryLabel: {
+  text: {
     color: colors.text,
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

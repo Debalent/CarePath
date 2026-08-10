@@ -1,62 +1,62 @@
-export type UserRole = "PATIENT" | "DRIVER" | "COORDINATOR" | "ADVOCATE" | "PARTNER" | "ADMIN";
+export type Role = 'PATIENT' | 'DRIVER' | 'COORDINATOR' | 'ADMIN';
 
 export type AuthUser = {
   id: string;
   email: string;
-  role?: UserRole;
+  role: Role;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
 };
 
-export type LoginRequest = {
+export type LoginResponse = {
+  user: {
+    id: string;
+    email: string;
+    role: Role;
+    firstName: string;
+    lastName: string;
+  };
+  token: string;
+};
+
+export type RegisterResponse = {
+  user: {
+    id: string;
+    email: string;
+    phone: string;
+    role: Role;
+    firstName: string;
+    lastName: string;
+  };
+  token: string;
+};
+
+export type MeResponse = {
+  id: string;
   email: string;
-  password: string;
-};
-
-export type RegisterRequest = {
+  phone: string;
+  role: Role;
   firstName: string;
   lastName: string;
-  phone: string;
-  email: string;
-  password: string;
-  role?: UserRole;
-  organization?: string;
+  createdAt: string;
 };
 
-export type AuthResponse = {
-  success: boolean;
-  message?: string;
-  token?: string;
-  user?: AuthUser;
-};
-
-export type UrgencyLevel = "NORMAL" | "URGENT" | "SAME_DAY";
-
-export type RideRequestInput = {
+export type CreateRideRequestBody = {
   appointmentType: string;
   clinicName: string;
   clinicCity: string;
   clinicState: string;
-  appointmentDate: string;
-  estimatedMiles: number;
+  appointmentDate: string; // ISO date/datetime string
+  estimatedMiles?: number | null;
+  isRecurring?: boolean;
+  recurrenceNote?: string | null;
+  appointmentNotes?: string | null;
   pickupAddress: string;
-  pickupTime: string;
-  urgencyLevel: UrgencyLevel;
-  appointmentNotes?: string;
+  pickupTime: string; // ISO datetime string
+  creditId?: string | null;
+  urgencyLevel?: 'NORMAL' | 'HIGH' | 'CRITICAL';
+  needsSameDayFallback?: boolean;
+  allowsCommunityVolunteer?: boolean;
+  requestedAdvanceWindowHours?: number | null;
 };
-
-export type RideRequestResponse = {
-  success: boolean;
-  message?: string;
-  ride?: {
-    id: string;
-    status: string;
-  };
-};
-
-export class ApiError extends Error {
-  status: number;
-  constructor(message: string, status: number) {
-    super(message);
-    this.name = "ApiError";
-    this.status = status;
-  }
-}
