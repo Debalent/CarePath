@@ -1022,79 +1022,87 @@ export default function Home() {
               </div>
 
               <div>
-  <p
-    style={{
-      fontSize: 14,
-      fontWeight: 700,
-      marginBottom: 12,
-      color: "white",
-    }}
-  >
-    CarePath Team
-  </p>
+                <p
+                  style={{
+                    fontSize: 14,
+                    fontWeight: 700,
+                    marginBottom: 12,
+                    color: "white",
+                  }}
+                >
+                  CarePath Team
+                </p>
 
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: 9,
-    }}
-  >
-    <Link
-      href="/login"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-    >
-      Login
-    </Link>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 9,
+                  }}
+                >
+                  <Link
+                    href="/login"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/admin"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Driver Dashboard
+                  </Link>
+                  <Link
+                    href="/coordinator/dashboard"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Coordinator Hub
+                  </Link>
 
-    <Link
-      href="/coordinator/dashboard"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-    >
-      Coordinator Hub
-    </Link>
-
-    <Link
-      href="/advocate/dashboard"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-    >
-      Advocate Portal
-    </Link>
-<Link
-  href="/partner/dashboard"
-  style={{
-    color: "rgba(255, 255, 255, 0.72)",
-    fontSize: 14,
-    textDecoration: "none",
-  }}
->
-  Partner Portal
-</Link>
-    <Link
-      href="/admin"
-      style={{
-        color: "rgba(255, 255, 255, 0.72)",
-        fontSize: 14,
-        textDecoration: "none",
-      }}
-      
-    >
-      Admin Portal
-    </Link>
-  </div>
-</div>
+                  <Link
+                    href="/advocate/dashboard"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Advocate Portal
+                  </Link>
+                  <Link
+                    href="/partner/dashboard"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Partner Portal
+                  </Link>
+                  <Link
+                    href="/admin"
+                    style={{
+                      color: "rgba(255, 255, 255, 0.72)",
+                      fontSize: 14,
+                      textDecoration: "none",
+                    }}
+                  >
+                    Admin Portal
+                  </Link>
+                </div>
+              </div>
               <div>
                 <p
                   style={{
