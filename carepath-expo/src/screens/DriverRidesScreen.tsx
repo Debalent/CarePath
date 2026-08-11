@@ -1,118 +1,49 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Alert, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import Screen from '@/components/Screen';
 import Button from '@/components/Button';
+import MetricCard from '@/components/MetricCard';
+import RideCard from '@/components/RideCard';
 import { colors, spacing, typography } from '@/theme';
-import { getAssignedUpcomingRidesApi } from '@/api/rides';
+import { getAssignedUpcomingRidesApi, updateRideStatusApi } from '@/api/rides';
 import { useAuth } from '@/auth/AuthContext';
 
-type RideLite = {
-  id: string;
-  status?: string;
-  pickupTime?: string;
-  pickupAddress?: string;
-  clinicName?: string;
-  clinicCity?: string;
-  clinicState?: string;
-  patientName?: string;
-};
-
-
-
-const asArray = (data: any): any[] => {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.results)) return data.results;
-  if (Array.isArray(data?.rides)) return data.rides;
-  return [];
-};
+const asArray = (data: any): any[] => Array.isArray(data) ? data : Array.isArray(data?.results) ? data.results : Array.isArray(data?.rides) ? data.rides : [];
 
 export default function DriverRidesScreen() {
-  const [rides, setRides] = useState<RideLite[]>([]);
+  const navigation = useNavigation<any>();
+  const { user, logout } = useAuth();
+  const [rides, setRides] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const { user, logout } = useAuth();
+  const [workingId, setWorkingId] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    try {
-      const data = await getAssignedUpcomingRidesApi();
-      setRides(asArray(data) as RideLite[]);
-    } catch (e: any) {
-      const msg = e?.response?.data?.error || e?.response?.data?.message || e?.message || 'Could not load rides';
-      Alert.alert('Assigned rides', String(msg));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const load = useCallback(async () => { try { setRides(asArray(await getAssignedUpcomingRidesApi())); } catch (e: any) { Alert.alert('Assigned rides', String(e?.response?.data?.error || e?.response?.data?.message || e?.message || 'Could not load rides')); } finally { setLoading(false); } }, []);
+  useEffect(() => { load(); }, [load]);
+  const active = useMemo(() => rides.filter(r => !['COMPLETED','CANCELLED'].includes(String(r.status).toUpperCase())), [rides]);
+  const completed = useMemo(() => rides.filter(r => String(r.status).toUpperCase() === 'COMPLETED').length, [rides]);
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
+  const update = async (ride: any, status: string) => { try { setWorkingId(ride.id); await updateRideStatusApi(ride.id, status); await load(); } catch (e: any) { Alert.alert('Ride status', String(e?.response?.data?.error || e?.message || 'Could not update ride')); } finally { setWorkingId(null); } };
 
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  };
-
-  return (
-    <Screen
-      scroll
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.text} />}
-    >
-      <Text style={styles.h1}>My driver rides</Text>
-      <Text style={styles.sub}>These rides are assigned to you.</Text>
-
-      <View style={{ height: spacing.lg }} />
-
-      {loading ? <Text style={styles.muted}>Loading…</Text> : null}
-
-      {!loading && rides.length === 0 ? (
-        <Text style={styles.muted}>No assigned rides found.</Text>
-      ) : (
-        rides.map((r) => (
-          <TouchableOpacity key={r.id} activeOpacity={0.8} style={styles.card}>
-            <Text style={styles.cardTitle}>{r.clinicName ?? 'Ride'}</Text>
-            <Text style={styles.cardLine}>Status: {r.status ?? 'unknown'}</Text>
-            <Text style={styles.cardLine}>Pickup: {r.pickupAddress ?? '—'}</Text>
-            <Text style={styles.cardLine}>When: {r.pickupTime ?? '—'}</Text>
-            <Text style={styles.cardLine}>
-              Clinic: {(r.clinicCity ?? '').trim()} {(r.clinicState ?? '').trim()}
-            </Text>
-            {r.patientName ? <Text style={styles.cardLine}>Patient: {r.patientName}</Text> : null}
-          </TouchableOpacity>
-        ))
-      )}
-
-      <View style={{ height: spacing.lg }} />
-      <Button title="Refresh" variant="secondary" onPress={load} />
-      <Button
-                    title="Logout"
-                    variant="secondary"
-                    onPress={async () => {
-                      try {
-                        await logout();
-                      } catch {
-                        Alert.alert('Logout', 'Could not logout');
-                      }
-                    }}
-                  />
-    </Screen>
-  );
+  return <Screen scroll refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <View style={styles.hero}><Text style={styles.kicker}>DRIVER DASHBOARD</Text><Text style={styles.h1}>Ready to drive{user?.firstName ? `, ${user.firstName}` : ''}?</Text><Text style={styles.heroText}>Review your assignments, keep ride status current, and help patients arrive with confidence.</Text></View>
+    <View style={styles.metrics}><MetricCard label="Active assignments" value={active.length} hint="Matched or underway" /><MetricCard label="Completed" value={completed} hint="Trips on this account" /></View>
+    <View style={styles.trackCard}><View><Text style={styles.trackTitle}>Live navigation view</Text><Text style={styles.trackText}>Open your active trip timeline and handoff status.</Text></View><Button title="Track" variant="purple" onPress={() => navigation.navigate('Tracking')} style={{ minWidth: 90 }} /></View>
+    <Text style={styles.sectionTitle}>Assigned rides</Text>
+    {loading ? <Text style={styles.muted}>Loading assignments…</Text> : null}
+    {!loading && rides.length === 0 ? <View style={styles.empty}><Text style={styles.emptyTitle}>No assigned rides</Text><Text style={styles.muted}>New coordinator assignments will appear here.</Text></View> : rides.map(r => <View key={r.id}>
+      <RideCard ride={r} actionLabel="View tracking" onPress={() => navigation.navigate('Tracking', { rideId: r.id })} />
+      {!['COMPLETED','CANCELLED'].includes(String(r.status).toUpperCase()) ? <View style={styles.actions}>
+        {String(r.status).toUpperCase() === 'MATCHED' ? <Button title="Confirm ride" variant="purple" loading={workingId===r.id} onPress={() => update(r, 'CONFIRMED')} style={styles.flexButton} /> : null}
+        {String(r.status).toUpperCase() === 'CONFIRMED' ? <Button title="Start ride" loading={workingId===r.id} onPress={() => update(r, 'IN_PROGRESS')} style={styles.flexButton} /> : null}
+        {String(r.status).toUpperCase() === 'IN_PROGRESS' ? <Button title="Complete ride" loading={workingId===r.id} onPress={() => update(r, 'COMPLETED')} style={styles.flexButton} /> : null}
+      </View> : null}
+    </View>)}
+    <View style={{ height: spacing.md }} /><Button title="Refresh assignments" variant="secondary" onPress={load} /><View style={{ height: spacing.sm }} /><Button title="Log out" variant="secondary" onPress={async () => { try { await logout(); } catch { Alert.alert('Logout', 'Could not logout'); } }} />
+  </Screen>;
 }
 
 const styles = StyleSheet.create({
-  h1: { color: colors.text, fontSize: typography.h2, fontWeight: '800' },
-  sub: { color: colors.muted, marginTop: spacing.xs },
-  muted: { color: colors.muted },
-  card: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    padding: spacing.md,
-    borderRadius: 14,
-    marginBottom: spacing.md,
-  },
-  cardTitle: { color: colors.text, fontWeight: '800', fontSize: 16 },
-  cardLine: { color: colors.muted, marginTop: spacing.xs, lineHeight: 20 },
+  hero: { backgroundColor: colors.navy, borderRadius: 22, padding: spacing.xl, marginBottom: spacing.lg }, kicker: { color: '#BAE6FD', fontSize: 11, letterSpacing: 1.5, fontWeight: '900' }, h1: { color: '#FFF', fontSize: typography.h2, fontWeight: '900', marginTop: spacing.sm }, heroText: { color: '#CBD5E1', lineHeight: 22, marginTop: spacing.sm }, metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }, trackCard: { marginTop: spacing.lg, backgroundColor: '#FFF', borderWidth: 1, borderColor: colors.border, borderRadius: 18, padding: spacing.md, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md }, trackTitle: { color: colors.text, fontWeight: '900' }, trackText: { color: colors.muted, fontSize: 12, marginTop: 4, maxWidth: 210 }, sectionTitle: { color: colors.text, fontSize: 19, fontWeight: '900', marginTop: spacing.xl, marginBottom: spacing.md }, muted: { color: colors.muted }, empty: { backgroundColor: '#FFF', borderWidth: 1, borderColor: colors.border, borderRadius: 18, padding: spacing.lg }, emptyTitle: { color: colors.text, fontWeight: '900', fontSize: 17, marginBottom: 4 }, actions: { flexDirection: 'row', gap: spacing.sm, marginTop: -spacing.xs, marginBottom: spacing.lg }, flexButton: { flex: 1 },
 });

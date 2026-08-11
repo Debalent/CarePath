@@ -9,6 +9,7 @@ import MyRidesScreen from '@/screens/MyRidesScreen';
 import DriverRidesScreen from '@/screens/DriverRidesScreen';
 import CoordinatorRequestsScreen from '@/screens/CoordinatorRequestsScreen';
 import AssignDriverScreen from '@/screens/AssignDriverScreen';
+import TrackingScreen from '@/screens/TrackingScreen';
 import { colors } from '@/theme';
 
 const Stack = createNativeStackNavigator();
@@ -29,9 +30,11 @@ export default function AppNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colors.bg },
-        headerTintColor: colors.text,
-        headerShadowVisible: false,
+        headerStyle: { backgroundColor: '#FFFFFF' },
+        headerTintColor: colors.navy,
+        headerShadowVisible: true,
+        headerTitleStyle: { fontWeight: '800' },
+        contentStyle: { backgroundColor: colors.bg },
       }}
     >
       {/* Default landing routes by role */}
@@ -40,6 +43,7 @@ export default function AppNavigator() {
       {/* PATIENT */}
       <Stack.Screen name="RequestRide" component={RequestRideScreen} options={{ title: 'Request a ride' }} />
       <Stack.Screen name="MyRides" component={MyRidesScreen} options={{ title: 'My rides' }} />
+      <Stack.Screen name="Tracking" component={TrackingScreen} options={{ title: 'Ride tracking' }} />
 
       {/* DRIVER */}
       <Stack.Screen name="DriverRides" component={DriverRidesScreen} options={{ title: 'Assigned rides' }} />

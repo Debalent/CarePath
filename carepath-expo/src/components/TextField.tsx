@@ -18,7 +18,7 @@ export default function TextField(props: {
         value={props.value}
         onChangeText={props.onChangeText}
         placeholder={props.placeholder}
-        placeholderTextColor={colors.muted}
+        placeholderTextColor={colors.subtle}
         secureTextEntry={props.secureTextEntry}
         keyboardType={props.keyboardType}
         autoCapitalize={props.autoCapitalize ?? 'none'}
@@ -31,19 +31,20 @@ export default function TextField(props: {
 const styles = StyleSheet.create({
   wrap: { marginBottom: spacing.md },
   label: {
-    color: colors.muted,
-    marginBottom: spacing.xs,
-    fontSize: 13,
-    fontWeight: '600',
+    color: '#334155',
+    marginBottom: 7,
+    fontSize: 14,
+    fontWeight: '700',
   },
   input: {
+    minHeight: 52,
     backgroundColor: colors.inputBg,
     color: colors.text,
-    borderColor: colors.border,
+    borderColor: '#CBD5E1',
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
+    borderRadius: 11,
+    paddingHorizontal: 15,
+    paddingVertical: 13,
     fontSize: 16,
   },
 });

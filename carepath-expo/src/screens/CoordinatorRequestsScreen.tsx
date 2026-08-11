@@ -1,130 +1,43 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Alert, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
 import Screen from '@/components/Screen';
 import Button from '@/components/Button';
+import MetricCard from '@/components/MetricCard';
+import RideCard from '@/components/RideCard';
 import { colors, spacing, typography } from '@/theme';
-import { getPendingRidesApi } from '@/api/rides';
+import { getPendingRidesApi, triggerFallbackApi } from '@/api/rides';
 import { useAuth } from '@/auth/AuthContext';
 
-type RideLite = {
-  id: string;
-  status?: string;
-  pickupTime?: string;
-  pickupAddress?: string;
-  clinicName?: string;
-  clinicCity?: string;
-  clinicState?: string;
-  patientName?: string;
-};
-
-const asArray = (data: any): any[] => {
-  if (Array.isArray(data)) return data;
-  if (Array.isArray(data?.results)) return data.results;
-  if (Array.isArray(data?.rides)) return data.rides;
-  return [];
-};
+const asArray = (data: any): any[] => Array.isArray(data) ? data : Array.isArray(data?.results) ? data.results : Array.isArray(data?.rides) ? data.rides : [];
 
 export default function CoordinatorRequestsScreen() {
   const navigation = useNavigation<any>();
   const { user, logout } = useAuth();
-
-  const [rides, setRides] = useState<RideLite[]>([]);
+  const [rides, setRides] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [workingId, setWorkingId] = useState<string | null>(null);
+  const load = useCallback(async () => { try { setRides(asArray(await getPendingRidesApi())); } catch (e: any) { Alert.alert('Ride requests', String(e?.response?.data?.error || e?.response?.data?.message || e?.message || 'Could not load requests')); } finally { setLoading(false); } }, []);
+  useEffect(() => { load(); }, [load]);
+  const fallbackCount = useMemo(() => rides.filter(r => String(r.status).toUpperCase() === 'FALLBACK_NEEDED').length, [rides]);
+  const urgentCount = useMemo(() => rides.filter(r => ['HIGH','CRITICAL'].includes(String(r.urgencyLevel).toUpperCase())).length, [rides]);
+  const onRefresh = async () => { setRefreshing(true); await load(); setRefreshing(false); };
+  const fallback = async (rideId: string) => { try { setWorkingId(rideId); await triggerFallbackApi(rideId); await load(); } catch (e: any) { Alert.alert('Fallback', String(e?.response?.data?.error || e?.message || 'Could not activate fallback')); } finally { setWorkingId(null); } };
 
-  const count = useMemo(() => rides.length, [rides]);
-
-  const load = useCallback(async () => {
-    try {
-      const data = await getPendingRidesApi();
-      setRides(asArray(data) as RideLite[]);
-    } catch (e: any) {
-      const msg = e?.response?.data?.error || e?.response?.data?.message || e?.message || 'Could not load requests';
-      Alert.alert('Ride requests', String(msg));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    load();
-  }, [load]);
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await load();
-    setRefreshing(false);
-  };
-
-  return (
-    <Screen
-      scroll
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.text} />}
-    >
-      <Text style={styles.h1}>Pending rides</Text>
-      <Text style={styles.sub}>{count} ride(s) pending assignment.</Text>
-
-      <View style={{ height: spacing.lg }} />
-
-      {loading ? <Text style={styles.muted}>Loading…</Text> : null}
-
-      {!loading && rides.length === 0 ? (
-        <Text style={styles.muted}>No unassigned requests found.</Text>
-      ) : (
-        rides.map((r) => (
-          <TouchableOpacity
-            key={r.id}
-            activeOpacity={0.8}
-            style={styles.card}
-            onPress={() => navigation.navigate('AssignDriver', { rideId: r.id })}
-          >
-            <Text style={styles.cardTitle}>{r.clinicName ?? 'Ride request'}</Text>
-            <Text style={styles.cardLine}>Status: {r.status ?? 'requested'}</Text>
-            <Text style={styles.cardLine}>Pickup: {r.pickupAddress ?? '—'}</Text>
-            <Text style={styles.cardLine}>When: {r.pickupTime ?? '—'}</Text>
-            <Text style={styles.cardLine}>
-              Clinic: {(r.clinicCity ?? '').trim()} {(r.clinicState ?? '').trim()}
-            </Text>
-            {r.patientName ? <Text style={styles.cardLine}>Patient: {r.patientName}</Text> : null}
-
-            <View style={{ height: spacing.sm }} />
-            <Text style={styles.link}>Assign driver →</Text>
-          </TouchableOpacity>
-        ))
-      )}
-
-      <View style={{ height: spacing.lg }} />
-      <Button title="Refresh" variant="secondary" onPress={load} />
-       <Button
-              title="Logout"
-              variant="secondary"
-              onPress={async () => {
-                try {
-                  await logout();
-                } catch {
-                  Alert.alert('Logout', 'Could not logout');
-                }
-              }}
-            />
-    </Screen>
-  );
+  return <Screen scroll refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+    <View style={styles.hero}><Text style={styles.kicker}>COORDINATOR WORKSPACE</Text><Text style={styles.h1}>Ride command center{user?.firstName ? `, ${user.firstName}` : ''}</Text><Text style={styles.heroText}>Triage transportation requests, assign the best driver, and protect appointment access.</Text></View>
+    <View style={styles.metrics}><MetricCard label="Awaiting assignment" value={rides.length} hint="Current queue" /><MetricCard label="Urgent" value={urgentCount} hint="High / critical" /><MetricCard label="Fallback" value={fallbackCount} hint="Needs escalation" /></View>
+    <Text style={styles.sectionTitle}>Dispatch queue</Text>
+    {loading ? <Text style={styles.muted}>Loading requests…</Text> : null}
+    {!loading && rides.length === 0 ? <View style={styles.empty}><Text style={styles.emptyTitle}>Queue is clear</Text><Text style={styles.muted}>New patient ride requests will appear here.</Text></View> : rides.map(r => <View key={r.id}>
+      <RideCard ride={r} actionLabel="Choose driver" onPress={() => navigation.navigate('AssignDriver', { rideId: r.id })} />
+      <View style={styles.actions}><Button title="Assign driver" variant="purple" onPress={() => navigation.navigate('AssignDriver', { rideId: r.id })} style={styles.flexButton} /><Button title="Fallback" variant="secondary" loading={workingId===r.id} onPress={() => fallback(r.id)} style={styles.flexButton} /></View>
+    </View>)}
+    <View style={{ height: spacing.md }} /><Button title="Refresh queue" variant="secondary" onPress={load} /><View style={{ height: spacing.sm }} /><Button title="Log out" variant="secondary" onPress={async () => { try { await logout(); } catch { Alert.alert('Logout', 'Could not logout'); } }} />
+  </Screen>;
 }
 
 const styles = StyleSheet.create({
-  h1: { color: colors.text, fontSize: typography.h2, fontWeight: '800' },
-  sub: { color: colors.muted, marginTop: spacing.xs },
-  muted: { color: colors.muted },
-  card: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    padding: spacing.md,
-    borderRadius: 14,
-    marginBottom: spacing.md,
-  },
-  cardTitle: { color: colors.text, fontWeight: '800', fontSize: 16 },
-  cardLine: { color: colors.muted, marginTop: spacing.xs, lineHeight: 20 },
-  link: { color: colors.text, fontWeight: '800' },
+  hero: { backgroundColor: colors.purple, borderRadius: 22, padding: spacing.xl, marginBottom: spacing.lg }, kicker: { color: '#EDE9FE', fontSize: 11, letterSpacing: 1.5, fontWeight: '900' }, h1: { color: '#FFF', fontSize: typography.h2, fontWeight: '900', marginTop: spacing.sm }, heroText: { color: '#F3F0FA', lineHeight: 22, marginTop: spacing.sm }, metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }, sectionTitle: { color: colors.text, fontSize: 19, fontWeight: '900', marginTop: spacing.xl, marginBottom: spacing.md }, muted: { color: colors.muted }, empty: { backgroundColor: '#FFF', borderWidth: 1, borderColor: colors.border, borderRadius: 18, padding: spacing.lg }, emptyTitle: { color: colors.text, fontWeight: '900', fontSize: 17, marginBottom: 4 }, actions: { flexDirection: 'row', gap: spacing.sm, marginTop: -spacing.xs, marginBottom: spacing.lg }, flexButton: { flex: 1 },
 });

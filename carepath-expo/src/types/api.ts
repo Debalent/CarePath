@@ -43,12 +43,12 @@ export type MeResponse = {
 };
 
 export type CreateRideRequestBody = {
-  appointmentType: string;
+  appointmentType: 'ONCOLOGY' | 'CARDIOLOGY' | 'NEUROLOGY' | 'DIALYSIS' | 'MENTAL_HEALTH' | 'POST_SURGICAL' | 'SPECIALIST' | 'OTHER';
   clinicName: string;
   clinicCity: string;
   clinicState: string;
   appointmentDate: string; // ISO date/datetime string
-  estimatedMiles?: number | null;
+  estimatedMiles: number;
   isRecurring?: boolean;
   recurrenceNote?: string | null;
   appointmentNotes?: string | null;

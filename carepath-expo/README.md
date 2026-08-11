@@ -121,3 +121,11 @@ If you register as PATIENT but don’t have a Patient profile seeded/created yet
 "Patient profile required before requesting a ride".
 
 If that happens, we can add a Patient Profile creation screen (or you can seed one in the DB).
+
+## Demo Day second-pass additions
+- Patient dashboard metrics and quick actions
+- Rich ride cards with nested appointment/patient/driver data support
+- Live ride tracking screen using `/api/rides/gps/current` and `/api/rides/:rideId/gps`
+- Driver dashboard with Confirm / Start / Complete status actions
+- Coordinator command-center metrics, assignment, and fallback actions
+- Shared CarePath status badges and KPI cards

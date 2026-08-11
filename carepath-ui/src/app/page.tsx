@@ -158,7 +158,7 @@ export default function Home() {
             Login
           </Link>
 
-          <Link
+          {/* <Link
             href="/patient/dashboard"
             style={{
               display: "inline-flex",
@@ -215,7 +215,7 @@ export default function Home() {
             }}
           >
             Coordinator Dashboard
-          </Link>
+          </Link> */}
         </div>
       </nav>
 

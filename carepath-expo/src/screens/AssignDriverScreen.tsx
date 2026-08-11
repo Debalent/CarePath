@@ -157,16 +157,12 @@ const rideId = params?.rideId;
               {fullName(d)}
             </Text>
 
-            {d.email ? (
-              <Text style={styles.cardLine}>
-                {d.email}
-              </Text>
+            {(d.email || d.user?.email) ? (
+              <Text style={styles.cardLine}>{d.email || d.user?.email}</Text>
             ) : null}
 
-            {d.phone ? (
-              <Text style={styles.cardLine}>
-                {d.phone}
-              </Text>
+            {(d.phone || d.user?.phone) ? (
+              <Text style={styles.cardLine}>{d.phone || d.user?.phone}</Text>
             ) : null}
 
             <View style={{ height: spacing.sm }} />
@@ -272,7 +268,7 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.card,
+    backgroundColor: '#FFFFFF',
     padding: spacing.md,
     borderRadius: 14,
     marginBottom: spacing.md,

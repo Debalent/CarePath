@@ -72,3 +72,19 @@ export const getFallbackPoolApi = async () => {
   const res = await api.get('/api/drivers/fallback-pool');
   return res.data;
 };
+
+
+export const getCurrentTrackingApi = async () => {
+  const res = await api.get('/api/rides/gps/current');
+  return res.data;
+};
+
+export const getRideTrackingApi = async (rideId: string) => {
+  const res = await api.get(`/api/rides/${rideId}/gps`);
+  return res.data;
+};
+
+export const updateRideStatusApi = async (rideId: string, status: string) => {
+  const res = await api.patch(`/api/rides/${rideId}/status`, { status });
+  return res.data;
+};

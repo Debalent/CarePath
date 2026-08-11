@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import Screen from '@/components/Screen';
@@ -11,7 +11,6 @@ import { colors, spacing } from '@/theme';
 export default function LoginScreen() {
   const navigation = useNavigation<any>();
   const { login } = useAuth();
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,9 +19,8 @@ export default function LoginScreen() {
     try {
       setLoading(true);
       await login({ email: email.trim().toLowerCase(), password });
-      // RootNavigator will switch to App stack automatically.
     } catch (e: any) {
-      const msg = e?.response?.data?.error || e?.message || 'Login failed';
+      const msg = e?.response?.data?.error || e?.response?.data?.message || e?.message || 'Login failed';
       Alert.alert('Login failed', String(msg));
     } finally {
       setLoading(false);
@@ -30,43 +28,36 @@ export default function LoginScreen() {
   };
 
   return (
-    <Screen scroll>
-      <Text style={styles.title}>Welcome back</Text>
-      <Text style={styles.subtitle}>Log in to request a ride.</Text>
+    <Screen scroll contentStyle={styles.page}>
+      <View style={styles.panel}>
+        <Image source={require('../../assets/carepath-logo.png')} style={styles.logo} resizeMode="contain" />
+        <Text style={styles.title}>Welcome back</Text>
+        <Text style={styles.subtitle}>Sign in to manage rides and transportation services.</Text>
 
-      <View style={{ marginTop: spacing.lg }}>
-        <TextField
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder="name@example.com"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextField
-          label="Password"
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Your password"
-          secureTextEntry
-          autoCapitalize="none"
-        />
+        <View style={styles.form}>
+          <TextField label="Email address" value={email} onChangeText={setEmail} placeholder="name@example.com" keyboardType="email-address" autoCapitalize="none" />
+          <TextField label="Password" value={password} onChangeText={setPassword} placeholder="Enter your password" secureTextEntry autoCapitalize="none" />
+          <Button title="Sign In" variant="pink" onPress={onSubmit} loading={loading} disabled={!email || !password} />
+          <View style={{ height: spacing.md }} />
+          <Button title="Register here" variant="secondary" onPress={() => navigation.navigate('Register')} />
+        </View>
 
-        <Button title="Log in" onPress={onSubmit} loading={loading} disabled={!email || !password} />
-
-        <View style={{ height: spacing.lg }} />
-
-        <Button
-          title="Create account"
-          onPress={() => navigation.navigate('Register')}
-          variant="secondary"
-        />
+        <Text style={styles.footer}>You’ll be sent to the correct dashboard for your role.</Text>
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { color: colors.text, fontSize: 24, fontWeight: '800' },
-  subtitle: { color: colors.muted, marginTop: spacing.xs },
+  page: { justifyContent: 'center', backgroundColor: '#F2EAF5' },
+  panel: {
+    width: '100%', maxWidth: 720, alignSelf: 'center', backgroundColor: '#FFFFFF',
+    borderRadius: 22, borderWidth: 1, borderColor: colors.border, padding: spacing.xl,
+    shadowColor: '#450466', shadowOpacity: 0.12, shadowRadius: 20, shadowOffset: { width: 0, height: 10 }, elevation: 4,
+  },
+  logo: { width: 116, height: 116, alignSelf: 'center', marginBottom: spacing.sm },
+  title: { color: colors.text, fontSize: 34, fontWeight: '900', textAlign: 'center' },
+  subtitle: { color: '#766D7C', fontSize: 16, lineHeight: 24, textAlign: 'center', marginTop: spacing.sm },
+  form: { marginTop: spacing.xl },
+  footer: { color: colors.subtle, fontSize: 13, textAlign: 'center', marginTop: spacing.lg },
 });

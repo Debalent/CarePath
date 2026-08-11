@@ -1,21 +1,34 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { RefreshControlProps, ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/theme';
 
 export default function Screen(props: {
   children: React.ReactNode;
   scroll?: boolean;
   contentStyle?: ViewStyle;
+  refreshControl?: React.ReactElement<RefreshControlProps>;
 }) {
   if (props.scroll) {
     return (
-      <ScrollView style={styles.root} contentContainerStyle={[styles.scrollContent, props.contentStyle]}>
-        {props.children}
-      </ScrollView>
+      <SafeAreaView style={styles.root} edges={['bottom']}>
+        <ScrollView
+          style={styles.root}
+          contentContainerStyle={[styles.scrollContent, props.contentStyle]}
+          keyboardShouldPersistTaps="handled"
+          refreshControl={props.refreshControl}
+        >
+          {props.children}
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 
-  return <View style={[styles.root, styles.content, props.contentStyle]}>{props.children}</View>;
+  return (
+    <SafeAreaView style={styles.root} edges={['bottom']}>
+      <View style={[styles.content, props.contentStyle]}>{props.children}</View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -24,9 +37,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg,
   },
   content: {
-    padding: spacing.xl,
+    flex: 1,
+    padding: spacing.lg,
   },
   scrollContent: {
-    padding: spacing.xl,
+    flexGrow: 1,
+    padding: spacing.lg,
+    paddingBottom: spacing.xl * 2,
   },
 });
