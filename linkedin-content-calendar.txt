@@ -1,0 +1,37 @@
+# LinkedIn Promotional Content Calendar
+
+## Week 1: Foundation & Awareness
+**Monday:** Launch announcement with this CarePath introduction
+**Wednesday:** Stakeholder testimonial highlighting impact
+**Friday:** Technical deep-dive for potential engineering partners
+
+## Week 2: Problem-Solution Fit
+**Monday:** "Real Stories: How Missed Rides Impact Health" 
+**Wednesday:** "Behind the Code: Building Accessibility-First Matching"
+**Friday:** "Community Spotlight: Healthcare Partners Nationwide"
+
+## Week 3: Solution & Features
+**Monday:** "Meet Your CarePath Dashboard: Streamlining Coordination"
+**Wednesday:** "Driver Experience: From Request to Completion"
+**Friday:** "The Tech Stack: Why We Chose This Architecture"
+
+## Week 4: Call to Action
+**Monday:** "Join Us: Building Transportation Equity Together"
+**Wednesday:** "Partner Opportunities: How to Collaborate"
+**Friday:** "Final Push: Why Now is the Right Time"
+
+## Week 5: Follow-up & Nurturing
+**Monday:** "Answering Your Questions: Q&A Session"
+**Wednesday:** "Success Stories: Real Impact from Our Community"
+**Friday:** "Thank You: Celebrating Our Supporters"
+
+## Ongoing
+- **Daily:** Share 1-2 micro-posts highlighting features, team, or impact
+- **Weekly:** Featured spotlight on different stakeholder group
+- **Bi-weekly:** Technical deep-dive or product update
+- **Monthly:** Comprehensive impact report or roadmap update
+
+## Hashtag Strategy
+- **Primary:** #HealthcareInnovation #Transportation #HealthcareAccess #HealthTech #SocialImpact #TransportationCoordination
+- **Secondary:** #PatientCentricCare #CommunityHealth #Accessibility #HealthcareTechnology
+- **Niche:** #TransportationEquity #HealthcareAccess #SmartTransportation

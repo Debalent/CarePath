@@ -1,0 +1,61 @@
+🚀 **Introducing CarePath: The Transportation Coordination Platform That's Transforming Rural Healthcare Access**
+
+Every day, patients in rural and low-income communities miss critical medical appointments — dialysis, oncology, cardiology, post-surgical follow-ups — not by choice, but because they have no reliable way to get there.
+
+We've built **CarePath** to solve this systemic challenge through smart transportation coordination that puts people first.
+
+## 🎯 **The Problem**
+- Medicaid transport cancellations with no notice
+- Volunteer drivers with no coordination tool
+- Manual phone/text management for coordinators
+- **Zero fallback when rides fail** → leads to no-shows, health deterioration, avoidable ER visits
+
+## 💡 **Our Solution: CarePath**
+**From Request → Match → Confirm → Complete → Survey**
+
+With automatic fallback escalation the moment a ride is at risk.
+
+## 👥 **Who We Serve**
+
+### **Patients**
+✅ Reliable rides to essential medical appointments  
+✅ Accessibility-first matching (wheelchair, oxygen, stretcher)  
+✅ Mobile-first design for how patients actually access care
+
+### **Volunteer/NEMT Drivers**  
+✅ A real coordination tool instead of ad-hoc texts  
+✅ Visibility into patient needs and ride status  
+✅ Professional mobile app for coordination
+
+### **Coordinators**
+✅ One dashboard instead of manual phone/paper juggling  
+✅ Live ride tracking and automatic fallback management  
+✅ Full communication logs for every ride
+
+### **Institutional Partners**
+✅ Ride-credit funding system for community investment  
+✅ Outcome tracking and impact measurement  
+✅ Scalable transportation solution
+
+### **Caregivers/Advocates**
+✅ Arrange rides on behalf of patients  
+✅ Real-time updates and communication  
+✅ Accessibility support
+
+## 🏆 **What Makes CarePath Different**
+- **Location-agnostic** — never uses mileage as a decision factor
+- **Fallback and accessibility are core features**, not afterthoughts
+- **Proven through 15 stakeholder interviews, 5 user types, 13 pain signals validated**
+- **Focused on one coordination workflow** end-to-end, not a broad marketplace
+
+## 📊 **The Impact**
+Fewer missed appointments → fewer avoidable ER visits → better outcomes for patients managing dialysis, oncology, and cardiology care.
+
+**Scaling from Arkansas to communities nationwide where public transit is limited and Medicaid transportation is unreliable.**
+
+## 🚀 **Join Us**
+We're on the cusp of transforming healthcare access for underserved communities. CarePath is looking for forward-thinking partners, investors, and team members who believe transportation coordination should be a right, not a privilege.
+
+**Ready to revolutionize healthcare transportation?** 
+
+#HealthcareInnovation #Transportation #RuralHealthcare #HealthTech #AccessToCare #SocialImpact #Transportation coordination #HealthcareTechnology #PatientCentricCare #CommunityHealth

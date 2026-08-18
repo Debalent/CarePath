@@ -1,0 +1,48 @@
+LinkedIn Post for CarePath Platform Promotion
+
+🚀 **Introducing CarePath: Smart Transportation Coordination for Rural Healthcare Access**
+
+Every day, patients in rural and low-income communities miss critical medical appointments — dialysis, oncology, cardiology, post-surgical follow-ups — not by choice, but because they have no reliable way to get there.
+
+We've built **CarePath** to solve this systemic challenge through intelligent transportation coordination that puts people first.
+
+## 🎯 The Problem
+- Medicaid transport cancellations with no notice
+- Volunteer drivers with no coordination tool
+- Manual phone/text management for coordinators
+- **Zero fallback when rides fail** → no-shows, health deterioration, avoidable ER visits
+
+## 💡 Our Solution
+**Request → Match → Confirm → Complete → Survey**
+
+With automatic fallback escalation the moment a ride is at risk.
+
+## 👥 Who We Serve
+
+**Patients:** Reliable rides, accessibility-first matching, mobile-first design
+
+**Volunteer/NEMT Drivers:** Professional coordination tool, visibility into needs
+
+**Coordinators:** One dashboard, live tracking, automatic fallback
+
+**Institutional Partners:** Ride-credit funding, outcome tracking
+
+**Caregivers/Advocates:** Arrange rides, real-time updates
+
+## 🏆 What Makes Us Different
+- Location-agnostic (mileage never a factor)
+- Fallback & accessibility as core features
+- Proven through 15 stakeholder interviews, 5 user types, 13 pain signals
+- Focused on one coordination workflow end-to-end
+
+## 📊 Impact
+Fewer missed appointments → fewer ER visits → better patient outcomes.
+
+**Scaling from Arkansas to communities nationwide where public transit is limited and Medicaid transport is unreliable.**
+
+## 🚀 Join Us
+We're transforming healthcare access for underserved communities. CarePath is looking for partners, investors, and team members who believe transportation should be a right.
+
+**Ready to revolutionize healthcare transportation?** 
+
+#HealthcareInnovation #Transportation #RuralHealthcare #HealthTech #AccessToCare #SocialImpact
