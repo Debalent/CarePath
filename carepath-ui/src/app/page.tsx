@@ -1,13 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  ArrowRight,
   Bus,
   HandHeart,
   TimerReset,
   CheckCircle,
   UserRound,
-  CarFront,
 } from "lucide-react";
 
 const pillars = [
@@ -1051,7 +1049,7 @@ export default function Home() {
                     Login
                   </Link>
                   <Link
-                    href="/admin"
+                    href="/driver/dashboard"
                     style={{
                       color: "rgba(255, 255, 255, 0.72)",
                       fontSize: 14,
