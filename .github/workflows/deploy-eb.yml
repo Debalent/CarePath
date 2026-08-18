@@ -1,0 +1,155 @@
+# Elastic Beanstalk Deployment Workflow
+
+## Overview
+
+This GitHub Actions workflow deploys the CarePath application to AWS Elastic Beanstalk. It handles building the application, running tests, and deploying to production.
+
+## Workflow Files
+
+### `.github/workflows/deploy-eb.yml`
+
+```yaml
+name: Deploy to Elastic Beanstalk
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'carepath-ui/**'
+      - 'src/**'
+      - '.ebextensions/**'
+      - 'Procfile'
+      - 'infra/Pulumi.yaml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'carepath-ui/**'
+      - 'src/**'
+      - '.ebextensions/**'
+      - 'Procfile'
+      - 'infra/Pulumi.yaml'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: 'carepath-ui/package-lock.json'
+    
+    - name: Install dependencies
+      run: npm ci
+      working-directory: carepath-ui
+    
+    - name: Run tests
+      run: npm test
+      working-directory: carepath-ui
+    
+    - name: Build application
+      run: npm run build
+      working-directory: carepath-ui
+      env:
+        NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+    
+    - name: Create deployment package
+      run: |
+        # Create carepath-deploy.zip with all necessary files
+        echo "Building deployment package..."
+        
+        # Ensure we have the right structure
+        mkdir -p dist-lambda
+        cp -r carepath-ui/.next/standalone dist-lambda/
+        cp -r carepath-ui/.next/static dist-lambda/static/
+        cp carepath-ui/public/* dist-lambda/ 2>/dev/null || true
+        
+        # Create package.json for EB
+        cat > dist-lambda/package.json << EOF
+        {
+          "name": "carepath-api",
+          "version": "1.0.0",
+          "main": "index.js",
+          "scripts": {
+            "start": "node index.js"
+          }
+        }
+        EOF
+        
+        # Add server files if they exist
+        if [ -f "src/server.js" ]; then
+          cp src/server.js dist-lambda/
+        fi
+        
+        # Create zip file
+        cd dist-lambda
+        zip -r ../carepath-deploy.zip .
+        cd ..
+        rm -rf dist_lambda
+        
+        echo "Created carepath-deploy.zip ($(du -h carepath-deploy.zip | cut -d'\t' -f1))"
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ secrets.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    
+    - name: Deploy to Elastic Beanstalk
+      run: |
+        # Check if Elastic Beanstalk application exists
+        if ! aws elasticbeanstalk describe-applications --application-names carepath > /dev/null 2>&1; then
+          echo "Creating Elastic Beanstalk application..."
+          aws elasticbeanstalk create-application \
+            --application-name carepath \
+            --description "CarePath application deployed via GitHub Actions"
+        fi
+        
+        # Create application version
+        echo "Creating application version..."
+        aws elasticbeanstalk create-application-version \
+          --application-name carepath \
+          --version-label "github-actions-$(date +%Y%m%d%H%M%S)" \
+          --source-bundle S3Bucket="carepath-deployment-artifacts",S3Key="carepath-deploy.zip"
+        
+        # Deploy to environment
+        echo "Deploying to Elastic Beanstalk environment..."
+        aws elasticbeanstalk update-environment \
+          --environment-name carepath-env \
+          --version-label "github-actions-$(date +%Y%m%d%H%M%S)"
+        
+        echo "Deployment initiated!"
+    
+    - name: Wait for deployment to complete
+      run: |
+        ENVIRONMENT_ID=$(aws elasticbeanstalk describe-environments \
+          --application-names carepath \
+          --query "Environments[?contains(EnvironmentName, 'env')].Id" \
+          --output text)
+        
+        echo "Waiting for deployment to complete..."
+        aws elasticbeanstalk wait environment-updated \
+          --environment-names $ENVIRONMENT_ID
+        
+        echo "Deployment completed successfully!"
+    
+    - name: Upload deployment artifacts
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: deployment-logs
+        path: |
+          /tmp/eb-logs/*
+        retention-days: 7
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
